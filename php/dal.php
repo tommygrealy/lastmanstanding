@@ -13,13 +13,6 @@ require_once 'serverConfig.php';
  * @author tommygrealy
  */
 class dal {
-       
-    private $username = "lms";
-    private $password = "lmsintel2014";
-    private $host = "localhost";
-    private $dbname = "lastmanstanding";
-    private $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
-    private $database_link;
 
     private function connect() {
         $myConfig = new serverConfig();
@@ -75,12 +68,12 @@ class dal {
                 "(select DateTo from gameweekmap where DateTo > (select CURRENT_TIMESTAMP) limit 1)");
         $stmt = $mylink->prepare($query);
         $stmt->execute();
-        $results=$stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $results;
         $this->disconnect();
     }
-    
-    public function getUserSelectionForThisWeek($UserName){
+
+    public function getUserSelectionForThisWeek($UserName) {
         $mylink = $this->connect();
         $query = ("call showUserCurrentSelection (:userName)");
         $stmt = $mylink->prepare($query);
@@ -89,9 +82,8 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
-    
-    
-    public function getUserData($UserName){
+
+    public function getUserData($UserName) {
         $mylink = $this->connect();
         $query = ("select username,CompStatus,PaymentStatus from Users where UserName = (:userName)");
         $stmt = $mylink->prepare($query);
