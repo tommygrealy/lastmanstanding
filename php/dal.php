@@ -45,6 +45,15 @@ class dal {
             return $myErrorArray[0][2];
         }
     }
+    
+    public function getStandings(){
+        $mylink = $this->connect();
+        $query = "call showCurrentStandings";
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $standings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $standings;
+    }
 
     public function getTeamsAvilableToUser($UserName) { // this method returns a list of teams which the current user can select (excludes 
         // teams which they previously selcted)
@@ -70,7 +79,6 @@ class dal {
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $results;
-        $this->disconnect();
     }
 
     public function getUserSelectionForThisWeek($UserName) {
@@ -81,6 +89,11 @@ class dal {
         $stmt->execute();
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
+    }
+
+    public function getUserPredictionHistory($UserName) {
+        $mylink = $this->connect();
+        //TODO: Implement
     }
 
     public function getUserData($UserName) {

@@ -4,14 +4,14 @@
 require_once '../dal.php';
 require_once '../common.php';
 require_once '../objects/requestStatus.php';
-require_once '../objects/userSelectionOptionsResponse.php';
+require_once '../objects/genericResponse.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://www.actionshots.ie');
 
 $dal = new dal();
 
-$response=new userSelectionOptionsResponse;
+$response=new genericResponse;
 
 
 if (empty($_SESSION['user'])) {

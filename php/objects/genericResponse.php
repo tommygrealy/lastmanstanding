@@ -11,7 +11,7 @@
  *
  * @author tgrealy
  */
-class userSelectionOptionsResponse {
+class genericResponse {
     public $availableTeams;
     public $fixtures;
 
