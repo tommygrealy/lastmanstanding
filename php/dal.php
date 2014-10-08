@@ -17,12 +17,12 @@ class dal {
     private $host = "localhost";
     private $dbname = "lastmanstanding";
     private $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
-    public $database_link;
+    private $database_link;
 
     private function connect() {
         try {
-            $this->database_link = new PDO("mysql:host={$host};dbname={$dbname};charset=utf8", $this->username, $this->password, $this->options);
-            return database_link;
+            $this->database_link = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+            return $this->database_link;
         } catch (PDOException $ex) {
             echo $ex->getMessage();
             return null;
@@ -31,7 +31,7 @@ class dal {
 
     public function submitUserPrediction($fixtureId, $UserName, $prediction) {
         //$mylink=$this->connect();
-        $mylink = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+        $mylink = $this->connect();
 
         $query = ("call insertPrediction (:fixtureId, :userName, :TeamSelected)");
         //echo $query;
@@ -52,7 +52,7 @@ class dal {
 
     public function getTeamsAvilableToUser($UserName) { // this method returns a list of teams which the current user can select (excludes 
         // teams which they previously selcted)
-        $mylink = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+        $mylink = $this->connect();
         $query = ("call showAvailableTeamsForUser (:userName)");
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $UserName);
@@ -62,7 +62,7 @@ class dal {
     }
 
     public function getThisWeeksFixtures() {
-        $mylink = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+        $mylink = $this->connect();
         $query = ("select * from allfixturesandclubinfo " .
                 "where " .
                 // temporary allowing -3 days to include fixtures while working on the code over weekend.
@@ -74,10 +74,11 @@ class dal {
         $stmt->execute();
         $results=$stmt->fetchAll(PDO::FETCH_ASSOC);
         return $results;
+        $this->disconnect();
     }
     
     public function getUserSelectionForThisWeek($UserName){
-        $mylink = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+        $mylink = $this->connect();
         $query = ("call showUserCurrentSelection (:userName)");
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $UserName);
@@ -88,7 +89,7 @@ class dal {
     
     
     public function getUserData($UserName){
-        $mylink = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+        $mylink = $this->connect();
         $query = ("select username,CompStatus,PaymentStatus from Users where UserName = (:userName)");
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $UserName);

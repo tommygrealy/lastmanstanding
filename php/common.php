@@ -2,12 +2,15 @@
 // http://forums.devshed.com/php-faqs-stickies-167/program-basic-secure-login-system-using-php-mysql-891201.html
     $base_url="http://localhost";
 
+    
 
     // These variables define the connection information for your MySQL database 
     $username = "lms"; 
     $password = "lmsintel2014"; 
     $host = "localhost"; 
     $dbname = "lastmanstanding"; 
+
+
     
     // same as above but for PDO connections (used by DAL)
     
