@@ -160,24 +160,15 @@ $lms_username = $_SESSION['user']['username'];
                 ?>
             </div>
             <div data-role="content">
-                The Parents of Hannah aged 7 years and Patrick aged 5 year’s respectfully seek funding support for Autism treatment 
-                for their Children in the USA.
-                Hannah & Patrick are both diagnosed with ASD, Autism and live with their Parents, Caroline and Neil in Castleknock, Dublin.  
-                According to Mainstream medicine there is no known cure for ASD and any treatment is not covered by the HSE or private 
-                medical insurance.
-                As Parents it is very difficult to accept this fate and for years we have tirelessly researched the root cause of ASD. 
-                Both Children are non-verbal with very poor cognitive function and fully dependant on us for their care.
-                Hannah has a serious food disorder and is fed through a gastrostomy tube since 2010. 
-                Through exhaustive research we uncovered Dr. Buttar’s Advanced Medical Centre in North Carolina, USA. 
-                They specialise in the removal of Toxic and Heavy Metals from the body. The treatment is called ‘Chelation’ treatment 
-                and is administered by IV over a four week period. The treatment schedule is repeated at least 4 times inside 12 months. 
-                We personally know one little boy who is now fully cured and attending main stream school in Dublin 15 after completing 
-                chelation treatment.
-                The cost for the 12 month schedule for both our Children will be in excess of €140,000 of which we need to raise privately 
-                with the generous support and help of family and friends.
-                We would be extremely grateful for your kindness and consideration to support Hannah & Patrick’s treatment in the USA, 
-                as we plan to make the first treatment visit in late October 2014.
-
+                <h3>Funding for Hannah & Patrick McCarthy’s Medical Treatment in the USA</h3>
+                The Parents of Hannah aged 7 years and Patrick aged 5 year’s respectfully seek funding support for Autism treatment for their Children in the USA.
+                Hannah & Patrick are both diagnosed with ASD, Autism and live with their Parents, Caroline and Neil in Castleknock, Dublin.  According to Mainstream Medicine there is no known cure for ASD and treatment is not covered by the HSE or private medical insurance.
+                As Parents it is very difficult to accept this fate and for years we have tirelessly researched ASD and appropriate treatments. Both Children are non-verbal, very poor cognition and fully dependant on us for their care. Hannah has a serious food disorder and is fed through a gastrostomy tube since 2010. 
+                Through exhaustive research we uncovered the Advanced Medical Centre in North Carolina, USA. They specialise in the advanced treatment of ASD for Children. The treatment is carried out over a four week period. The treatment schedule is repeated at least 4 times inside 12 months. We personally know one little boy who is now fully cured and attending main stream school in Dublin 15 after completing Chelation treatment.
+                The cost for the 12 month schedule for both our Children will be in excess of €140,000 of which we need to raise privately with the generous support and help of family and friends.
+                We would be extremely grateful for your kindness and consideration to support Hannah & Patrick’s treatment in the USA, as we plan to make the first treatment visit in late October 2014.
+                    
+                    
             </div>
             <div data-role="footer" data-position="fixed">
                 <?php
