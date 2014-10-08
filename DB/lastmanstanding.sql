@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Oct 06, 2014 at 12:08 PM
+-- Generation Time: Oct 08, 2014 at 05:37 AM
 -- Server version: 5.5.36
 -- PHP Version: 5.4.30
 
@@ -19,12 +19,15 @@ SET time_zone = "+00:00";
 --
 -- Database: `lastmanstanding`
 --
+CREATE DATABASE IF NOT EXISTS `lastmanstanding` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `lastmanstanding`;
 
 DELIMITER $$
 --
 -- Procedures
 --
-CREATE PROCEDURE `insertPrediction`(
+DROP PROCEDURE IF EXISTS `insertPrediction`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertPrediction`(
 IN 
 inFixtureID int(11),
 inUserName varchar(255),
@@ -57,7 +60,8 @@ values
 
 END$$
 
-CREATE PROCEDURE `showAvailableTeamsForUser`(inUserName varchar(255))
+DROP PROCEDURE IF EXISTS `showAvailableTeamsForUser`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `showAvailableTeamsForUser`(inUserName varchar(255))
 BEGIN
 
 select ClubId, LongName,MedName,ShortName from Clubs 
@@ -65,7 +69,8 @@ where LongName not in (select TeamName from predictions where username = inUserN
 
 END$$
 
-CREATE PROCEDURE `showUserCurrentSelection`(inUserName varchar(255))
+DROP PROCEDURE IF EXISTS `showUserCurrentSelection`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `showUserCurrentSelection`(inUserName varchar(255))
 BEGIN
 
 DECLARE inGameWeek int (11);
@@ -90,7 +95,8 @@ select
 
 END$$
 
-CREATE PROCEDURE `updateUserPositions`()
+DROP PROCEDURE IF EXISTS `updateUserPositions`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateUserPositions`()
 BEGIN
 
 create TEMPORARY table WinningPredictions as (SELECT PredictionID FROM lastmanstanding.showwinningpredictions);
@@ -118,6 +124,7 @@ DELIMITER ;
 --
 -- Stand-in structure for view `allfixturesandclubinfo`
 --
+DROP VIEW IF EXISTS `allfixturesandclubinfo`;
 CREATE TABLE IF NOT EXISTS `allfixturesandclubinfo` (
 `FixtureId` int(11)
 ,`KickOffTime` datetime
@@ -136,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `allfixturesandclubinfo` (
 -- Table structure for table `clubs`
 --
 
+DROP TABLE IF EXISTS `clubs`;
 CREATE TABLE IF NOT EXISTS `clubs` (
 `ClubId` int(11) NOT NULL,
   `LongName` varchar(100) NOT NULL,
@@ -177,6 +185,7 @@ INSERT INTO `clubs` (`ClubId`, `LongName`, `MedName`, `ShortName`, `CrestURLSmal
 -- Table structure for table `fixtureresults`
 --
 
+DROP TABLE IF EXISTS `fixtureresults`;
 CREATE TABLE IF NOT EXISTS `fixtureresults` (
 `FixtureId` int(11) NOT NULL,
   `KickOffTime` datetime NOT NULL,
@@ -529,6 +538,7 @@ INSERT INTO `fixtureresults` (`FixtureId`, `KickOffTime`, `HomeTeam`, `AwayTeam`
 -- Table structure for table `gameweekmap`
 --
 
+DROP TABLE IF EXISTS `gameweekmap`;
 CREATE TABLE IF NOT EXISTS `gameweekmap` (
   `GameWeek` int(11) NOT NULL,
   `DateFrom` datetime NOT NULL,
@@ -554,6 +564,7 @@ INSERT INTO `gameweekmap` (`GameWeek`, `DateFrom`, `DateTo`) VALUES
 -- Table structure for table `predictions`
 --
 
+DROP TABLE IF EXISTS `predictions`;
 CREATE TABLE IF NOT EXISTS `predictions` (
   `DateTimeEntered` datetime DEFAULT NULL,
 `PredictionID` int(11) NOT NULL,
@@ -563,20 +574,14 @@ CREATE TABLE IF NOT EXISTS `predictions` (
   `TeamName` varchar(50) DEFAULT NULL,
   `PredictedResult` int(11) NOT NULL,
   `PredictionCorrect` bit(1) DEFAULT NULL COMMENT '1=correct, 0=incorrect'
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=162 ;
-
---
--- Dumping data for table `predictions`
---
-
-INSERT INTO `predictions` (`DateTimeEntered`, `PredictionID`, `GameWeek`, `FixtureID`, `UserName`, `TeamName`, `PredictedResult`, `PredictionCorrect`) VALUES
-('2014-10-06 16:27:59', 161, 8, 97, 'tommygrealy', 'Chelsea', 3, NULL);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=173 ;
 
 -- --------------------------------------------------------
 
 --
 -- Stand-in structure for view `showloosingpredictions`
 --
+DROP VIEW IF EXISTS `showloosingpredictions`;
 CREATE TABLE IF NOT EXISTS `showloosingpredictions` (
 `KickOffTime` datetime
 ,`FixtureId` int(11)
@@ -592,6 +597,7 @@ CREATE TABLE IF NOT EXISTS `showloosingpredictions` (
 --
 -- Stand-in structure for view `showwinningpredictions`
 --
+DROP VIEW IF EXISTS `showwinningpredictions`;
 CREATE TABLE IF NOT EXISTS `showwinningpredictions` (
 `KickOffTime` datetime
 ,`FixtureId` int(11)
@@ -608,6 +614,7 @@ CREATE TABLE IF NOT EXISTS `showwinningpredictions` (
 -- Table structure for table `status`
 --
 
+DROP TABLE IF EXISTS `status`;
 CREATE TABLE IF NOT EXISTS `status` (
   `StatusID` int(11) NOT NULL,
   `Description` varchar(45) NOT NULL
@@ -628,6 +635,7 @@ INSERT INTO `status` (`StatusID`, `Description`) VALUES
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
 `id` int(11) NOT NULL,
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -637,17 +645,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `CompStatus` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `PaymentStatus` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=29 ;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `FullName`, `password`, `salt`, `email`, `CompStatus`, `PaymentStatus`) VALUES
-(11, 'tommygrealy', NULL, '3078438e6cd67c546ada7732be5d8a325598d510a94b5372fd91627f43009fa1', '57cf4c9917d1f481', 'tommygrealy@gmail.com', 'Eliminated', NULL),
-(21, 'joebloggs', NULL, 'ca8380b7389d142e69b5fd8d58b2cbfe54c27a22d033b54e38260a5c550851ea', '3303db4248a60d13', 'joebloggs@gmail.com', NULL, NULL),
-(22, 'Dilligaf_XI', NULL, '79bacd86bbc09af9bf54fdb290ffc44f5413c9b0fd5d42dc235f0becec25c082', '1990c13829d1ce57', 'declancotter@hotmail.com', NULL, NULL),
-(23, 'jbligh', NULL, '0fc232169cb256fecd78b837956424c13a3e29d0ace5e9160e1046d4636e2747', '7f71a6dd2dc7ff6', 'john.bligh@intel.com', NULL, NULL);
+(11, 'tommygrealy', NULL, '3078438e6cd67c546ada7732be5d8a325598d510a94b5372fd91627f43009fa1', '57cf4c9917d1f481', 'tommygrealy@gmail.com', 'Playing', 'Paid'),
+(21, 'joebloggs', NULL, 'ca8380b7389d142e69b5fd8d58b2cbfe54c27a22d033b54e38260a5c550851ea', '3303db4248a60d13', 'joebloggs@gmail.com', 'Playing', 'Paid'),
+(22, 'Dilligaf_XI', NULL, '79bacd86bbc09af9bf54fdb290ffc44f5413c9b0fd5d42dc235f0becec25c082', '1990c13829d1ce57', 'declancotter@hotmail.com', 'Playing', 'Pending'),
+(23, 'jbligh', NULL, '0fc232169cb256fecd78b837956424c13a3e29d0ace5e9160e1046d4636e2747', '7f71a6dd2dc7ff6', 'john.bligh@intel.com', 'Playing', 'Paid'),
+(24, 'tommyg', NULL, '2ae6641bc1978584a0da1c065316fc37b8be731434f3f9229340e57ad0fca547', '75ae922b7c3e5424', 'tommyg@fwe.qwd', 'Playing', 'Pending'),
+(25, 'cheapman', NULL, '48581c0af9db33c63acd2b7b7a11142e05215e81431656ac5b5f1f17ce8d8b4d', '502facd7c984715', 'cheapman@gmail.com', 'Playing', 'Pending'),
+(26, 'ben', NULL, '97342145113cded37fad0ec81df42fe264b16e0f5f06f89b00056634ce6d06e4', '7aee2e381f36ea3', 'ben@ben.ben', 'Playing', 'Paid'),
+(27, 'unpaid', NULL, '3ff8696a0f6d99b12b9e11427803d467ccb98b2cb0d218d73d7e85e14e86fc4a', '32562fc3284e9a02', 'unpaid@wefijo.com', 'Playing', 'Pending'),
+(28, 'fohare', NULL, 'a87640ac7259755d0e07d408062e4cddd6dd6e3ae1fec24be8d0fe5c8f7290e4', 'd65e3079dc6e25', 'fowefhwefhf@wefji.com', 'Playing', 'Paid');
 
 -- --------------------------------------------------------
 
@@ -656,7 +669,7 @@ INSERT INTO `users` (`id`, `username`, `FullName`, `password`, `salt`, `email`, 
 --
 DROP TABLE IF EXISTS `allfixturesandclubinfo`;
 
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `allfixturesandclubinfo` AS select distinct `fr`.`FixtureId` AS `FixtureId`,`fr`.`KickOffTime` AS `KickOffTime`,`fr`.`HomeTeam` AS `HomeTeam`,`fr`.`AwayTeam` AS `AwayTeam`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `ShortNameHome`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `ShortNameAway`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `MedNameHome`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `MedNameAway`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `HomeCrestImg`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `AwayCrestImg` from (`fixtureresults` `fr` join `clubs` `cl`) where ((convert(`fr`.`HomeTeam` using utf8) = `cl`.`LongName`) or (convert(`fr`.`AwayTeam` using utf8) = `cl`.`LongName`)) order by `fr`.`KickOffTime`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `allfixturesandclubinfo` AS select distinct `fr`.`FixtureId` AS `FixtureId`,`fr`.`KickOffTime` AS `KickOffTime`,`fr`.`HomeTeam` AS `HomeTeam`,`fr`.`AwayTeam` AS `AwayTeam`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `ShortNameHome`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `ShortNameAway`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `MedNameHome`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `MedNameAway`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `HomeCrestImg`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `AwayCrestImg` from (`fixtureresults` `fr` join `clubs` `cl`) where ((convert(`fr`.`HomeTeam` using utf8) = `cl`.`LongName`) or (convert(`fr`.`AwayTeam` using utf8) = `cl`.`LongName`)) order by `fr`.`KickOffTime`;
 
 -- --------------------------------------------------------
 
@@ -665,7 +678,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `allfixturesandclubinfo` AS
 --
 DROP TABLE IF EXISTS `showloosingpredictions`;
 
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `showloosingpredictions` AS select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` <> `predictions`.`PredictedResult`);
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `showloosingpredictions` AS select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` <> `predictions`.`PredictedResult`);
 
 -- --------------------------------------------------------
 
@@ -674,7 +687,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `showloosingpredictions` AS
 --
 DROP TABLE IF EXISTS `showwinningpredictions`;
 
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `showwinningpredictions` AS select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` = `predictions`.`PredictedResult`);
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `showwinningpredictions` AS select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` = `predictions`.`PredictedResult`);
 
 --
 -- Indexes for dumped tables
@@ -722,12 +735,12 @@ MODIFY `FixtureId` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=405;
 -- AUTO_INCREMENT for table `predictions`
 --
 ALTER TABLE `predictions`
-MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=162;
+MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=173;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
 --
 -- Constraints for dumped tables
 --
