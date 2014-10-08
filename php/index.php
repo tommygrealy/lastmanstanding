@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 
-    header("Location: login/login.php");
+    header("Location: login.php");
 ?>
 <html>
     <head>
@@ -12,7 +12,7 @@
         <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
     </head>
     <body>
-        Hello from LMS
+        LMS will redirect from this page
         <?php
         // put your code here
         ?>
