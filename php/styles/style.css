@@ -1,0 +1,55 @@
+.darkDisableOverlay{
+    z-index: 124;
+    height: 100%;
+    width: 100%;
+    background-color: #f00;
+}
+
+
+td.availableHomeTeam{
+    padding: 15px;
+}
+
+.tdAvailableAwayTeam{
+    text-align: right;
+    padding: 15px;
+}
+
+.tdUnavilableHomeTeam{
+    color: #aaa;
+    padding: 15px;
+}
+
+.tdUnavilableAwayTeam{
+    color: #aaa;
+    text-align: right;
+    padding: 15px;
+}
+
+.fixtureList{
+    width: 100%;
+}
+
+.teambtn{
+    width: 160 px !important;
+}
+
+.vsSeparator{
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.kickoffTime{
+    padding-right: 3em;
+}
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 02-Oct-2014, 10:48:01
+    Author     : tgrealy
+*/
+
