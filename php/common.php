@@ -1,14 +1,19 @@
 <?php
+require_once 'serverConfig.php';
+
+ini_set('display_errors', '1');
 // http://forums.devshed.com/php-faqs-stickies-167/program-basic-secure-login-system-using-php-mysql-891201.html
     $base_url="http://localhost";
 
     
 
     // These variables define the connection information for your MySQL database 
-    $username = "lms"; 
-    $password = "lmsintel2014"; 
-    $host = "localhost"; 
-    $dbname = "lastmanstanding"; 
+    $myServerConfig=new serverConfig();
+    
+    $username = $myServerConfig->username;
+    $password = $myServerConfig->password; 
+    $host = $myServerConfig->host;
+    $dbname = $myServerConfig->dbname; 
 
 
     

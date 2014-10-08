@@ -1,5 +1,7 @@
 <?php
 
+require_once 'serverConfig.php';
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -11,7 +13,7 @@
  * @author tommygrealy
  */
 class dal {
-
+       
     private $username = "lms";
     private $password = "lmsintel2014";
     private $host = "localhost";
@@ -20,8 +22,9 @@ class dal {
     private $database_link;
 
     private function connect() {
+        $myConfig = new serverConfig();
         try {
-            $this->database_link = new PDO("mysql:host={$this->host};dbname={$this->dbname};charset=utf8", $this->username, $this->password, $this->options);
+            $this->database_link = new PDO("mysql:host={$myConfig->host};dbname={$myConfig->dbname};charset=utf8", $myConfig->username, $myConfig->password, $myConfig->options);
             return $this->database_link;
         } catch (PDOException $ex) {
             echo $ex->getMessage();
