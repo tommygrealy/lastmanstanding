@@ -67,7 +67,7 @@ $lms_username = $_SESSION['user']['username'];
                 ?>;  
             </div>  
         </div>
-        
+
         <!-- payment page -->
         <div data-role="page" id="paymentPage">
             <div data-role="header" data-position="fixed">
@@ -152,6 +152,7 @@ $lms_username = $_SESSION['user']['username'];
 
 
         </div>
+
         <!-- charity description page -->
         <div data-role="page" id="charity">
             <div data-role="header" data-position="fixed">
@@ -167,8 +168,29 @@ $lms_username = $_SESSION['user']['username'];
                 Through exhaustive research we uncovered the Advanced Medical Centre in North Carolina, USA. They specialise in the advanced treatment of ASD for Children. The treatment is carried out over a four week period. The treatment schedule is repeated at least 4 times inside 12 months. We personally know one little boy who is now fully cured and attending main stream school in Dublin 15 after completing Chelation treatment.
                 The cost for the 12 month schedule for both our Children will be in excess of €140,000 of which we need to raise privately with the generous support and help of family and friends.
                 We would be extremely grateful for your kindness and consideration to support Hannah & Patrick’s treatment in the USA, as we plan to make the first treatment visit in late October 2014.
-                    
-                    
+
+
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <?php
+                include 'includes/footer.php';
+                ?>;  
+            </div>
+        </div>
+        <div data-role="page" id="standings">
+            <div data-role="header" data-position="fixed">
+                <?php
+                include 'includes/header.php';
+                ?>
+            </div>
+            <div data-role="content">
+                <h3>Current Player Standings</h3>
+                <h5>Search Players<input name="searchplayer" type="text"/></h5>
+                <ul data-role="listview" id="playerStandingsList">
+                 <!-- this list is dynamically updated on page init -->
+                </ul>
+
+
             </div>
             <div data-role="footer" data-position="fixed">
                 <?php

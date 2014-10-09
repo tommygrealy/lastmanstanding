@@ -134,7 +134,7 @@ if (!empty($_POST)) {
 <html>
     <head>
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
-        <title>Home Monitor - Sensor Event Chronology</title>
+        <title>Last Man Standing - edit account</title>
         <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
          <meta name="viewport" content="initial-scale=1, maximum-scale=1">

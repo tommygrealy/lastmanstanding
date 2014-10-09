@@ -3,10 +3,12 @@
  * and open the template in the editor.
  */
 
-//setInterval(function(){loadinfo(5)},5000)
 
-// When running on WIFI network @ home
-var socketServer = 'localhost'
+
+$(document).on("pageinit", "#standings", function() {
+    displayPlayerStandings();
+});
+
 
 // When running on Razri phone hotspot
 //var socketServer = '192.168.43.44'
@@ -69,21 +71,21 @@ function makeSubmission(fixid, select)
             $.mobile.loading('hide');
             console.log(JSON.stringify(data));
             if (data.status == 1) {
-               //alert("Prediction has been submitted");
+                //alert("Prediction has been submitted");
                 loadfixtures();
             }
             else {
-                
-                console.log(data.reason.substring(data.reason.length-13, data.reason.length));
+
+                console.log(data.reason.substring(data.reason.length - 13, data.reason.length));
                 //TODO: Select/case for every possible reason type
                 var UserMsg = ""
                 //TODO: Below should be a switch/case to handle more error types
-                if (data.reason.substring(data.reason.length-13, data.reason.length)=="UserGameWeek'"){
-                    UsrMsg="You have already submitted a prediction for this game week"                                                
+                if (data.reason.substring(data.reason.length - 13, data.reason.length) == "UserGameWeek'") {
+                    UsrMsg = "You have already submitted a prediction for this game week"
                 }
-                if (data.reason=="Payment Pending"){
+                if (data.reason == "Payment Pending") {
                     // redirect to payment page.
-                    UsrMsg="Entry fee not yet paid";
+                    UsrMsg = "Entry fee not yet paid";
                 }
                 alert("Could not submit prediction \n" + UsrMsg);
             }
@@ -94,11 +96,42 @@ function makeSubmission(fixid, select)
 function showAlreadyPlayed(selectionData) {
     //$("#alreadyPredictedDetails").empty();
     $("#alreadyPredictedDetails").html("<h3> Your prediction for this round has been submitted </h3>" +
-            "<p>Fixture: " + selectionData[0].HomeTeam + " v " + 
+            "<p>Fixture: " + selectionData[0].HomeTeam + " v " +
             selectionData[0].AwayTeam + "You selected: " + selectionData[0].PredictedTeam + "</p>");
-    $('#alreadyPredictedDetails').collapsible("refresh"); 
-    
+    $('#alreadyPredictedDetails').collapsible("refresh");
+
     $('#messageInformSelect').fadeOut('slow');
     $('#upComingFixtureList').fadeOut('slow');
-   
+
+}
+
+
+function displayPlayerStandings() {
+    $.ajax({
+        'url':
+                'restServices/userStandings.php',
+        dataType: 'json',
+        success: function(json) {
+
+
+            $.each(json, function(key, value) {
+                var markUp = "";
+                console.log("value = " + value["username"]);
+                if (value["CompStatus"] == "Playing") {
+                    markUp = '<span class="activePlayerName">';
+                }
+                else if(value["CompStatus"] == "Eliminated") {
+                    markUp = '<span class="elimPlayerName">';
+                }
+                $('#playerStandingsList').append(
+                        '<li><a href="#">'+markUp+value["username"]+'</span></a></li>'
+                        )
+
+            });
+            $('#playerStandingsList').listview("refresh");
+
+
+
+        }
+    });
 }
