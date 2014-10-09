@@ -60,8 +60,8 @@ function makeSubmission(fixid, select)
     if (confirm('Are you sure you want to submit this prediction? \nOnce a prediction has been submitted it cannot be changed!')) {
         var posting = $.post("restServices/submitPredictionSvc.php", selection);
         $.mobile.loading('show', {
-            text: 'foo',
-            textVisible: true,
+            text: 'Loading',
+            textVisible: false,
             theme: 'z',
             html: ""
         });

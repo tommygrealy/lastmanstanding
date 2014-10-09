@@ -98,7 +98,7 @@ class dal {
 
     public function getUserData($UserName) {
         $mylink = $this->connect();
-        $query = ("select username,CompStatus,PaymentStatus from Users where UserName = (:userName)");
+        $query = ("select username,CompStatus,PaymentStatus from users where UserName = (:userName)");
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $UserName);
         $stmt->execute();
