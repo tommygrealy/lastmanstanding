@@ -14,7 +14,7 @@
 class serverConfig {
     //put your code here
     public $username = "lms";
-    public $password = "lmsintel2014";
+    public $password = "th!isisnew12@";
     public $host = "localhost";
     public $dbname = "lastmanstanding";
     public $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');

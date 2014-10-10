@@ -65,6 +65,10 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
+    
+    
+    
+    
 
     public function getThisWeeksFixtures() {
         $mylink = $this->connect();
@@ -92,8 +96,13 @@ class dal {
     }
 
     public function getUserPredictionHistory($UserName) {
-        $mylink = $this->connect();
-        //TODO: Implement
+        $mylink = $this->connect();       
+        $query = "call showUserPredictionHistory (:userName)";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':userName', $UserName);
+        $stmt->execute();
+        $userPredictions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $userPredictions;
     }
 
     public function getUserData($UserName) {

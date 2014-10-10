@@ -52,6 +52,21 @@ td.availableHomeTeam{
     text-decoration: line-through;
 }
 
+.predictTable{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.predictTable td{
+    
+    background-color: #888;
+    border: 4px solid #ddd;
+    
+}
+.predictTableLabel{
+    width: 30%;
+}
+
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates

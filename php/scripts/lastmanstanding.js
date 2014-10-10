@@ -3,17 +3,17 @@
  * and open the template in the editor.
  */
 
-
+var userSelectedFromStandingsList = "";
 
 $(document).on("pageinit", "#standings", function() {
     displayPlayerStandings();
 });
 
+$(document).on("pageshow", "#userHistory", function() {
+    showPlayerHist(userSelectedFromStandingsList);
+});
 
-// When running on Razri phone hotspot
-//var socketServer = '192.168.43.44'
 
-//TODO: Listen to socket on http://localhost:12345 (nodeJS socket emmiter)
 
 function loadfixtures() {
     $.ajax({
@@ -124,11 +124,45 @@ function displayPlayerStandings() {
                     markUp = '<span class="elimPlayerName">';
                 }
                 $('#playerStandingsList').append(
-                        '<li><a href="#">'+markUp+value["username"]+'</span></a></li>'
+                        '<li><a href="#userHistory" onclick="userSelectedFromStandingsList=\'' + value["username"] +'\'" >'+markUp+value["username"]+'</span></a></li>'
                         )
 
             });
             $('#playerStandingsList').listview("refresh");
+
+
+
+        }
+    });
+}
+
+
+function showPlayerHist(inUser){
+    $('#userHistoryList').empty();
+    console.log("Getting history for: " + inUser);
+    $.ajax({
+        'url': 'restServices/getUserPredictionHistory.php?player=' + inUser,
+        dataType: 'json',
+        success: function(json) {
+            $('#userHistLabel').html(inUser)
+            $.each(json, function(key, value) {
+                var markUp = "";
+                console.log(JSON.stringify(value));
+                if (value["PredictedResult"] == 1) {
+                    markUp = '<td style="background-color:green;"> win </td>';
+                }
+                else  {
+                    markUp = '<td style="background-color:red"> lose </td>';
+                }
+                $('#userHistoryList').append(
+                        '<li><table class="predictTable"><tr><td class="predictTableLabel">Home Team: </td><td>'+value["HomeTeam"]+ 
+                        '</td></tr><tr><td class="predictTableLabel">Away Team: </td><td>'+value["AwayTeam"]+
+                        '</td></tr><tr><td class="predictTableLabel">Selected: </td><td>'+value["PredictedWinner"]+'</td></tr>'+ 
+                        '<tr><td class="predictTableLabel">Result: </td>' + markUp + '</tr></table></li>'
+                        )
+
+            });
+            $('#userHistoryList').listview("refresh");
 
 
 
