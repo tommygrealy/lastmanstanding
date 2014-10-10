@@ -25,7 +25,8 @@ if (empty($_SESSION['user'])) {
 
 $current_user = ($_SESSION['user']['username']);
 $predictionHistory = $dal->getUserPredictionHistory($_GET['player']);
-echo json_encode($predictionHistory);
+$pre_output = json_encode($predictionHistory);
+echo str_replace('"\u000', '"',$pre_output); // to strop out unicode escape characters '\000 inserted by json_encode function
 
 ?>
  
