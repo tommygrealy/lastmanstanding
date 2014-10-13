@@ -103,14 +103,16 @@ if (!empty($_POST)) {
     $query = " 
             INSERT INTO users ( 
                 username, 
-                password, 
+                password,
+                FullName,
                 salt, 
                 email,
                 CompStatus,
                 PaymentStatus
             ) VALUES ( 
                 :username, 
-                :password, 
+                :password,
+                :fullname,
                 :salt, 
                 :email,
                 'Playing',
@@ -150,6 +152,7 @@ if (!empty($_POST)) {
     $query_params = array(
         ':username' => $_POST['username'],
         ':password' => $password,
+        'fullname' => $_POST['fullname'],
         ':salt' => $salt,
         ':email' => $_POST['email']
     );
@@ -191,6 +194,9 @@ if (!empty($_POST)) {
                 <form data-ajax="false" action="register.php" method="post"> 
                     Username:<br /> 
                     <input type="text" name="username" value="" /> 
+                    <br /><br />
+                    Full Name:<br /> 
+                    <input type="text" name="fullname" value="" /> 
                     <br /><br /> 
                     E-Mail:<br /> 
                     <input type="text" name="email" value="" /> 

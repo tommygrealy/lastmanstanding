@@ -111,7 +111,10 @@ if (!empty($_POST)) {
                 <h1>Login</h1> 
             </div>
             <div data-role="content">
+                <p>New user? <a href="register.php">Click here to register</a></p>
+                
                 <form data-ajax="false" action="login.php" method="post"> 
+                <h5>Existing Users, login here:</h5>
                 Username:<br /> 
                 <input type="text" name="username" value="<?php echo $submitted_username; ?>" /> 
                 <br /><br /> 
@@ -120,7 +123,7 @@ if (!empty($_POST)) {
                 <br /><br /> 
                 <input type="submit" value="Login" /> 
                 </form> 
-                <a href="register.php">Register</a>
+                
             </div>
             <div data-role="footer" data-position="fixed"><span>Contact | About | FAQ'S</span></div>
             
