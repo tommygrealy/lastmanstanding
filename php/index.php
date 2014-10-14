@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
-
-    header("Location: login.php");
+    header("Location: home.php");
 ?>
 <html>
     <head>
