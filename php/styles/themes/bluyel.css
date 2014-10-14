@@ -24,7 +24,7 @@ button,
 .ui-btn {
 	font-size: 1em;
 	line-height: 1.3;
-	 font-family: sans-serif /*{global-font-family}*/;
+	  font-family: sans-serif /*{global-font-family}*/;
 }
 legend,
 .ui-input-text input,
@@ -703,6 +703,170 @@ html head + body .ui-body-c.ui-focus {
 	-webkit-box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
 	-moz-box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
 	box-shadow: 0 0 12px #3388cc /*{c-active-background-color}*/;
+}
+
+
+/* D
+-----------------------------------------------------------------------------------------------------------*/
+/* Bar: Toolbars, dividers, slider track */
+.ui-bar-d,
+.ui-page-theme-d .ui-bar-inherit,
+html .ui-bar-d .ui-bar-inherit,
+html .ui-body-d .ui-bar-inherit,
+html body .ui-group-theme-d .ui-bar-inherit {
+	background-color: #C2BE94 /*{d-bar-background-color}*/;
+	border-color: #8c742d /*{d-bar-border}*/;
+	color: #7a1a1a /*{d-bar-color}*/;
+	text-shadow: 0 /*{d-bar-shadow-x}*/ 0px /*{d-bar-shadow-y}*/ 0 /*{d-bar-shadow-radius}*/ #eeeeee /*{d-bar-shadow-color}*/;
+	font-weight: bold;
+}
+.ui-bar-d {
+	border-width: 1px;
+	border-style: solid;
+}
+/* Page and overlay */
+.ui-overlay-d,
+.ui-page-theme-d,
+.ui-page-theme-d .ui-panel-wrapper {
+	background-color: #3539a9 /*{d-page-background-color}*/;
+	border-color: #3539a9 /*{d-page-border}*/;
+	color: #ffffff /*{d-page-color}*/;
+	text-shadow: 0 /*{d-page-shadow-x}*/ 1px /*{d-page-shadow-y}*/ 0 /*{d-page-shadow-radius}*/ #444444 /*{d-page-shadow-color}*/;
+}
+/* Body: Read-only lists, text inputs, collapsible content */
+.ui-body-d,
+.ui-page-theme-d .ui-body-inherit,
+html .ui-bar-d .ui-body-inherit,
+html .ui-body-d .ui-body-inherit,
+html body .ui-group-theme-d .ui-body-inherit,
+html .ui-panel-page-container-d {
+	background-color: #f7f7f7 /*{d-body-background-color}*/;
+	border-color: #707070 /*{d-body-border}*/;
+	color: #000000 /*{d-body-color}*/;
+	text-shadow: 0 /*{d-body-shadow-x}*/ 0px /*{d-body-shadow-y}*/ 0 /*{d-body-shadow-radius}*/ #eeeeee /*{d-body-shadow-color}*/;
+}
+.ui-body-d {
+	border-width: 1px;
+	border-style: solid;
+}
+/* Links */
+.ui-page-theme-d a,
+html .ui-bar-d a,
+html .ui-body-d a,
+html body .ui-group-theme-d a {
+	color: #7a383c /*{d-link-color}*/;
+	font-weight: bold;
+}
+.ui-page-theme-d a:visited,
+html .ui-bar-d a:visited,
+html .ui-body-d a:visited,
+html body .ui-group-theme-d a:visited {
+    color: #7a383c /*{d-link-visited}*/;
+}
+.ui-page-theme-d a:hover,
+html .ui-bar-d a:hover,
+html .ui-body-d a:hover,
+html body .ui-group-theme-d a:hover {
+	color: #7a383c /*{d-link-hover}*/;
+}
+.ui-page-theme-d a:active,
+html .ui-bar-d a:active,
+html .ui-body-d a:active,
+html body .ui-group-theme-d a:active {
+	color: #7a383c /*{d-link-active}*/;
+}
+/* Button up */
+.ui-page-theme-d .ui-btn,
+html .ui-bar-d .ui-btn,
+html .ui-body-d .ui-btn,
+html body .ui-group-theme-d .ui-btn,
+html head + body .ui-btn.ui-btn-d,
+/* Button visited */
+.ui-page-theme-d .ui-btn:visited,
+html .ui-bar-d .ui-btn:visited,
+html .ui-body-d .ui-btn:visited,
+html body .ui-group-theme-d .ui-btn:visited,
+html head + body .ui-btn.ui-btn-d:visited {
+	background-color: #1bbbff /*{d-bup-background-color}*/;
+	border-color: #0e668c /*{d-bup-border}*/;
+	color: #000000 /*{d-bup-color}*/;
+	text-shadow: 0 /*{d-bup-shadow-x}*/ 1px /*{d-bup-shadow-y}*/ 0 /*{d-bup-shadow-radius}*/ #eeeeee /*{d-bup-shadow-color}*/;
+}
+/* Button hover */
+.ui-page-theme-d .ui-btn:hover,
+html .ui-bar-d .ui-btn:hover,
+html .ui-body-d .ui-btn:hover,
+html body .ui-group-theme-d .ui-btn:hover,
+html head + body .ui-btn.ui-btn-d:hover {
+	background-color: #1fd7FF /*{d-bhover-background-color}*/;
+	border-color: #11768c /*{d-bhover-border}*/;
+	color: #000000 /*{d-bhover-color}*/;
+	text-shadow: 0 /*{d-bhover-shadow-x}*/ 1px /*{d-bhover-shadow-y}*/ 0 /*{d-bhover-shadow-radius}*/ #eeeeee /*{d-bhover-shadow-color}*/;
+}
+/* Button down */
+.ui-page-theme-d .ui-btn:active,
+html .ui-bar-d .ui-btn:active,
+html .ui-body-d .ui-btn:active,
+html body .ui-group-theme-d .ui-btn:active,
+html head + body .ui-btn.ui-btn-d:active {
+	background-color: #1fd7FF /*{d-bdown-background-color}*/;
+	border-color: #11768c /*{d-bdown-border}*/;
+	color: #000000 /*{d-bdown-color}*/;
+	text-shadow: 0 /*{d-bdown-shadow-x}*/ 1px /*{d-bdown-shadow-y}*/ 0 /*{d-bdown-shadow-radius}*/ #eeeeee /*{d-bdown-shadow-color}*/;
+}
+/* Active button */
+.ui-page-theme-d .ui-btn.ui-btn-active,
+html .ui-bar-d .ui-btn.ui-btn-active,
+html .ui-body-d .ui-btn.ui-btn-active,
+html body .ui-group-theme-d .ui-btn.ui-btn-active,
+html head + body .ui-btn.ui-btn-d.ui-btn-active,
+/* Active checkbox icon */
+.ui-page-theme-d .ui-checkbox-on:after,
+html .ui-bar-d .ui-checkbox-on:after,
+html .ui-body-d .ui-checkbox-on:after,
+html body .ui-group-theme-d .ui-checkbox-on:after,
+.ui-btn.ui-checkbox-on.ui-btn-d:after,
+/* Active flipswitch background */
+.ui-page-theme-d .ui-flipswitch-active,
+html .ui-bar-d .ui-flipswitch-active,
+html .ui-body-d .ui-flipswitch-active,
+html body .ui-group-theme-d .ui-flipswitch-active,
+html body .ui-flipswitch.ui-bar-d.ui-flipswitch-active,
+/* Active slider track */
+.ui-page-theme-d .ui-slider-track .ui-btn-active,
+html .ui-bar-d .ui-slider-track .ui-btn-active,
+html .ui-body-d .ui-slider-track .ui-btn-active,
+html body .ui-group-theme-d .ui-slider-track .ui-btn-active,
+html body div.ui-slider-track.ui-body-d .ui-btn-active {
+	background-color: #C2BE94 /*{d-active-background-color}*/;
+	border-color: #8c742d /*{d-active-border}*/;
+	color: #000000 /*{d-active-color}*/;
+	text-shadow: 0 /*{d-active-shadow-x}*/ 1px /*{d-active-shadow-y}*/ 0 /*{d-active-shadow-radius}*/ #eeeeee /*{d-active-shadow-color}*/;
+}
+/* Active radio button icon */
+.ui-page-theme-d .ui-radio-on:after,
+html .ui-bar-d .ui-radio-on:after,
+html .ui-body-d .ui-radio-on:after,
+html body .ui-group-theme-d .ui-radio-on:after,
+.ui-btn.ui-radio-on.ui-btn-d:after {
+	border-color: #C2BE94 /*{d-active-background-color}*/;
+}
+/* Focus */
+.ui-page-theme-d .ui-btn:focus,
+html .ui-bar-d .ui-btn:focus,
+html .ui-body-d .ui-btn:focus,
+html body .ui-group-theme-d .ui-btn:focus,
+html head + body .ui-btn.ui-btn-d:focus,
+/* Focus buttons and text inputs with div wrap */
+.ui-page-theme-d .ui-focus,
+html .ui-bar-d .ui-focus,
+html .ui-body-d .ui-focus,
+html body .ui-group-theme-d .ui-focus,
+html head + body .ui-btn-d.ui-focus,
+html head + body .ui-body-d.ui-focus {
+	-webkit-box-shadow: 0 0 12px #C2BE94 /*{d-active-background-color}*/;
+	-moz-box-shadow: 0 0 12px #C2BE94 /*{d-active-background-color}*/;
+	box-shadow: 0 0 12px #C2BE94 /*{d-active-background-color}*/;
 }
 
 
