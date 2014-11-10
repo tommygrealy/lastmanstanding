@@ -48,7 +48,12 @@ $lms_username = $_SESSION['user']['username'];
 
             <div data-role="content">
                 You are logged in as: <?php echo htmlentities($lms_username, ENT_QUOTES, 'UTF-8'); ?> <br><br /> 
-
+                <div id="currentSelection">
+                    <h3>Your Selection</h3>
+                    <span id="csTeamWin"></span><br>
+                    <a href="#" id="submitNow" data-role="button">Submit</a>
+                    <a href="#" id="submitCancel" data-role="button" onclick="$('#currentSelection').fadeOut();">Cancel</a>
+                </div>
 
                 <div id="alreadyPredictedDetails"></div>
 
@@ -58,6 +63,7 @@ $lms_username = $_SESSION['user']['username'];
                 <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
+             
             </div>
 
 
@@ -186,11 +192,11 @@ $lms_username = $_SESSION['user']['username'];
             <div data-role="content">
                 <h3>Current Player Standings</h3>
                 <h5>Search Players
-                <form class="ui-filterable">
-                    <input id="myFilter" data-type="search">
-                </form></h5>
+                    <form class="ui-filterable">
+                        <input id="myFilter" data-type="search">
+                    </form></h5>
                 <ul data-role="listview" id="playerStandingsList" data-filter="true" data-input="#myFilter" data-inset="true">
-                    
+
                     <!-- this list is dynamically updated on page init -->
                 </ul>
 
@@ -202,7 +208,7 @@ $lms_username = $_SESSION['user']['username'];
                 ?>;  
             </div>
         </div>
-        
+
         <!-- user prediction history page -->
         <div data-role="page" id="userHistory">
             <div data-role="header" data-position="fixed">
@@ -213,7 +219,7 @@ $lms_username = $_SESSION['user']['username'];
             <div data-role="content">
                 <h3>History for </h3>
                 <ul data-role="listview" id="userHistoryList" data-inset="true">
-                    
+
                 </ul>
 
 

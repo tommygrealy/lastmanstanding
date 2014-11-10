@@ -32,6 +32,9 @@ if(count($HasUserPredictedThisWeek)>0){
     die();
 } 
 
+$isUserEliminated=$dal->getUserData($current_user);
+
+
 $teamsAvilable = $dal->getTeamsAvilableToUser($current_user);
 $fixtureList = $dal->getThisWeeksFixtures();
 

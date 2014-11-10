@@ -12,6 +12,7 @@
  * @author tgrealy
  */
 class genericResponse {
+    public $userstatus;
     public $availableTeams;
     public $fixtures;
 

@@ -15,15 +15,12 @@ td.availableHomeTeam{
     padding: 15px;
 }
 
-.tdUnavilableHomeTeam{
-    color: #aaa;
-    padding: 15px;
+.unavilableHomeTeam{
+    text-decoration: line-through;
 }
 
-.tdUnavilableAwayTeam{
-    color: #aaa;
-    text-align: right;
-    padding: 15px;
+.unavilableAwayTeam{
+    text-decoration: line-through;
 }
 
 .fixtureList{
@@ -65,6 +62,21 @@ td.availableHomeTeam{
 }
 .predictTableLabel{
     width: 30%;
+}
+
+#currentSelection{
+    color: #333;
+    position: fixed;
+    right: 100px;
+    top: 10px;
+    border-radius: 10px;
+    border: 3px solid #937777;
+    width: 250px;
+    height: 210px;
+    padding: 5px;
+    z-index: 1000;
+    background-color: #e0e0e0;
+    display: none;
 }
 
 /*
