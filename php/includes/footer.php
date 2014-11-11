@@ -1,3 +1,9 @@
-<?php
-echo ('<span><a href="home.php">Home</a> | <a href="#paymentPage">Payment</a> Contact | About | FAQ\'S</span>');
-?>
+<div data-role="navbar">
+    <ul>
+        <li><a href="logout.php">Logout</a></li>
+        <li><a href="#rules">About</a></li>
+        <li><a href="#contactPage">Contact</a></li>
+        <li><a href="#faqPage">FAQ</a></li>
+    </ul>
+
+</div>

@@ -32,7 +32,13 @@ if ($UserStatus['PaymentStatus']=="Pending"){
     die();
 }
 
-
+if ($UserStatus['CompStatus']=="Eliminated"){
+    $requestStatus = new requestStatus();
+    $requestStatus->status = 0;
+    $requestStatus->reason = "eliminated from comp";
+    echo json_encode($requestStatus);
+    die();
+}
 
 
 $result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction']); // will return "success" or the reason if not

@@ -67,18 +67,26 @@ td.availableHomeTeam{
 #currentSelection{
     color: #333;
     position: fixed;
-    right: 100px;
+    left: auto; /* had been right 100px - changed to left 5px, then left auto */
     top: 10px;
     border-radius: 10px;
     border: 3px solid #937777;
     width: 250px;
-    height: 210px;
+    /*height: 210px;*/
     padding: 5px;
     z-index: 1000;
     background-color: #e0e0e0;
     display: none;
 }
 
+
+#goMyHistory{
+    display: none;
+}
+
+#goPayment{
+    display: none;
+}
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates

@@ -15,12 +15,25 @@ $(document).on("pageshow", "#userHistory", function() {
 
 
 
-function loadfixtures() {
+function loadUserOpts() {
     $.ajax({
-        'url':
-                'restServices/showUserSelectionOptions.php',
+        'url': 'restServices/showUserSelectionOptions.php',
         dataType: 'json',
         success: function(json) {
+            if (json.userstatus.CompStatus=="Eliminated"){
+               console.log ("Elim");
+               $( "#elminiatedNotifyPopup" ).popup();
+               $( "#elminiatedNotifyPopup" ).popup("open");
+               //return;
+            }
+            
+            if (json.userstatus.PaymentStatus=="Pending"){
+               $( "#paymentNotifyPopup" ).popup();
+               $( "#paymentNotifyPopup" ).popup("open");
+               console.log("PayPend");
+               //return;
+            }
+            
             if (json.fixtures) {
                 $('#messageInformSelect').html("Please select one match winner from the list of fixtures below: <br>")
                 var AllowedTeams = json.availableTeams;
@@ -37,22 +50,7 @@ function loadfixtures() {
                         AwayTeamAvailableMarkup = '<span class="unavilableAwayTeam">'
                     }
                     
-                    var homeTeamPredicton={
-                        fixtureId: value.FixtureId,
-                        homeTeam: value.HomeTeam,
-                        awayTeam: value.AwayTeam,
-                        predictedTeam: value.HomeTeam,
-                        predictedResult: 1          
-                    }
-                    
-                    var awayTeamPredicton={
-                        fixtureId: 23,
-                        homeTeam: "xys",
-                        awayTeam: "zuh",
-                        predictedTeam: "myteam",
-                        predictedResult: 1          
-                    }
-                    
+                                       
                     $("#upComingFixtureList").append(
                             '<li data-role="list-divider"><table><tr><td><span class="kickoffTime">'
                             + value.KickOffTime.substring(0, value.KickOffTime.length - 3) + '</span></td><td><image src="' + value.HomeCrestImg + '" width=30 height=30 /></td><td><span class="vsSeparator">vs</span> </td><td><image src="' + value.AwayCrestImg + '" width=30 height=30 /></td></tr></table>' +
@@ -87,7 +85,7 @@ function updateSelection(fixid, homeTeam, awayTeam, selected){
             break; 
     }
 
-    $('#currentSelection').fadeIn();
+    $('#currentSelection').slideDown();
 
     
     //TODO: Fix bug - this gets called multiple times if user changes their selection mutliple times before hitting submit.
@@ -112,11 +110,12 @@ function makeSubmission(fixid, select)
             $.mobile.loading('hide');
             console.log(JSON.stringify(data));
             if (data.status == 1) {
-                $('#csTeamWin').text("Your prediction for this week has been submitted")
+                $('#csTeamWin').text("Your prediction for this week has been submitted. Good Luck!")
                 $('#submitNow').hide();
                 $('#submitCancel').empty();
                 $('#submitCancel').text('Close');
                 $('#upComingFixtureList').empty();
+                $('#messageInformSelect').empty();
                 loadfixtures();
             }
             else {
@@ -126,7 +125,8 @@ function makeSubmission(fixid, select)
                 var UsrMsg = ""
                 //TODO: Below should be a switch/case to handle more error types
                 if (data.reason.substring(data.reason.length - 13, data.reason.length) == "ey 'UserTeam'"){
-                    UsrMsg = "You have already selected this team in a previous round of the competition";
+                    UsrMsg = "You have already selected this team in a previous " 
+                            + " round of the competition <a href=\"myhistory\">Click here for more details</a>";
                 }
                 
                 if (data.reason.substring(data.reason.length - 13, data.reason.length) == "UserGameWeek'") {
@@ -135,8 +135,23 @@ function makeSubmission(fixid, select)
                 if (data.reason == "Payment Pending") {
                     // redirect to payment page.
                     UsrMsg = "Entry fee not yet paid";
+                    $('#submitNow').css("display: none;");
+                    $('#submitCancel').css("display: none;");
+                    $('#goPayment').show();
                 }
-                alert("Could not submit prediction \n" + UsrMsg);
+                
+                if (data.reason == "eliminated from comp") {
+                    // redirect to payment page.
+                    UsrMsg = " because you have been eliminated from this competition";
+                    $('#submitNow').css("display: none;");
+                    $('#submitCancel').css("display: none;");
+                    $('goMyHistory').show();
+                }
+                
+                //$('#currentSelection').empty();
+                $('#csTeamWin').html("Could not submit prediction <br> \n" + UsrMsg);
+                
+               
             }
         });
     //}
@@ -146,7 +161,7 @@ function showAlreadyPlayed(selectionData) {
     //$("#alreadyPredictedDetails").empty();
     $("#alreadyPredictedDetails").html("<h3> Your prediction for this round has been submitted </h3>" +
             "<p>Fixture: " + selectionData[0].HomeTeam + " v " +
-            selectionData[0].AwayTeam + "<br/>You selected:  " + selectionData[0].PredictedTeam + "</p>");
+            selectionData[0].AwayTeam + "<br/>You selected:  " + selectionData[0].PredictedTeam + "<br>Best of Luck!</p>");
     $('#alreadyPredictedDetails').collapsible("refresh");
 
     $('#messageInformSelect').fadeOut('slow');

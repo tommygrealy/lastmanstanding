@@ -32,7 +32,7 @@ $lms_username = $_SESSION['user']['username'];
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <script>
             $(document).ready(function() {
-                loadfixtures();
+                loadUserOpts();
             });
         </script>
     </head>
@@ -48,11 +48,33 @@ $lms_username = $_SESSION['user']['username'];
 
             <div data-role="content">
                 You are logged in as: <?php echo htmlentities($lms_username, ENT_QUOTES, 'UTF-8'); ?> <br><br /> 
-                <div id="currentSelection">
+                <div id="currentSelection" data-transition="slide" >
                     <h3>Your Selection</h3>
-                    <span id="csTeamWin"></span><br>
+                    <span id="csTeamWin"></span><br>                    
                     <a href="#" id="submitNow" data-role="button">Submit</a>
-                    <a href="#" id="submitCancel" data-role="button" onclick="$('#currentSelection').fadeOut();">Cancel</a>
+                    <a href="#" id="submitCancel" data-role="button" onclick="$('#currentSelection').slideToggle();">Cancel</a>
+
+
+                </div>
+
+                <div id="paymentNotifyPopup" data-role="popup" data-overlay-theme="a">
+                    <div data-role="header" data-theme="a"><h1>Payment Due</h1></div>
+                    <div role="main" class="ui-content">
+                        <h3 class="ui-title">Entry fee needs to be paid before playing</h3>
+                    </div>
+                    <p><a href="#paymentPage" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Go to Payment Page</a></p>
+
+                </div>
+
+                <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
+                    <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
+                    <div role="main" class="ui-content">
+                        <h3 class="ui-title">Sorry, you are no longer in the competition.</h3>
+
+                    </div>
+                    <p>Your most recent match winning prediction was incorrect. </p>
+                    <p><a href="#userHistory" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
+
                 </div>
 
                 <div id="alreadyPredictedDetails"></div>
@@ -63,14 +85,14 @@ $lms_username = $_SESSION['user']['username'];
                 <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
-             
+
             </div>
 
 
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>  
         </div>
 
@@ -117,11 +139,12 @@ $lms_username = $_SESSION['user']['username'];
                         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
                     </form>
                 </div>
+
             </div>
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>
         </div>
 
@@ -133,27 +156,15 @@ $lms_username = $_SESSION['user']['username'];
                 ?>
             </div>
             <div data-role="content">
-                <h3>Competition Rules</h3>
-                <A href="#paymentPage">Pay</A> your entry fee at week 1 — no need to pay again. 50% of the fee 
-                goes to support our chosen <a href="#charity">charity</a> and the 
-                rest goes into the pot to be won.
-                Each week, simply pick a team playing a match that week – 
-                if your team wins, you go through, lose or draw and you’re out.
-                You can only pick a team to win once in a competition, 
-                so be tactical about who you pick and when.
-                All selections must be in 1 hour before kick off of the first match 
-                — once you submit a team, you can <u>NOT</u> change your selection.
-                If you forget to pick a team, we’ll randomly pick one for you for that round.
-                Last Man continues until only one person remains and wins the pot. 
-                If two participants remain at the end, the pot is equally distributed; 
-                however, if more than two remain everyone goes through to the next round. 
-                If all remaining players lose in the last round, they all go through to the next round.
+                <?php
+                include 'includes/rules.php';
+                ?>
 
             </div>
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>
 
 
@@ -180,9 +191,11 @@ $lms_username = $_SESSION['user']['username'];
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>
         </div>
+        
+        <!-- standings page -->
         <div data-role="page" id="standings">
             <div data-role="header" data-position="fixed">
                 <?php
@@ -205,9 +218,11 @@ $lms_username = $_SESSION['user']['username'];
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>
         </div>
+
+
 
         <!-- user prediction history page -->
         <div data-role="page" id="userHistory">
@@ -217,7 +232,7 @@ $lms_username = $_SESSION['user']['username'];
                 ?>
             </div>
             <div data-role="content">
-                <h3>History for </h3>
+                <h3>History for <span id="histForUser"></span> </h3>
                 <ul data-role="listview" id="userHistoryList" data-inset="true">
 
                 </ul>
@@ -227,7 +242,7 @@ $lms_username = $_SESSION['user']['username'];
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
-                ?>;  
+                ?>
             </div>
         </div>
 

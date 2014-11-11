@@ -32,7 +32,7 @@ if(count($HasUserPredictedThisWeek)>0){
     die();
 } 
 
-$isUserEliminated=$dal->getUserData($current_user);
+$userCurrentStatus=$dal->getUserData($current_user);
 
 
 $teamsAvilable = $dal->getTeamsAvilableToUser($current_user);
@@ -48,6 +48,7 @@ for ($i=0;$i<count($teamsAvilable);$i++){
     
 $response->availableTeams=$shortNamesAvail;
 $response->fixtures=$fixtureList;
+$response->userstatus=$userCurrentStatus;
 echo json_encode($response);
 
 //echo $teamsAvilable[2]["ShortName"];
