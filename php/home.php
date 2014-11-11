@@ -111,9 +111,9 @@ $lms_username = $_SESSION['user']['username'];
                 <div data-role="fieldcontain">
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
-                        <input type="hidden" name="business" value="payments@actionshots.ie">
+                        <input type="hidden" name="business" value="hannahpatrickmcc@gmail.com">
                         <input type="hidden" name="lc" value="IE">
-                        <input type="hidden" name="item_name" value="<?php echo $lms_username . ' LMS entry fee '; ?>">
+                        <input type="hidden" name="item_name" value="<?php echo $lms_username . '|:| LMS entry fee '; ?>">
                         <input type="hidden" name="item_number" value="LMS01">
                         <input type="hidden" name="button_subtype" value="services">
                         <input type="hidden" name="no_note" value="0">
