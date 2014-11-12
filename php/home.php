@@ -120,7 +120,7 @@ $lms_username = $_SESSION['user']['username'];
                         <input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
                         <table>
                             <tr><td><input type="hidden" name="on0" value="Payment Options">Payment Options</td></tr><tr><td><select name="os0">
-                                        <option value="Entry Fee">Entry Fee €5.00 EUR</option>
+                                        <option value="Entry Fee">Entry Fee €0.01 EUR</option>
                                         <option value="Entry + 10 Euro Donation">Entry + 10 Euro Donation €15.00 EUR</option>
                                         <option value="Entry + 15 Euro Donation">Entry + 15 Euro Donation €20.00 EUR</option>
                                     </select> </td></tr>
@@ -129,7 +129,7 @@ $lms_username = $_SESSION['user']['username'];
                         </table>
                         <input type="hidden" name="currency_code" value="EUR">
                         <input type="hidden" name="option_select0" value="Entry Fee">
-                        <input type="hidden" name="option_amount0" value="5.00">
+                        <input type="hidden" name="option_amount0" value="0.01">
                         <input type="hidden" name="option_select1" value="Entry + 10 Euro Donation">
                         <input type="hidden" name="option_amount1" value="15.00">
                         <input type="hidden" name="option_select2" value="Entry + 15 Euro Donation">
