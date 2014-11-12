@@ -118,6 +118,19 @@ class dal {
     function disconnect() {
         $this->database_link = NULL;
     }
+    
+    public function updatePaymentStatus($username, $status) {
+        $mylink = $this->connect();
+        $query = "call updatePaymentStatus (:userName, :status);";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':userName', $username);
+        $stmt->bindParam(':status', $status);
+        if ($stmt->execute()) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
 
 }
 
