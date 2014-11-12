@@ -195,6 +195,35 @@ $lms_username = $_SESSION['user']['username'];
             </div>
         </div>
         
+        <!-- standings page -->
+        <div data-role="page" id="standings">
+            <div data-role="header" data-position="fixed">
+                <?php
+                include 'includes/header.php';
+                ?>
+            </div>
+            <div data-role="content">
+                <h3>Current Player Standings</h3>
+                <h5>Search Players
+                    <form class="ui-filterable">
+                        <input id="myFilter" data-type="search">
+                    </form></h5>
+                <ul data-role="listview" id="playerStandingsList" data-filter="true" data-input="#myFilter" data-inset="true">
+
+                    <!-- this list is dynamically updated on page init -->
+                </ul>
+
+
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <?php
+                include 'includes/footer.php';
+                ?>
+            </div>
+        </div>
+        
+        
+        
         <!-- payment received confirmation page -->
         <div data-role="page" id="charity">
             <div data-role="header" data-position="fixed">
@@ -220,7 +249,7 @@ $lms_username = $_SESSION['user']['username'];
             </div>
         </div>
         
-        <!-- standings page -->
+        <!-- payment confirmed page -->
         <div data-role="page" id="paymentConfirmed">
             <div data-role="header" data-position="fixed">
                 <?php
