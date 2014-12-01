@@ -205,7 +205,7 @@ function displayPlayerStandings() {
 
 function showPlayerHist(inUser) {
     $('#userHistoryList').empty();
-    console.log("Getting history for: " + inUser);
+    //console.log("Getting history for: " + inUser);
     $.ajax({
         'url': 'restServices/getUserPredictionHistory.php?player=' + inUser,
         dataType: 'json',
@@ -221,7 +221,8 @@ function showPlayerHist(inUser) {
                     markUp = '<td style="background-color:red"> lose </td>';
                 }
                 $('#userHistoryList').append(
-                        '<li><table class="predictTable"><tr><td class="predictTableLabel">Home Team: </td><td>' + value["HomeTeam"] +
+                        '<li><table class="predictTable"> \n <tr><td class="predictTableLabel">Fixture Date/Time: </td><td>' + value["KickOffTime"] + '</td></tr>' + 
+                        '<tr><td class="predictTableLabel">Home Team: </td><td>' + value["HomeTeam"] +
                         '</td></tr><tr><td class="predictTableLabel">Away Team: </td><td>' + value["AwayTeam"] +
                         '</td></tr><tr><td class="predictTableLabel">Selected: </td><td>' + value["PredictedWinner"] + '</td></tr>' +
                         '<tr><td class="predictTableLabel">Result: </td>' + markUp + '</tr></table></li>'

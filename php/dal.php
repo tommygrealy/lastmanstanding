@@ -76,9 +76,9 @@ class dal {
                 "where " .
                 // temporary allowing -3 days to include fixtures while working on the code over weekend.
                 //"KickOffTime between (select DateFrom from gameweekmap where DateFrom > (SELECT date_sub(CURRENT_TIMESTAMP, INTERVAL 3 DAY)) limit 1) " .
-                "KickOffTime between (select DateFrom from gameweekmap where DateFrom > (select CURRENT_TIMESTAMP) limit 1) " .
+                "KickOffTime between (select DateFrom from gameweekmap where DateFrom > (select CURRENT_TIMESTAMP) ORDER BY DateFrom ASC limit 1) " .
                 "and " .
-                "(select DateTo from gameweekmap where DateTo > (select CURRENT_TIMESTAMP) limit 1)");
+                "(select DateTo from gameweekmap where DateTo > (select CURRENT_TIMESTAMP) ORDER BY DateTo ASC limit 1)");
         $stmt = $mylink->prepare($query);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
