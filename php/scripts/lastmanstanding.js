@@ -210,7 +210,7 @@ function showPlayerHist(inUser) {
         'url': 'restServices/getUserPredictionHistory.php?player=' + inUser,
         dataType: 'json',
         success: function(json) {
-            $('#userHistLabel').html(inUser)
+            $('#histForUser').html(inUser)
             $.each(json, function(key, value) {
                 var markUp = "";
                 console.log(JSON.stringify(value));
