@@ -192,7 +192,7 @@ function displayPlayerStandings() {
                     markUp = '<span class="elimPlayerName">';
                 }
                 $('#playerStandingsList').append(
-                        '<li><a href="#userHistory" onclick="userSelectedFromStandingsList=\'' + value["username"] + '\'" >' + markUp + value["username"] + '</span></a></li>'
+                        '<li><a href="#userHistory" onclick="userSelectedFromStandingsList=\'' + value["username"] + '\'" >' + markUp + value["FullName"] + '</span></a></li>'
                         )
 
             });
