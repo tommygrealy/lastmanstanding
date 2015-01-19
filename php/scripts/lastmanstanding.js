@@ -217,9 +217,13 @@ function showPlayerHist(inUser) {
                 if (value["PredictedResult"] == 1) {
                     markUp = '<td style="background-color:green;"> win </td>';
                 }
-                else {
+                else if (value["PredictedResult"] == 0) {
                     markUp = '<td style="background-color:red"> lose </td>';
                 }
+                else {
+                    markUp = '<td style="background-color:orange"> pending </td>';
+                }
+                
                 $('#userHistoryList').append(
                         '<li><table class="predictTable"> \n <tr><td class="predictTableLabel">Fixture Date/Time: </td><td>' + value["KickOffTime"] + '</td></tr>' + 
                         '<tr><td class="predictTableLabel">Home Team: </td><td>' + value["HomeTeam"] +
