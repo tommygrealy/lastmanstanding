@@ -3,15 +3,20 @@
  * and open the template in the editor.
  */
 
-var userSelectedFromStandingsList = "";
+var noFixToDisplayMsg="There are currently no fixtures available for selection, \n\
+    fixtures for the next round will be avilable for selection at the concusion of the current round of matches";
+
+var userToView = "";
 
 $(document).on("pageinit", "#standings", function() {
     displayPlayerStandings();
 });
 
 $(document).on("pageshow", "#userHistory", function() {
-    showPlayerHist(userSelectedFromStandingsList);
+    showPlayerHist(userToView);
 });
+
+
 
 
 
@@ -161,7 +166,7 @@ function makeSubmission(fixid, select)
 
 function showAlreadyPlayed(selectionData) {
     //$("#alreadyPredictedDetails").empty();
-    console.log("already played funciton hit")
+    //console.log("already played funciton hit")
 
     $("#alreadyPredictedDetails").html("<h3> Your prediction for this round has been submitted </h3>" +
             "<p>Fixture: " + selectionData[0].HomeTeam + " v " +
@@ -192,7 +197,7 @@ function displayPlayerStandings() {
                     markUp = '<span class="elimPlayerName">';
                 }
                 $('#playerStandingsList').append(
-                        '<li><a href="#userHistory" onclick="userSelectedFromStandingsList=\'' + value["username"] + '\'" >' + markUp + value["FullName"] + '</span></a></li>'
+                        '<li><a href="#userHistory" onclick="userToView=\'' + value["username"] + '\'" >' + markUp + value["FullName"] + '</span></a></li>'
                         )
 
             });

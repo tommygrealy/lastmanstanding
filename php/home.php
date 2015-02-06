@@ -73,7 +73,7 @@ $lms_username = $_SESSION['user']['username'];
 
                     </div>
                     <p>Your most recent match winning prediction was incorrect. </p>
-                    <p><a href="#userHistory" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
+                    <p><a href="#userHistory" onclick="userToView='<?php echo $lms_username ?>'" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
 
                 </div>
 
