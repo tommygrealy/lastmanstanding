@@ -77,7 +77,9 @@ $lms_username = $_SESSION['user']['username'];
 
                 </div>
 
-                <div id="alreadyPredictedDetails"></div>
+                <div id="alreadyPredictedDetails">
+                    
+                </div>
 
 
 

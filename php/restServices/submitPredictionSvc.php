@@ -4,12 +4,15 @@
 require_once '../dal.php';
 require_once '../common.php';
 require_once '../objects/requestStatus.php';
+require_once '../actions/lmsEmailNotifier.php';
+
 
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://www.actionshots.ie');
 
 $dal = new dal();
+$mailNotifier = new lmsEmailNotifier();
 
 $requestStatus = new requestStatus();
 
@@ -41,10 +44,12 @@ if ($UserStatus['CompStatus']=="Eliminated"){
 }
 
 
-$result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction']); // will return "success" or the reason if not
-if ($result=="Success"){ 
+$raw_result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction']); // will return "success" or the reason if not
+$result = explode("|", $raw_result);
+if ($result[0]=="success"){ 
     $requestStatus->status=1;
-    $requestStatus->reason="";
+    $requestStatus->reason=$result[1];
+    $mailNotifier->sendPredictionConfirmation($result[1]);
 }
 else{
     $requestStatus->status=0;

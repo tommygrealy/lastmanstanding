@@ -39,7 +39,8 @@ class dal {
 
 
         if ($stmt->execute()) {
-            return "Success";
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);            
+            return "success|" . $result[0]['PredictionID'];
         } else {
             $myErrorArray = array($stmt->errorInfo());
             return $myErrorArray[0][2];
@@ -65,10 +66,7 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
-    
-    
-    
-    
+
 
     public function getThisWeeksFixtures() {
         $mylink = $this->connect();
@@ -109,8 +107,14 @@ class dal {
         return $UserInfo[0];
     }
 
-    function disconnect() {
-        $this->database_link = NULL;
+    public function getPredictionDetails($predictionId){
+        $mylink = $this->connect();
+        $query = ("SELECT * FROM detailedpredictions where PredictionID = (:PredictionID)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':PredictionID', $predictionId);
+        $stmt->execute();
+        $PredictionDetilResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $PredictionDetilResult[0];
     }
     
     public function updatePaymentStatus($username, $status) {
@@ -124,6 +128,10 @@ class dal {
         } else {
             return FALSE;
         }
+    }
+    
+    function disconnect() {
+        $this->database_link = NULL;
     }
 
 }
