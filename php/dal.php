@@ -130,6 +130,17 @@ class dal {
         }
     }
     
+    public function cancelPrediction ($username, $predictionId){
+        $mylink = $this->connect();
+        $query = ("call cancelPrediction (:PredictionID, :userName)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':PredictionID', $predictionId);
+        $stmt->bindParam(':userName', $username);
+        $stmt->execute();
+        $PredictionCancelledResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $PredictionCancelledResult[0];
+    }
+    
     function disconnect() {
         $this->database_link = NULL;
     }

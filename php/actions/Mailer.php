@@ -122,6 +122,7 @@ class Mailer {
 	private function packHeaders() {
 		if (!$this->headers) {
 			$this->headers = "MIME-Version: 1.0" . "\r\n";
+                        $this->headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 			$this->headers .= "To: " . $this->recipients . "\r\n";
 			$this->headers .= "From: " . $this->from . "\r\n";
 			
@@ -138,6 +139,7 @@ class Mailer {
 				$this->headers .= "Bcc: " . $this->cco . "\r\n";
 			}
 			
+                        /*
 			$str = "";
 			
 			if ($this->attachments) {
@@ -216,7 +218,7 @@ class Mailer {
 					$str .= "--PHP-alt-$random_hash--" . "\r\n";
 				}
 			}
-			$this->textMessage = $str;
+			$this->textMessage = $str;*/
 		}
 	}
 }

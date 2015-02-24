@@ -101,6 +101,32 @@ function updateSelection(fixid, homeTeam, awayTeam, selected) {
     })
 }
 
+function cancelPrediction(predictionId){
+    if (confirm('Are you sure you want to cancel this prediction?')){
+    var predictionToCancel = {"predictionId": predictionId};
+    var posting = $.post("restServices/cancelPredictionSvc.php", predictionToCancel);
+    $.mobile.loading('show', {
+        text: 'Loading',
+        textVisible: false,
+        theme: 'z',
+        html: ""
+    });
+    posting.done(function(data) {
+        console.log(JSON.stringify(data));
+        if (data.ROWS_AFFECTED==1){
+            $.mobile.loading('hide');
+            $('#alreadyPredictedDetails').empty();
+            $('#submitNow').show();
+            $('#submitCancel').text('Cancel');
+            loadUserOpts();
+        }
+        else{
+            $.mobile.loading('hide');
+        }
+    })
+    }
+}
+
 function makeSubmission(fixid, select)
 {
 
@@ -167,10 +193,14 @@ function makeSubmission(fixid, select)
 function showAlreadyPlayed(selectionData) {
     //$("#alreadyPredictedDetails").empty();
     //console.log("already played funciton hit")
-
+    console.log(JSON.stringify(selectionData));
+    console.log("Prediction to cancel=" + selectionData[0].PredictionID);
+    chgPredLinkHtml = '<button onclick="cancelPrediction('+ selectionData[0].PredictionID +')">Click Here to Cancel This Prediction</button>';
     $("#alreadyPredictedDetails").html("<h3> Your prediction for this round has been submitted </h3>" +
             "<p>Fixture: " + selectionData[0].HomeTeam + " v " +
-            selectionData[0].AwayTeam + "<br/>You selected:  " + selectionData[0].PredictedTeam + "<br>Best of Luck!</p>");
+            selectionData[0].AwayTeam + "<br/>You selected:  " + selectionData[0].PredictedTeam + "<br>" +
+            "<br>" + chgPredLinkHtml + "<br>" +
+            "<br>Best of Luck!</p>");
     $('#alreadyPredictedDetails').collapsible("refresh");
 
     $('#messageInformSelect').fadeOut('slow');

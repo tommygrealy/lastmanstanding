@@ -44,18 +44,7 @@ if ($UserStatus['CompStatus']=="Eliminated"){
 }
 
 
-$raw_result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction']); // will return "success" or the reason if not
-$result = explode("|", $raw_result);
-if ($result[0]=="success"){ 
-    $requestStatus->status=1;
-    $requestStatus->reason=$result[1];
-    //$mailNotifier->sendPredictionConfirmation($result[1]);
-}
-else{
-    $requestStatus->status=0;
-    $requestStatus->reason=$result;
-}
-
-echo json_encode($requestStatus);
+$raw_result=$dal->cancelPrediction($current_user, $_POST['predictionId']); 
+echo json_encode($raw_result);
 ?>
  
