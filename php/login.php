@@ -126,6 +126,7 @@ if (!empty($_POST)) {
                         <br /><br /> 
                         <input type="submit" value="Login" /> 
                     </form> 
+                    <a href="ForgotPass.php">Forgot Password?</a>
 
                 </div>
                 <div data-role="footer" data-position="fixed" data-theme="b">

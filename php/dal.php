@@ -99,7 +99,7 @@ class dal {
 
     public function getUserData($UserName) {
         $mylink = $this->connect();
-        $query = ("select username,CompStatus,PaymentStatus from users where UserName = (:userName)");
+        $query = ("select * from users where UserName = (:userName)");
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $UserName);
         $stmt->execute();
@@ -141,6 +141,60 @@ class dal {
         return $PredictionCancelledResult[0];
     }
     
+    public function selectRandTeamForUser($username){
+        $mylink = $this->connect();
+        $query = ("call selectRandomTeam (:userName)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':userName', $username);
+        $stmt->execute();
+        $randomTeam = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $randomTeam[0];
+    }
+    
+   
+    
+    //users who have not predicted yet
+    public function getLazyUsers(){ 
+         $mylink = $this->connect();
+         $query = ("select * from usersnotsubmitted");
+         $stmt = $mylink->prepare($query);
+         $stmt->execute();
+         $usersNotSubmitted = $stmt->fetchAll(PDO::FETCH_ASSOC);
+         return $usersNotSubmitted;
+    }
+    
+    public function getNextFixtureForTeam($teamName){
+        $mylink = $this->connect();
+        $query = ("call getNextFixtureForTeam (:team)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':team', $teamName);
+        $stmt->execute();
+        $fixture = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $fixture[0];
+    }
+    
+    public function insertResetToken($token, $idType, $idValue){
+        $mylink = $this->connect();
+        $query="";
+        if ($idType="email"){
+            $query = ("call generateResetForEmail (:email, :token)");
+            $stmt = $mylink->prepare($query);
+            $stmt->bindParam(':email', $idValue);
+        }
+        if ($idType="username"){
+            $query = ("call generateResetForUsername (:username, :token)");
+            $stmt = $mylink->prepare($query);
+            $stmt->bindParam(':username', $idValue);        
+        }
+        $stmt->bindParam(':token', $token);
+        if ($stmt->execute()){
+            return "Success";
+        }
+        else{
+            return "Fail";
+        }
+    }
+            
     function disconnect() {
         $this->database_link = NULL;
     }

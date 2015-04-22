@@ -10,7 +10,7 @@ ini_set('display_errors', '1');
     // These variables define the connection information for your MySQL database 
     $myServerConfig=new serverConfig();
     
-    $username = $myServerConfig->username;
+    $dbusername = $myServerConfig->username;
     $password = $myServerConfig->password; 
     $host = $myServerConfig->host;
     $dbname = $myServerConfig->dbname; 
@@ -39,7 +39,7 @@ ini_set('display_errors', '1');
         // PDO is designed to provide a flexible interface between PHP and many 
         // different types of database servers.  For more information on PDO: 
         // http://us2.php.net/manual/en/class.pdo.php 
-        $db = new PDO("mysql:host={$host};dbname={$dbname};charset=utf8", $username, $password, $options); 
+        $db = new PDO("mysql:host={$host};dbname={$dbname};charset=utf8", $dbusername, $password, $options); 
     } 
     catch(PDOException $ex) 
     { 

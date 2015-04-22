@@ -122,19 +122,19 @@ $lms_username = $_SESSION['user']['username'];
                         <input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
                         <table>
                             <tr><td><input type="hidden" name="on0" value="Payment Options">Payment Options</td></tr><tr><td><select name="os0">
-                                        <option value="Entry Fee">Entry Fee €0.01 EUR</option>
-                                        <option value="Entry + 10 Euro Donation">Entry + 10 Euro Donation €15.00 EUR</option>
-                                        <option value="Entry + 15 Euro Donation">Entry + 15 Euro Donation €20.00 EUR</option>
+                                        <option value="Entry Fee">Entry Fee €10.00 EUR</option>
+                                        <option value="Entry + 10 Euro Donation">Entry + 5 Euro Donation €15.00 EUR</option>
+                                        <option value="Entry + 15 Euro Donation">Entry + 10 Euro Donation €20.00 EUR</option>
                                     </select> </td></tr>
                             <tr><td><input type="hidden" name="on1" value="Comment (Optional)">Comment (Optional)</td></tr>
                             <tr><td><input type="text" name="os1" maxlength="200"></td></tr>
                         </table>
                         <input type="hidden" name="currency_code" value="EUR">
                         <input type="hidden" name="option_select0" value="Entry Fee">
-                        <input type="hidden" name="option_amount0" value="0.01">
-                        <input type="hidden" name="option_select1" value="Entry + 10 Euro Donation">
+                        <input type="hidden" name="option_amount0" value="10.00">
+                        <input type="hidden" name="option_select1" value="Entry + 5 Euro Donation">
                         <input type="hidden" name="option_amount1" value="15.00">
-                        <input type="hidden" name="option_select2" value="Entry + 15 Euro Donation">
+                        <input type="hidden" name="option_select2" value="Entry + 10 Euro Donation">
                         <input type="hidden" name="option_amount2" value="20.00">
                         <input type="hidden" name="option_index" value="0">
                         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
