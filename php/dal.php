@@ -86,6 +86,15 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
+	
+	public function getAllSelectionsForThisWeek(){
+		$mylink = $this->connect();
+        $query = ("call showCurrentSelections");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $check;
+	}
 
     public function getUserPredictionHistory($UserName) {
         $mylink = $this->connect();       
