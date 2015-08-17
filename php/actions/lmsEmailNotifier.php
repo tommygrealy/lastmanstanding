@@ -50,7 +50,7 @@ class lmsEmailNotifier {
         $textMessage .= "<a href=\"". $resetUrl . "\">Click here </a> to reset your password ";
         $textMessage .= "\n\n</body></html>";
         $myMailer->fillMessage($textMessage);
-        //$myMailer->send(); // disabled for dev env, mail doesnt work  
+        $myMailer->send(); // disabled for dev env, mail doesnt work  
     }
 
 }
