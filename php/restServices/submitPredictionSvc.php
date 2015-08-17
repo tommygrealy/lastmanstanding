@@ -49,7 +49,7 @@ $result = explode("|", $raw_result);
 if ($result[0]=="success"){ 
     $requestStatus->status=1;
     $requestStatus->reason=$result[1];
-    //$mailNotifier->sendPredictionConfirmation($result[1]);
+    $mailNotifier->sendPredictionConfirmation($result[1]);
 }
 else{
     $requestStatus->status=0;

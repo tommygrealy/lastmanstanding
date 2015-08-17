@@ -77,9 +77,7 @@ $lms_username = $_SESSION['user']['username'];
 
                 </div>
 
-                <div id="alreadyPredictedDetails">
-                    
-                </div>
+                <div id="alreadyPredictedDetails"></div>
 
 
 
@@ -108,12 +106,14 @@ $lms_username = $_SESSION['user']['username'];
 
 
             <div data-role="content"><p>
-                    In order to join the competition, you must complete the online entry fee payment before playing. 
-                    Please note that you will be directed to PayPal to complete this transaction. </p>
+
                 <div data-role="fieldcontain">
+				Payment can be made in cash to Tommy Grealy (IR5-2-B4) or to James O'Neill or online using the payment form below<br> 
+				Note that this will take you to paypal in order to complete the payment. You do not need to have a Paypal account 
+				to complete payment, just click the "Don't have a Paypal Account" or "Pay with Card" link.
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
-                        <input type="hidden" name="business" value="hannahpatrickmcc@gmail.com">
+                        <input type="hidden" name="business" value="payments@actionshots.ie">
                         <input type="hidden" name="lc" value="IE">
                         <input type="hidden" name="item_name" value="<?php echo $lms_username . '|:| LMS entry fee '; ?>">
                         <input type="hidden" name="item_number" value="LMS01">
@@ -123,8 +123,7 @@ $lms_username = $_SESSION['user']['username'];
                         <table>
                             <tr><td><input type="hidden" name="on0" value="Payment Options">Payment Options</td></tr><tr><td><select name="os0">
                                         <option value="Entry Fee">Entry Fee €10.00 EUR</option>
-                                        <option value="Entry + 10 Euro Donation">Entry + 5 Euro Donation €15.00 EUR</option>
-                                        <option value="Entry + 15 Euro Donation">Entry + 10 Euro Donation €20.00 EUR</option>
+                                       
                                     </select> </td></tr>
                             <tr><td><input type="hidden" name="on1" value="Comment (Optional)">Comment (Optional)</td></tr>
                             <tr><td><input type="text" name="os1" maxlength="200"></td></tr>
@@ -132,15 +131,15 @@ $lms_username = $_SESSION['user']['username'];
                         <input type="hidden" name="currency_code" value="EUR">
                         <input type="hidden" name="option_select0" value="Entry Fee">
                         <input type="hidden" name="option_amount0" value="10.00">
-                        <input type="hidden" name="option_select1" value="Entry + 5 Euro Donation">
+                        <!--input type="hidden" name="option_select1" value="Entry + 10 Euro Donation">
                         <input type="hidden" name="option_amount1" value="15.00">
-                        <input type="hidden" name="option_select2" value="Entry + 10 Euro Donation">
+                        <input type="hidden" name="option_select2" value="Entry + 15 Euro Donation">
                         <input type="hidden" name="option_amount2" value="20.00">
-                        <input type="hidden" name="option_index" value="0">
+                        <input type="hidden" name="option_index" value="0"-->
                         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
                     </form>
-                </div>
+                </div> 
 
             </div>
             <div data-role="footer" data-position="fixed">
@@ -180,15 +179,7 @@ $lms_username = $_SESSION['user']['username'];
                 ?>
             </div>
             <div data-role="content">
-                <h3>Funding for Hannah & Patrick McCarthy’s Medical Treatment in the USA</h3>
-                The Parents of Hannah aged 7 years and Patrick aged 5 year’s respectfully seek funding support for Autism treatment for their Children in the USA.
-                Hannah & Patrick are both diagnosed with ASD, Autism and live with their Parents, Caroline and Neil in Castleknock, Dublin.  According to Mainstream Medicine there is no known cure for ASD and treatment is not covered by the HSE or private medical insurance.
-                As Parents it is very difficult to accept this fate and for years we have tirelessly researched ASD and appropriate treatments. Both Children are non-verbal, very poor cognition and fully dependant on us for their care. Hannah has a serious food disorder and is fed through a gastrostomy tube since 2010. 
-                Through exhaustive research we uncovered the Advanced Medical Centre in North Carolina, USA. They specialise in the advanced treatment of ASD for Children. The treatment is carried out over a four week period. The treatment schedule is repeated at least 4 times inside 12 months. We personally know one little boy who is now fully cured and attending main stream school in Dublin 15 after completing Chelation treatment.
-                The cost for the 12 month schedule for both our Children will be in excess of €140,000 of which we need to raise privately with the generous support and help of family and friends.
-                We would be extremely grateful for your kindness and consideration to support Hannah & Patrick’s treatment in the USA, as we plan to make the first treatment visit in late October 2014.
-
-
+            
             </div>
             <div data-role="footer" data-position="fixed">
                 <?php

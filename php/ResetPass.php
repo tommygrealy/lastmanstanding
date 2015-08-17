@@ -44,6 +44,7 @@ $token=$_GET['token'];
         <title>Last Man Standing</title>
         <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+        <script src="scripts/forgotpass.js"></script>
          <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     </head>
     <body>
@@ -52,15 +53,14 @@ $token=$_GET['token'];
                 <?php include 'includes/header_nologin.php';?>
             </div>
             <div data-role="content">      
-                <form data-ajax="false" action="ForgotPass.php" method="post"> 
+                <form id="resetSubmitForm" data-ajax="false" action="ForgotPass.php" method="post"> 
                     Enter New Password:<br /> 
-                    <input type="password" name="password" value="" /> 
-                   <?php echo $token ?>
-                    Re-enter password:<br /> 
-                    <input type="password" name="passwordConfirm" value="" /> 
+                    <input type="password" name="password" id="txtPwd" value="" />                    
+                    Confirm New Password<br /> 
+                    <input type="password" name="passwordConfirm" id="txtPwdConfirm" value="" /> 
                     <br /><br /> 
-                    
-                    <input type="submit" value="Next" /> 
+                    <input type="hidden" name="token" value="<?php echo $_GET['token']?>" />
+                    <input type="button" onclick="doPassReset($('#resetSubmitForm').serialize());"  value="Submit" /> 
                 </form>
             </div>
             

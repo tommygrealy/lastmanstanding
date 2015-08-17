@@ -86,15 +86,6 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
-	
-	public function getAllSelectionsForThisWeek(){
-		$mylink = $this->connect();
-        $query = ("call showCurrentSelections");
-        $stmt = $mylink->prepare($query);
-        $stmt->execute();
-        $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $check;
-	}
 
     public function getUserPredictionHistory($UserName) {
         $mylink = $this->connect();       
@@ -160,8 +151,6 @@ class dal {
         return $randomTeam[0];
     }
     
-   
-    
     //users who have not predicted yet
     public function getLazyUsers(){ 
          $mylink = $this->connect();
@@ -197,10 +186,37 @@ class dal {
         }
         $stmt->bindParam(':token', $token);
         if ($stmt->execute()){
-            return "Success";
+            return TRUE;
         }
         else{
-            return "Fail";
+            return FALSE;
+        }
+    }
+
+
+    public function getUsernameByToken($token){
+        $mylink = $this->connect();
+        $query = ("call getUserDetailsFromToken (:token)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        $retval = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $retval[0]['username'];
+    }
+
+    public function passwordReset($user, $pass_enc, $salt){
+        $mylink=$this->connect();
+        $query="call passwordReset (:username, :password, :salt)";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':username',$user);
+        $stmt->bindParam(':password',$pass_enc);
+        $stmt->bindParam(':salt',$salt);
+        $stmt->execute();
+        if($stmt->rowCount()>0){
+            return TRUE;
+        }
+        else{
+            return FALSE;
         }
     }
             

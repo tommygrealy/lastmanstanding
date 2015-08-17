@@ -1,3 +1,40 @@
+<?php
+// First we execute our common code to connection to the database and start the session 
+require("common.php");
+require('dal.php');
+
+// This if statement checks to determine whether the registration form has been submitted 
+// If it has, then the registration code is run, otherwise the form is displayed 
+if (!empty($_POST)) {
+    // Ensure that the user has entered a non-empty username 
+    if ((empty($_POST['username'])) && (empty($_POST['email']))) {
+        die("You need to supply either a username or a valid email address to complete this process");
+    }
+
+    $myDal = new dal();
+    $token = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
+    
+    if (empty($_POST['username'])){
+        $identifierName="email";
+        $identifierValue=$_POST['email'];
+    }
+    else{
+        $identifierName="username";
+        $identifierValue=$_POST['username'];
+    }
+    
+    
+    $success=$myDal->insertResetToken($token, $identifierName, $identifierValue);
+    
+    if(!(empty($success))){
+        //email the password reset link
+        //notify user that the mail has been sent to the email address associated with this account - whether or not it has been!
+        echo $success;
+    }
+    die;
+}
+?> 
+
 <html>
     <head>
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css">
@@ -14,7 +51,7 @@
                 <?php include 'includes/header_nologin.php';?>
             </div>
             <div data-role="content">      
-                <form data-ajax="false" id="resetRequestForm"> 
+                <form data-ajax="false" id="resetRequestForm" method="post"> 
                     Please enter your username:<br /> 
                     <input type="text" name="username" value="" /> 
                     <br />Don't know or cannot remember your username?<br />
