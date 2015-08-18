@@ -46,7 +46,7 @@ class lmsEmailNotifier {
         $myMailer->addRecipient("Name", $emailAddress);
         $myMailer->fillSubject("Last Man Standing - Password Reset Instructions");
         $myMailer->setFrom("Last Man Standing", "lms@actionshots.ie");
-        $textMessage = "<html><body>Please use the link below to reset your password\n\n";
+        $textMessage = "<html><body>A request to change your password was submitted\n\n<br>";
         $textMessage .= "<a href=\"". $resetUrl . "\">Click here </a> to reset your password ";
         $textMessage .= "\n\n</body></html>";
         $myMailer->fillMessage($textMessage);

@@ -1,5 +1,6 @@
 <?php
 //ini_set('display_errors', '1');
+error_reporting(0); //ensure clean json
 
 require_once '../dal.php';
 require_once '../common.php';
@@ -55,12 +56,9 @@ if(!empty($usertoreset)){
 }
  else {
      $requestStatus->status="fail";
-     $requestStatus->reason="password reset failed - invalid token";
+     $requestStatus->reason="password reset failed - invalid or expired token";
 }
 
-
-
-    
 
 echo json_encode($requestStatus);
 ?>

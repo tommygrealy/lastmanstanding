@@ -277,7 +277,15 @@ function showPlayerHist(inUser) {
 
 function requestPassReset(data){
     console.log(data);
-    $.post("restServices/requestPasswordReset.php", data, function(responseData){
+	$.mobile.loading('show', {
+        text: 'Loading',
+        textVisible: true,
+        theme: 'z',
+        html: ""
+    });
+    var posting = $.post("restServices/requestPasswordReset.php", data);
+    posting.done(function(responseData){
+	$.mobile.loading('hide');
         console.log(JSON.stringify(responseData));
         if (responseData["status"]=="success"){
         	alert('An email has been sent to the registered email account with reset instructions')
@@ -292,7 +300,14 @@ function requestPassReset(data){
 
 function doPassReset(data){
     console.log(data);
+	$.mobile.loading('show', {
+        text: 'Loading',
+        textVisible: true,
+        theme: 'z',
+        html: ""
+    });
    $.post("restServices/doPasswordReset.php", data, function(responseData){
+		$.mobile.loading('hide');
         console.log(JSON.stringify(responseData));
         if (responseData["status"]=="success"){
             alert("Password has been succesfully reset for " + responseData["reason"] + ", please log in using your new password");
