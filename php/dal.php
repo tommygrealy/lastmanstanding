@@ -104,7 +104,7 @@ class dal {
         $stmt->bindParam(':userName', $UserName);
         $stmt->execute();
         $UserInfo = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $UserInfo;
+        return $UserInfo[0];
     }
 
     public function getPredictionDetails($predictionId){

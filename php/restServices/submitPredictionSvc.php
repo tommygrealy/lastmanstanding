@@ -1,13 +1,12 @@
 <?php
 //ini_set('display_errors', '1');
-error_reporting(0);
 
 require_once '../dal.php';
 require_once '../common.php';
 require_once '../objects/requestStatus.php';
 require_once '../actions/lmsEmailNotifier.php';
 
-
+error_reporting(0);
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://www.actionshots.ie');
@@ -28,7 +27,7 @@ if (empty($_SESSION['user'])) {
 $current_user = ($_SESSION['user']['username']);
 
 $UserStatus=$dal->getUserData($current_user);
-if ($UserStatus['PaymentStatus']=="Pending"){
+if ($UserStatus['PaymentStatus']!="Paid"){
     $requestStatus = new requestStatus();
     $requestStatus->status = 0;
     $requestStatus->reason = "Payment Pending";
