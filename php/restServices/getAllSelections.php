@@ -15,7 +15,7 @@ $response=new genericResponse;
 
 
 
-if (($_SESSION['user']['username'])!='tommygrealy') {
+if (($_SESSION['user']['PrivLevel']) < 3) {
     $requestStatus = new requestStatus();
     $requestStatus->status = 0;
     $requestStatus->reason = "Admin access only";

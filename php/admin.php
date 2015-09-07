@@ -47,7 +47,7 @@ if ($lms_privlevel<3){
             <div data-role="header" data-position="fixed">
                 
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 #echo 'PrivLevel=' . $lms_privlevel;
                 ?>
             </div>
@@ -81,7 +81,7 @@ if ($lms_privlevel<3){
         <div data-role="page" id="paymentPage">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
 
@@ -134,7 +134,7 @@ if ($lms_privlevel<3){
         <div data-role="page" id="rules">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
             <div data-role="content">
@@ -156,7 +156,7 @@ if ($lms_privlevel<3){
         <div data-role="page" id="charity">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
             <div data-role="content">
@@ -170,23 +170,26 @@ if ($lms_privlevel<3){
         </div>
         
         <!-- standings page -->
-        <div data-role="page" id="standings">
+        <div data-role="page" id="userActivity">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
             <div data-role="content">
-                <h3>Current Player Standings</h3>
-                <h5>Search Players
+                <h3>Users not submitted:</h3>
+                <!--<h5>Search Players
                     <form class="ui-filterable">
                         <input id="myFilter" data-type="search">
-                    </form></h5>
-                <ul data-role="listview" id="playerStandingsList" data-filter="true" data-input="#myFilter" data-inset="true">
-
+                    </form></h5>-->
+                <ul data-role="listview" id="usersNotSubmittedList" data-filter="true" data-input="#myFilter" data-inset="true">
                     <!-- this list is dynamically updated on page init -->
                 </ul>
 
+                <h3>Current Selections:</h3> 
+                <ul data-role="listview" id="currentSelectionsList" data-filter="true" data-input="#myFilter" data-inset="true">
+                    <!-- this list is dynamically updated on page init -->
+                </ul>
 
             </div>
             <div data-role="footer" data-position="fixed">
@@ -203,7 +206,7 @@ if ($lms_privlevel<3){
         <div data-role="page" id="paymentConfirmed">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
             <div data-role="content">
@@ -226,7 +229,7 @@ if ($lms_privlevel<3){
         <div data-role="page" id="userHistory">
             <div data-role="header" data-position="fixed">
                 <?php
-                include 'includes/header.php';
+                include 'includes/header_admin.php';
                 ?>
             </div>
             <div data-role="content">
@@ -248,7 +251,7 @@ if ($lms_privlevel<3){
 
 
 
-    </div>
+  
 
 
 </body>

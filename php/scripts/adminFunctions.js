@@ -4,7 +4,10 @@
  * and open the template in the editor.
  */
 
-
+$(document).on("pageinit", "#userActivity", function() {
+    displayUsersNotSubmitted();
+    displayUserSelections();
+});
 
 function loadResultsPending(){
     $.ajax({
@@ -78,4 +81,42 @@ function updateScore(fixtureId){
     })
 }
 
+
+function displayUsersNotSubmitted() {
+    $.ajax({
+        'url':
+                'restServices/getUsersNotSubmitted.php',
+        dataType: 'json',
+        success: function(json) {
+            $.each(json, function(key, value) {
+                var markUp = "";
+                console.log("value = " + value["FullName"]);
+               
+                $('#usersNotSubmittedList').append(
+                        '<li>' + value["FullName"] + '</li>'
+                        )
+            });
+            $('#usersNotSubmittedList').listview("refresh");
+        }
+    });
+}
+
    
+   
+function displayUserSelections() {
+    $.ajax({
+        'url':
+                'restServices/getAllSelections.php',
+        dataType: 'json',
+        success: function(json) {
+            $.each(json, function(key, value) {
+                console.log(JSON.stringify(json));
+               
+                $('#currentSelectionsList').append(
+                        '<li>Username:'+ value["username"] + '<br>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '<br>Selected:' + value["PredictedTeam"] + '</li>'
+                        )
+            });
+            $('#currentSelectionsList').listview("refresh");
+        }
+    });
+}
