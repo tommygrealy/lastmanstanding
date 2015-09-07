@@ -18,6 +18,7 @@ if (!empty($_POST)) {
                 username, 
                 password, 
                 salt, 
+                PrivLevel,
                 email 
             FROM users 
             WHERE 

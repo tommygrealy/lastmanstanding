@@ -15,6 +15,11 @@ if (empty($_SESSION['user'])) {
 $lms_username = $_SESSION['user']['username'];
 $lms_privlevel = $_SESSION['user']['PrivLevel'];
 
+if ($lms_privlevel<3){
+    header("Location: login.php");
+    die ("Admin access only.. redirecting");
+}
+
 // Everything below this point in the file is secured by the login system 
 // We can display the user's username to them by reading it from the session array.  Remember that because 
 // a username is user submitted content we must use htmlentities on it before displaying it to the user. 
@@ -29,65 +34,36 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
         <title>Last Man Standing - Home</title>
         <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
-        <script src="scripts/lastmanstanding.js"></script>
+        <script src="scripts/adminFunctions.js"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <script>
             $(document).ready(function() {
-                loadUserOpts();
+                loadResultsPending();
             });
         </script>
     </head>
     <body>
         <div data-role="page" id="homescreen">
             <div data-role="header" data-position="fixed">
+                
                 <?php
                 include 'includes/header.php';
+                #echo 'PrivLevel=' . $lms_privlevel;
                 ?>
             </div>
 
 
 
             <div data-role="content">
-                You are logged in as: <?php echo htmlentities($lms_username, ENT_QUOTES, 'UTF-8');
-                if ($lms_privlevel >=3){
-                    echo "(admin) - Access admin functions <a href=\"admin.php\">here</a>";
-                }
-                ?> <br><br /> 
-                <div id="currentSelection" data-transition="slide" >
-                    <h3>Your Selection</h3>
-                    <span id="csTeamWin"></span><br>                    
-                    <a href="#" id="submitNow" data-role="button">Submit</a>
-                    <a href="#" id="submitCancel" data-role="button" onclick="$('#currentSelection').slideToggle();">Cancel</a>
+                You are logged in as: <?php echo htmlentities($lms_username, ENT_QUOTES, 'UTF-8'); ?> <br><br /> 
+                <span id="scoreInputNeeded"><span id="numPending"></span> fixtures require score updates. Please enter the scores below.</span>
+                <span id="noScoreInputNeeded">All match scores are up to date - no input required</span>
 
-
-                </div>
-
-                <div id="paymentNotifyPopup" data-role="popup" data-overlay-theme="a">
-                    <div data-role="header" data-theme="a"><h1>Payment Due</h1></div>
-                    <div role="main" class="ui-content">
-                        <h3 class="ui-title">Entry fee needs to be paid before playing</h3>
-                    </div>
-                    <p><a href="#paymentPage" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Go to Payment Page</a></p>
-
-                </div>
-
-                <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
-                    <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
-                    <div role="main" class="ui-content">
-                        <h3 class="ui-title">Sorry, you are no longer in the competition.</h3>
-
-                    </div>
-                    <p>Your most recent match winning prediction was incorrect. </p>
-                    <p><a href="#userHistory" onclick="userToView='<?php echo $lms_username ?>'" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
-
-                </div>
-
-                <div id="alreadyPredictedDetails"></div>
-
+                
 
 
                 <span id="messageInformSelect"> </span>
-                <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
+                <ul id="updatePendingList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
 

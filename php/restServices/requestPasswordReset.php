@@ -18,7 +18,6 @@ $requestStatus = new requestStatus();
 $userRequesting=$_POST['username'];
 $token = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
 $userDetails=$dal->getUserData($userRequesting);
-$userDetails=$userDetails[0];
 
 
 if(!empty($userDetails)){

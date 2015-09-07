@@ -47,6 +47,23 @@ class dal {
         }
     }
     
+    public function submitMatchResult($fixtureId, $homeScore, $awayScore, $result){
+        $mylink = $this->connect();
+        $query = ("call updateMatchScore (:fixtureId, :homeScore, :awayScore, :result)");
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':fixtureId', $fixtureId);
+        $stmt->bindParam(':homeScore', $homeScore);
+        $stmt->bindParam(':awayScore', $awayScore);
+        $stmt->bindParam(':result', $result);
+        if ($stmt->execute()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    
     public function getStandings(){
         $mylink = $this->connect();
         $query = "call showCurrentStandings";
@@ -86,7 +103,26 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
+    
+    public function getAllSelectionsForThisWeek() {
+        $mylink = $this->connect();
+        $query = ("call showCurrentSelections");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $check;
+    }
 
+    // Get all past fixtures for which no result has yet been entered
+    public function getFixturesWithNullResult() {
+        $mylink = $this->connect();
+        $query = ("call showNullResultFixtures");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $check;
+    }
+    
     public function getUserPredictionHistory($UserName) {
         $mylink = $this->connect();       
         $query = "call showUserPredictionHistory (:userName)";

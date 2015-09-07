@@ -42,7 +42,7 @@ if (!empty($_POST)) {
         <title>Last Man Standing</title>      
         <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
-        <script src="scripts/lastmanstanding.js">
+        <script src="scripts/lastmanstanding.js"></script>
          <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     </head>
     <body>
@@ -54,9 +54,9 @@ if (!empty($_POST)) {
                 <form data-ajax="false" id="resetRequestForm" method="post"> 
                     Please enter your username:<br /> 
                     <input type="text" name="username" value="" /> 
-                    <br />Don't know or cannot remember your username?<br />
+                    <!--<br />Don't know or cannot remember your username?<br />
                     Enter the email address used when you registered with LMS:<br /> 
-                    <input type="text" name="email" value="" /> 
+                    <input type="text" name="email" value="" /> -->
                     <br /><br /> 
                     
                     <input type="button"  onclick="requestPassReset($('#resetRequestForm').serialize());" value="Continue" /> 
