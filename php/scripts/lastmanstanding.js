@@ -3,16 +3,16 @@
  * and open the template in the editor.
  */
 
-var noFixToDisplayMsg="There are currently no fixtures available for selection, \n\
+var noFixToDisplayMsg = "There are currently no fixtures available for selection, \n\
     fixtures for the next round will be avilable for selection at the concusion of the current round of matches";
 
 var userToView = "";
 
-$(document).on("pageinit", "#standings", function() {
+$(document).on("pageinit", "#standings", function () {
     displayPlayerStandings();
 });
 
-$(document).on("pageshow", "#userHistory", function() {
+$(document).on("pageshow", "#userHistory", function () {
     showPlayerHist(userToView);
 });
 
@@ -24,7 +24,7 @@ function loadUserOpts() {
     $.ajax({
         'url': 'restServices/showUserSelectionOptions.php',
         dataType: 'json',
-        success: function(json) {
+        success: function (json) {
             if (json.userstatus) {
                 if (json.userstatus.CompStatus == "Eliminated") {
                     console.log("Elim");
@@ -46,7 +46,7 @@ function loadUserOpts() {
                 var AllowedTeams = json.availableTeams;
                 console.log(JSON.stringify(AllowedTeams));
                 $("#upComingFixtureList").empty();
-                $.each(json.fixtures, function(key, value) {
+                $.each(json.fixtures, function (key, value) {
                     var HomeTeamAvilableMarkup = '<span class="availableHomeTeam">',
                             AwayTeamAvailableMarkup = '<span class="availableAwayTeam">';
 
@@ -96,34 +96,34 @@ function updateSelection(fixid, homeTeam, awayTeam, selected) {
 
 
     //TODO: Fix bug - this gets called multiple times if user changes their selection mutliple times before hitting submit.
-    $('#submitNow').click(function() {
+    $('#submitNow').click(function () {
         makeSubmission(fixid, selected)
     })
 }
 
-function cancelPrediction(predictionId){
-    if (confirm('Are you sure you want to cancel this prediction?')){
-    var predictionToCancel = {"predictionId": predictionId};
-    var posting = $.post("restServices/cancelPredictionSvc.php", predictionToCancel);
-    $.mobile.loading('show', {
-        text: 'Loading',
-        textVisible: false,
-        theme: 'z',
-        html: ""
-    });
-    posting.done(function(data) {
-        console.log(JSON.stringify(data));
-        if (data.ROWS_AFFECTED==1){
-            $.mobile.loading('hide');
-            $('#alreadyPredictedDetails').empty();
-            $('#submitNow').show();
-            $('#submitCancel').text('Cancel');
-            loadUserOpts();
-        }
-        else{
-            $.mobile.loading('hide');
-        }
-    })
+function cancelPrediction(predictionId) {
+    if (confirm('Are you sure you want to cancel this prediction?')) {
+        var predictionToCancel = {"predictionId": predictionId};
+        var posting = $.post("restServices/cancelPredictionSvc.php", predictionToCancel);
+        $.mobile.loading('show', {
+            text: 'Loading',
+            textVisible: false,
+            theme: 'z',
+            html: ""
+        });
+        posting.done(function (data) {
+            console.log(JSON.stringify(data));
+            if (data.ROWS_AFFECTED == 1) {
+                $.mobile.loading('hide');
+                $('#alreadyPredictedDetails').empty();
+                $('#submitNow').show();
+                $('#submitCancel').text('Cancel');
+                loadUserOpts();
+            }
+            else {
+                $.mobile.loading('hide');
+            }
+        })
     }
 }
 
@@ -139,7 +139,7 @@ function makeSubmission(fixid, select)
         theme: 'z',
         html: ""
     });
-    posting.done(function(data) {
+    posting.done(function (data) {
         $.mobile.loading('hide');
         console.log(JSON.stringify(data));
         if (data.status == 1) {
@@ -195,7 +195,7 @@ function showAlreadyPlayed(selectionData) {
     //console.log("already played funciton hit")
     console.log(JSON.stringify(selectionData));
     console.log("Prediction to cancel=" + selectionData[0].PredictionID);
-    chgPredLinkHtml = '<button onclick="cancelPrediction('+ selectionData[0].PredictionID +')">Click Here to Cancel This Prediction</button>';
+    chgPredLinkHtml = '<button onclick="cancelPrediction(' + selectionData[0].PredictionID + ')">Click Here to Cancel This Prediction</button>';
     $("#alreadyPredictedDetails").html("<h3> Your prediction for this round has been submitted </h3>" +
             "<p>Fixture: " + selectionData[0].HomeTeam + " v " +
             selectionData[0].AwayTeam + "<br/>You selected:  " + selectionData[0].PredictedTeam + "<br>" +
@@ -214,10 +214,10 @@ function displayPlayerStandings() {
         'url':
                 'restServices/userStandings.php',
         dataType: 'json',
-        success: function(json) {
+        success: function (json) {
 
 
-            $.each(json, function(key, value) {
+            $.each(json, function (key, value) {
                 var markUp = "";
                 console.log("value = " + value["username"]);
                 if (value["CompStatus"] == "Playing") {
@@ -238,15 +238,39 @@ function displayPlayerStandings() {
 }
 
 
+function displaySelectionsPostDeadline() {
+    $.ajax({
+        'url': 'restServices/getSelectionsPostDeadline.php',
+        dataType: 'json',
+        success: function (json) {
+            if (json[0].TIME_PUBLIC) {
+               $('#publicSelectionsListLabel').html("This week's predictions will appear here after the deadline");
+            }
+            else {
+                $('#publicSelectionsListLabel').html("This week's predictions:");
+                $('#messageInformSelect').html("Submission deadline for the current game week has passed")
+                $.each(json, function (key, value) {
+                    console.log(JSON.stringify(json));
+
+                    $('#publicSelectionsList').append(
+                            '<li data-role="list-divider">Player: ' + value["FullName"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '</li><li>Selected: <strong>' + value["PredictedTeam"] + '</strong></li>'
+                            )
+                });
+                $('#publicSelectionsList').listview("refresh");
+            }
+        }
+    });
+}
+
 function showPlayerHist(inUser) {
     $('#userHistoryList').empty();
     //console.log("Getting history for: " + inUser);
     $.ajax({
         'url': 'restServices/getUserPredictionHistory.php?player=' + inUser,
         dataType: 'json',
-        success: function(json) {
+        success: function (json) {
             $('#histForUser').html(inUser)
-            $.each(json, function(key, value) {
+            $.each(json, function (key, value) {
                 var markUp = "";
                 console.log(JSON.stringify(value));
                 if (value["PredictedResult"] == 1) {
@@ -258,9 +282,9 @@ function showPlayerHist(inUser) {
                 else {
                     markUp = '<td style="background-color:orange"> pending </td>';
                 }
-                
+
                 $('#userHistoryList').append(
-                        '<li><table class="predictTable"> \n <tr><td class="predictTableLabel">Fixture Date/Time: </td><td>' + value["KickOffTime"] + '</td></tr>' + 
+                        '<li><table class="predictTable"> \n <tr><td class="predictTableLabel">Fixture Date/Time: </td><td>' + value["KickOffTime"] + '</td></tr>' +
                         '<tr><td class="predictTableLabel">Home Team: </td><td>' + value["HomeTeam"] +
                         '</td></tr><tr><td class="predictTableLabel">Away Team: </td><td>' + value["AwayTeam"] +
                         '</td></tr><tr><td class="predictTableLabel">Selected: </td><td>' + value["PredictedWinner"] + '</td></tr>' +
@@ -275,48 +299,48 @@ function showPlayerHist(inUser) {
 }
 
 
-function requestPassReset(data){
+function requestPassReset(data) {
     console.log(data);
-	$.mobile.loading('show', {
+    $.mobile.loading('show', {
         text: 'Loading',
         textVisible: true,
         theme: 'z',
         html: ""
     });
     var posting = $.post("restServices/requestPasswordReset.php", data);
-    posting.done(function(responseData){
-	$.mobile.loading('hide');
+    posting.done(function (responseData) {
+        $.mobile.loading('hide');
         console.log(JSON.stringify(responseData));
-        if (responseData["status"]=="success"){
-        	alert('An email has been sent to the registered email account with reset instructions')
+        if (responseData["status"] == "success") {
+            alert('An email has been sent to the registered email account with reset instructions')
         }
-        else{
-        	alert('User does not exist')
+        else {
+            alert('User does not exist')
         }
     })
-    
+
 }
 
 
-function doPassReset(data){
+function doPassReset(data) {
     console.log(data);
-	$.mobile.loading('show', {
+    $.mobile.loading('show', {
         text: 'Loading',
         textVisible: true,
         theme: 'z',
         html: ""
     });
-   $.post("restServices/doPasswordReset.php", data, function(responseData){
-		$.mobile.loading('hide');
+    $.post("restServices/doPasswordReset.php", data, function (responseData) {
+        $.mobile.loading('hide');
         console.log(JSON.stringify(responseData));
-        if (responseData["status"]=="success"){
+        if (responseData["status"] == "success") {
             alert("Password has been succesfully reset for " + responseData["reason"] + ", please log in using your new password");
-            window.location="login.php";
+            window.location = "login.php";
         }
         else
         {
-            alert ("Password could not be reset: " + responseData["reason"]);
+            alert("Password could not be reset: " + responseData["reason"]);
         }
-    }) 
-    
+    })
+
 }

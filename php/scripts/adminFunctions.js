@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-$(document).on("pageinit", "#userActivity", function() {
+$(document).on("pageinit", "#homescreen", function() {
+    loadResultsPending();
     displayUsersNotSubmitted();
+    displayPlayingUsersNotPaid();
     displayUserSelections();
 });
 
@@ -39,7 +41,32 @@ function loadResultsPending(){
         }
     });
 }
- 
+
+function displayPlayingUsersNotPaid(){
+    $.ajax({
+        'url':
+                'restServices/getUsersNotPaid.php',
+        dataType: 'json',
+        success: function(json) {
+            $.each(json, function(key, value) {
+                var markUp = "";
+                console.log("value = " + value["FullName"]);
+               
+                $('#usersNotPaid').append(
+                        '<div data-role="collapsible">'+
+                        '<h3>'+ value["FullName"] +'</h3>'+
+                        '<p><a data-role="button" href="#" onclick="updateUserField(\''+ value["username"]+'\',\'PaymentStatus\',\'Paid\')" id="paidLinkPlaceHolder">Update to \"Paid\"</a>'+
+                        '<a data-role="button" href="#" id="paidLink">Update to \"Not Playing\"</a>'+
+                        '</p>'+
+                        '</div>'
+                        )
+            });
+            $('#usersNotPaid').enhanceWithin();
+        }
+    });
+}
+
+
 function updateScore(fixtureId){
     var homeScoreElId = '#homeScore_' + fixtureId;
     var awayScoreElid = '#awayScore_' + fixtureId;
@@ -90,7 +117,7 @@ function displayUsersNotSubmitted() {
         success: function(json) {
             $.each(json, function(key, value) {
                 var markUp = "";
-                console.log("value = " + value["FullName"]);
+                //console.log("value = " + value["FullName"]);
                
                 $('#usersNotSubmittedList').append(
                         '<li>' + value["FullName"] + '</li>'
@@ -105,18 +132,45 @@ function displayUsersNotSubmitted() {
    
 function displayUserSelections() {
     $.ajax({
-        'url':
-                'restServices/getAllSelections.php',
+        'url':'restServices/getAllSelections.php',
         dataType: 'json',
         success: function(json) {
             $.each(json, function(key, value) {
                 console.log(JSON.stringify(json));
                
                 $('#currentSelectionsList').append(
-                        '<li>Username:'+ value["username"] + '<br>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '<br>Selected:' + value["PredictedTeam"] + '</li>'
+                        '<li data-role="list-divider">Username:'+ value["username"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '</li><li>Selected: <strong>' + value["PredictedTeam"] + '</strong></li>'
                         )
             });
             $('#currentSelectionsList').listview("refresh");
         }
     });
+}
+
+
+function updateUserField(username,field,newValue){
+   // alert (username + "," + field + "," + newValue)
+    
+    var userUpdateInfo = {"userToUpdate": username, "fieldToUpdate": field, "newValue": newValue};
+    var posting = $.post("restServices/updateUser.php", userUpdateInfo);
+    $.mobile.loading('show', {
+        text: 'Loading',
+        textVisible: false,
+        theme: 'z',
+        html: ""
+    });
+    
+    //TODO: Fix below
+    posting.done(function(data) {
+        console.log(JSON.stringify(data));
+        if (data.status==1){
+            $.mobile.loading('hide');
+            $('#usersNotPaid').empty();
+            displayPlayingUsersNotPaid();
+        }
+        else{
+            $.mobile.loading('hide');
+        }
+    })
+    
 }

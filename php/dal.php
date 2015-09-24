@@ -112,6 +112,15 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
+    
+    public function getSelectionsPostDeadline() {
+        $mylink = $this->connect();
+        $query = ("call showSelectionsPostDeadline");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $check;
+    }
 
     // Get all past fixtures for which no result has yet been entered
     public function getFixturesWithNullResult() {
@@ -165,6 +174,21 @@ class dal {
             return FALSE;
         }
     }
+    
+    
+     public function updateCompStatus($username, $status) {
+        $mylink = $this->connect();
+        $query = "call updateCompStatus (:userName, :status);";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':userName', $username);
+        $stmt->bindParam(':status', $status);
+        if ($stmt->execute()) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
     
     public function cancelPrediction ($username, $predictionId){
         $mylink = $this->connect();
@@ -229,6 +253,14 @@ class dal {
         }
     }
 
+    public function getPlayingUsersNotPaid(){
+        $mylink = $this->connect();
+        $query = ("SELECT * FROM playingnotpaid");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $usersNotPaid = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $usersNotPaid;
+    }
 
     public function getUsernameByToken($token){
         $mylink = $this->connect();

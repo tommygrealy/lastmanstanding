@@ -34,6 +34,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
         <script>
             $(document).ready(function() {
                 loadUserOpts();
+                displaySelectionsPostDeadline();
             });
         </script>
     </head>
@@ -90,7 +91,11 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
                 <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
-
+                
+                <h3 id="publicSelectionsListLabel"></h3>
+                <ul data-role="listview" id="publicSelectionsList" data-filter="true" data-input="#myFilter" data-inset="true">
+                    <!-- this list is dynamically updated on page init -->
+                </ul>
             </div>
 
 

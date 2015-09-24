@@ -15,9 +15,9 @@ if (empty($_SESSION['user'])) {
 $lms_username = $_SESSION['user']['username'];
 $lms_privlevel = $_SESSION['user']['PrivLevel'];
 
-if ($lms_privlevel<3){
+if ($lms_privlevel < 3) {
     header("Location: login.php");
-    die ("Admin access only.. redirecting");
+    die("Admin access only.. redirecting");
 }
 
 // Everything below this point in the file is secured by the login system 
@@ -36,16 +36,11 @@ if ($lms_privlevel<3){
         <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
         <script src="scripts/adminFunctions.js"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-        <script>
-            $(document).ready(function() {
-                loadResultsPending();
-            });
-        </script>
     </head>
     <body>
         <div data-role="page" id="homescreen">
             <div data-role="header" data-position="fixed">
-                
+
                 <?php
                 include 'includes/header_admin.php';
                 #echo 'PrivLevel=' . $lms_privlevel;
@@ -59,7 +54,7 @@ if ($lms_privlevel<3){
                 <span id="scoreInputNeeded"><span id="numPending"></span> fixtures require score updates. Please enter the scores below.</span>
                 <span id="noScoreInputNeeded">All match scores are up to date - no input required</span>
 
-                
+
 
 
                 <span id="messageInformSelect"> </span>
@@ -89,9 +84,9 @@ if ($lms_privlevel<3){
             <div data-role="content"><p>
 
                 <div data-role="fieldcontain">
-				Payment can be made in cash to Tommy Grealy (IR5-2-B4) or to James O'Neill or online using the payment form below<br> 
-				Note that this will take you to paypal in order to complete the payment. You do not need to have a Paypal account 
-				to complete payment, just click the "Don't have a Paypal Account" or "Pay with Card" link.
+                    Payment can be made in cash to Tommy Grealy (IR5-2-B4) or to James O'Neill or online using the payment form below<br> 
+                    Note that this will take you to paypal in order to complete the payment. You do not need to have a Paypal account 
+                    to complete payment, just click the "Don't have a Paypal Account" or "Pay with Card" link.
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
                         <input type="hidden" name="business" value="payments@actionshots.ie">
@@ -104,7 +99,7 @@ if ($lms_privlevel<3){
                         <table>
                             <tr><td><input type="hidden" name="on0" value="Payment Options">Payment Options</td></tr><tr><td><select name="os0">
                                         <option value="Entry Fee">Entry Fee €10.00 EUR</option>
-                                       
+
                                     </select> </td></tr>
                             <tr><td><input type="hidden" name="on1" value="Comment (Optional)">Comment (Optional)</td></tr>
                             <tr><td><input type="text" name="os1" maxlength="200"></td></tr>
@@ -130,60 +125,28 @@ if ($lms_privlevel<3){
             </div>
         </div>
 
-        <!-- rules page -->
-        <div data-role="page" id="rules">
-            <div data-role="header" data-position="fixed">
-                <?php
-                include 'includes/header_admin.php';
-                ?>
-            </div>
-            <div data-role="content">
-                <?php
-                include 'includes/rules.php';
-                ?>
-
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <?php
-                include 'includes/footer.php';
-                ?>
-            </div>
 
 
-        </div>
 
-        <!-- charity description page -->
-        <div data-role="page" id="charity">
-            <div data-role="header" data-position="fixed">
-                <?php
-                include 'includes/header_admin.php';
-                ?>
-            </div>
-            <div data-role="content">
-            
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <?php
-                include 'includes/footer.php';
-                ?>
-            </div>
-        </div>
-        
-        <!-- standings page -->
+        <!-- userActivity page -->
         <div data-role="page" id="userActivity">
             <div data-role="header" data-position="fixed">
                 <?php
                 include 'includes/header_admin.php';
                 ?>
             </div>
+
+
+
             <div data-role="content">
-                <h3>Users not submitted:</h3>
-                <!--<h5>Search Players
-                    <form class="ui-filterable">
-                        <input id="myFilter" data-type="search">
-                    </form></h5>-->
+                <div id="usersNotPaid" data-inset="true">
+                    <h3>Users not Paid</h3>
+                    <!-- the remainder of this list is dynamically updated on page init -->
+                </div>
+
                 <ul data-role="listview" id="usersNotSubmittedList" data-filter="true" data-input="#myFilter" data-inset="true">
-                    <!-- this list is dynamically updated on page init -->
+                    <li data-role="list-divider">Users not submitted <a href=""> send reminder</a></li>
+                    <!-- the remainder of this list is dynamically updated on page init -->
                 </ul>
 
                 <h3>Current Selections:</h3> 
@@ -198,63 +161,23 @@ if ($lms_privlevel<3){
                 ?>
             </div>
         </div>
-        
-        
-        
-                
-        <!-- payment confirmed page -->
-        <div data-role="page" id="paymentConfirmed">
-            <div data-role="header" data-position="fixed">
-                <?php
-                include 'includes/header_admin.php';
-                ?>
-            </div>
-            <div data-role="content">
-                <h3>Payment confirmed, Thank You!</h3>
-                Thank you for your payment. Your transaction has been completed, 
-                and a receipt for your purchase has been emailed to you. You may 
-                now continue to play in the competition by <a href="#homescreen">clicking here</a>
-
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <?php
-                include 'includes/footer.php';
-                ?>
-            </div>
-        </div>
-
-
-
-        <!-- user prediction history page -->
-        <div data-role="page" id="userHistory">
-            <div data-role="header" data-position="fixed">
-                <?php
-                include 'includes/header_admin.php';
-                ?>
-            </div>
-            <div data-role="content">
-                <h3>History for <span id="histForUser"></span> </h3>
-                <ul data-role="listview" id="userHistoryList" data-inset="true">
-
-                </ul>
-
-
-            </div>
-            <div data-role="footer" data-position="fixed">
-                <?php
-                include 'includes/footer.php';
-                ?>
-            </div>
-        </div>
 
 
 
 
 
-  
 
 
-</body>
+
+
+
+
+
+
+
+
+
+    </body>
 
 </html>
 
