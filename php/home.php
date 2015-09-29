@@ -51,7 +51,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             <div data-role="content">
                 You are logged in as: <?php echo htmlentities($lms_username, ENT_QUOTES, 'UTF-8');
                 if ($lms_privlevel >=3){
-                    echo "(admin) - Access admin functions <a href=\"admin.php\">here</a>";
+                    echo "(admin) - Access admin functions <a href=\"admin.php\" data-ajax=\"false\">here</a>";
                 }
                 ?> <br><br /> 
                 <div id="currentSelection" data-transition="slide" >
