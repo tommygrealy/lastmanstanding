@@ -61,7 +61,7 @@ if ($lms_privlevel < 3) {
                 <ul id="updatePendingList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
-
+                <a href="#" id="btnExecuteAutoPic" data-role="button">Run auto-picks</a>
             </div>
 
 

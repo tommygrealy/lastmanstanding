@@ -25,17 +25,18 @@ class dal {
         }
     }
 
-    public function submitUserPrediction($fixtureId, $UserName, $prediction) {
+    public function submitUserPrediction($fixtureId, $UserName, $prediction, $entryType) {
         //$mylink=$this->connect();
         $mylink = $this->connect();
 
-        $query = ("call insertPrediction (:fixtureId, :userName, :TeamSelected)");
+        $query = ("call insertPrediction (:fixtureId, :userName, :TeamSelected, :EntryType)");
         //echo $query;
         $stmt = $mylink->prepare($query);
 
         $stmt->bindParam(':fixtureId', $fixtureId);
         $stmt->bindParam(':userName', $UserName);
         $stmt->bindParam(':TeamSelected', $prediction);
+        $stmt->bindParam(':EntryType', $entryType);
 
 
         if ($stmt->execute()) {

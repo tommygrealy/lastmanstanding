@@ -44,7 +44,7 @@ if ($UserStatus['CompStatus']=="Eliminated"){
 }
 
 
-$raw_result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction']); // will return "success" or the reason if not
+$raw_result=$dal->submitUserPrediction($_POST['FixtureId'], $current_user, $_POST['prediction'], 'MANUAL'); // will return "success" or the reason if not
 $result = explode("|", $raw_result);
 if ($result[0]=="success"){ 
     $requestStatus->status=1;

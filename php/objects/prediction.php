@@ -12,5 +12,8 @@
  * @author tgrealy
  */
 class prediction {
-    //put your code here
+    public $FixtureID;
+    public $UserName;
+    public $PredictedResult;
+    public $EntryType;
 }

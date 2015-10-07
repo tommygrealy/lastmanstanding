@@ -152,17 +152,18 @@ function makeSubmission(fixid, select)
             loadUserOpts();
         }
         else {
-
-            console.log(data.reason.substring(data.reason.length - 13, data.reason.length));
+            
+            console.log((data.reason));
+            console.log(data.reason[0].substring(data.reason[0].length - 13, data.reason[0].length));
             //TODO: Select/case for every possible reason type
             var UsrMsg = ""
             //TODO: Below should be a switch/case to handle more error types
-            if (data.reason.substring(data.reason.length - 13, data.reason.length) == "ey 'UserTeam'") {
+            if (data.reason[0].substring(data.reason[0].length - 13, data.reason[0].length) == "ey 'UserTeam'") {
                 UsrMsg = "You have already selected this team in a previous "
-                        + " round of the competition <a href=\"myhistory\">Click here for more details</a>";
+                        + " round of the competition";
             }
 
-            if (data.reason.substring(data.reason.length - 13, data.reason.length) == "UserGameWeek'") {
+            if (data.reason[0].substring(data.reason[0].length - 13, data.reason[0].length) == "UserGameWeek'") {
                 UsrMsg = "You have already submitted a prediction for this game week"
             }
             if (data.reason == "Payment Pending") {
@@ -251,9 +252,15 @@ function displaySelectionsPostDeadline() {
                 $('#messageInformSelect').html("Submission deadline for the current game week has passed")
                 $.each(json, function (key, value) {
                     console.log(JSON.stringify(json));
-
+                    var selectionMethodText;
+                    if (value["EntryType"]=="AUTO"){
+                        selectionMethodText="Auto-Pick*: ";
+                    }
+                    else {
+                        selectionMethodText="Selected: ";
+                    }
                     $('#publicSelectionsList').append(
-                            '<li data-role="list-divider">Player: ' + value["FullName"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '</li><li>Selected: <strong>' + value["PredictedTeam"] + '</strong></li>'
+                            '<li data-role="list-divider">Player: ' + value["FullName"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '</li><li>'+ selectionMethodText + '<strong>' + value["PredictedTeam"] + '</strong></li>'
                             )
                 });
                 $('#publicSelectionsList').listview("refresh");

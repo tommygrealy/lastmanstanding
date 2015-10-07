@@ -9,6 +9,7 @@ $(document).on("pageinit", "#homescreen", function() {
     displayUsersNotSubmitted();
     displayPlayingUsersNotPaid();
     displayUserSelections();
+    $('#btnExecuteAutoPic').click(function(){runAutoPicks()})
 });
 
 function loadResultsPending(){
@@ -173,4 +174,27 @@ function updateUserField(username,field,newValue){
         }
     })
     
+}
+
+function runAutoPicks(){
+    if (confirm("Warning!\nIf you continue, users" + 
+            " who have not made selections for this week "+
+            "will have teams automatically assigned.\n"+
+            "You should only click \"ok\" below if the deadline has passed!")){
+        $.ajax({
+        'url':'restServices/runAutoPicks.php',
+        dataType: 'json',
+        success: function(json) {
+            alert(JSON.stringify(json))
+            /*$.each(json, function(key, value) {
+                console.log(JSON.stringify(json));
+               
+                $('#currentSelectionsList').append(
+                        '<li data-role="list-divider">Username:'+ value["username"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + '</li><li>Selected: <strong>' + value["PredictedTeam"] + '</strong></li>'
+                        )
+            });
+            $('#currentSelectionsList').listview("refresh");*/
+        }
+    });
+    }
 }
