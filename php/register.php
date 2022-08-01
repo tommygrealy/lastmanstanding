@@ -19,6 +19,10 @@ if (!empty($_POST)) {
         die("Please enter a password.");
     }
 
+    if (empty($_POST['league_id'])) {
+        die("No league specified, Please register using an invite link only");
+    }
+
     // Make sure the user entered a valid E-Mail address 
     // filter_var is a useful PHP function for validating form input, see: 
     // http://us.php.net/manual/en/function.filter-var.php 
@@ -117,8 +121,18 @@ if (!empty($_POST)) {
                 :email,
                 'Playing',
                 'Pending'
-            ) 
+            );
         ";
+    $query .= "
+            INSERT INTO league_memberships (
+                user_id,
+                league_id
+            ) VALUES (
+                LAST_INSERT_ID(),
+                :league_id
+            );
+        ";
+
 
     // A salt is randomly generated here to protect again brute force attacks 
     // and rainbow table attacks.  The following statement generates a hex 
@@ -154,13 +168,15 @@ if (!empty($_POST)) {
         ':password' => $password,
         'fullname' => $_POST['fullname'],
         ':salt' => $salt,
-        ':email' => $_POST['email']
+        ':email' => $_POST['email'],
+        ':league_id' => $_POST['league_id']
     );
 
     try {
         // Execute the query to create the user 
         $stmt = $db->prepare($query);
         $result = $stmt->execute($query_params);
+        echo json_encode($result);
     } catch (PDOException $ex) {
         // Note: On a production website, you should not output $ex->getMessage(). 
         // It may provide an attacker with helpful information about your code.  
@@ -168,7 +184,7 @@ if (!empty($_POST)) {
     }
 
     // This redirects the user back to the login page after they register 
-    header("Location: login.php");
+    //header("Location: login.php");
 
     // Calling die or exit after performing a redirect using the header function 
     // is critical.  The rest of your PHP script will continue to execute and 
@@ -185,6 +201,18 @@ if (!empty($_POST)) {
         <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
          <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+         <script>
+             $(document).ready(function(){
+                var params = new window.URLSearchParams(window.location.search);
+                var league_id_from_qs = params.get('league_id')
+                if (league_id_from_qs != ''){
+                    $('#league_id').val(params.get('league_id'))
+                    $('#league_id').prop( "disabled", true );
+                }
+             })
+             
+
+         </script>
     </head>
     <body>
         <div data-role="page">
@@ -205,7 +233,12 @@ if (!empty($_POST)) {
                     Password:<br /> 
                     <input type="password" name="password" value="" /> 
                     <br /><br /> 
+                    League/Invite ID:</br >
+                    <input type="text" id="league_id" name="league_id" value="" /> 
+                    <br /><br />
+
                     <input type="submit" value="Register" /> 
+
                 </form>
             </div>
             

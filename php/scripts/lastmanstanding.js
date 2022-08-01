@@ -17,7 +17,7 @@ $(document).on("pageshow", "#userHistory", function () {
 });
 
 
-
+var params = new window.URLSearchParams(window.location.search);
 
 
 function loadUserOpts() {

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2.1
--- http://www.phpmyadmin.net
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jul 30, 2022 at 12:18 PM
--- Server version: 5.7.33-0ubuntu0.16.04.1
--- PHP Version: 7.0.33-0ubuntu0.16.04.16
+-- Host: localhost:3306
+-- Generation Time: Aug 01, 2022 at 12:47 PM
+-- Server version: 5.7.23
+-- PHP Version: 7.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,267 +19,15 @@ SET time_zone = "+00:00";
 --
 -- Database: `lastmanstanding`
 --
+DROP DATABASE IF EXISTS `lastmanstanding`;
 CREATE DATABASE IF NOT EXISTS `lastmanstanding` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `lastmanstanding`;
-
-DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`lms`@`%` PROCEDURE `cancelPrediction` (IN `inPredictionID` INT(11), IN `inUserName` VARCHAR(255))  BEGIN
-
-DECLARE deadline datetime;
-
-SET deadline = (select DateFrom from gameweekmap where DateFrom > 
-(select now()) 
-order by DateFrom asc limit 1);
-
-if ((select now()) < (select deadline))
-THEN
-update predictions set PredictionStatus='C' where PredictionID = inPredictionID;
-insert into predictionstrash (select * from predictions  WHERE PredictionID = inPredictionID and username = inUserName);
-delete from predictions where PredictionID = inPredictionID and username = inUserName;
-SELECT ROW_COUNT() as ROWS_AFFECTED;
-ELSE
-SELECT ('too late') as ROWS_AFFECTED;
-END IF;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `checkResultsVsPredictions` ()  BEGIN
-
-create TEMPORARY table WinningPredictions as (SELECT PredictionID FROM showwinningpredictions where KickOffTime > (SELECT DATE_SUB(NOW(), INTERVAL 5 day)));
-create TEMPORARY table LoosingPredictions as (SELECT PredictionID FROM showloosingpredictions WHERE KickOffTime > (SELECT DATE_SUB(NOW(), INTERVAL 5 day)));
-create TEMPORARY table LoosingUsers as (select username from showloosingpredictions WHERE KickOffTime > (SELECT DATE_SUB(NOW(), INTERVAL 5 day)));
-
-update users set CompStatus = 'Eliminated' where username in 
- (select * from LoosingUsers);
-update predictions set PredictionCorrect=0 where PredictionID in 
- (select * from LoosingPredictions);
-update predictions set PredictionCorrect=1 where PredictionID in 
- (select * from WinningPredictions); 
-
-DROP table WinningPredictions;
-DROP table LoosingPredictions;
-DROP table LoosingUsers;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `generateResetForUsername` (IN `inUsername` VARCHAR(255), IN `inToken` VARCHAR(45))  NO SQL
-insert into passwordresettokens (username, token, expiry)
-values
-(
-	inUsername,
-	inToken,
-	(SELECT DATE_ADD((select NOW()), INTERVAL 10 MINUTE))
-)$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `getNextFixtureForTeam` (IN `TeamNameLong` VARCHAR(50))  BEGIN
-
-select * from fixtureresults where 
-(HomeTeam = TeamNameLong 
-or AwayTeam = TeamNameLong) and KickOffTime > (select now()) order by KickOffTime 
-Limit 1;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `getUserDetailsFromToken` (IN `inToken` VARCHAR(45))  NO SQL
-select username from users where username = 
-(select username from passwordresettokens where token = inToken and expiry > (select NOW()))$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `insertPrediction` (IN `inFixtureID` INT(11), IN `inUserName` VARCHAR(255), IN `inPredictedResult` INT(11), IN `inEntryType` VARCHAR(10))  BEGIN
-
-DECLARE inGameWeek int (11);
-DECLARE inTeamName varchar(50);
-
-
-SET inGameWeek =  (select GameWeek from gameweekmap where DateTo > (select CURRENT_TIMESTAMP) limit 1);
-
-	IF inPredictedResult=1 THEN SET inTeamName=(select HomeTeam from fixtureresults where fixtureid = inFixtureId);
-	ELSEIF inPredictedResult=3 THEN SET inTeamName=(select AwayTeam from fixtureresults where fixtureid = inFixtureId);
-END IF;
-
-
-
-
-insert into predictions 
-(DateTimeEntered, EntryType, FixtureID, GameWeek, UserName, TeamName, PredictionStatus, PredictedResult)
-values
-(
-	(select CURRENT_TIMESTAMP),
-	inEntryType,
-	inFixtureID,
-	inGameWeek,
-	inUserName,
-	inTeamName,
-    'A',
-	inPredictedResult
-);
-
-SELECT LAST_INSERT_ID() as PredictionID;
-
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `passwordReset` (IN `inUsername` VARCHAR(255), IN `inPassword` VARCHAR(64), IN `inSalt` VARCHAR(16))  NO SQL
-update users 
-set password=inPassword, salt=inSalt
-where username = inUsername$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `selectRandomTeam` (IN `inUser` VARCHAR(255))  NO SQL
-SELECT `LongName` FROM `clubs` WHERE `LongName` not in
-(select `TeamName` from predictions where Username = inUser) order by rand() limit 1$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showAvailableTeamsForUser` (IN `inUserName` VARCHAR(255))  BEGIN
-
-select ClubId, LongName,MedName,ShortName from clubs 
-where LongName not in (select TeamName from predictions where username = inUserName)
-and MedName not in (select TeamName from predictions where username = inUserName)
-ORDER by LongName;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showCurrentSelections` ()  NO SQL
-    COMMENT 'Shows all user selections for the next round of games.'
-BEGIN
-
-DECLARE inGameWeek int (11);
-SET inGameWeek =  (select GameWeek from gameweekmap where DateFrom > (select CURRENT_TIMESTAMP) limit 1);
-select 
-        `fixtureresults`.`KickOffTime` AS `KickOffTime`,
-        `fixtureresults`.`FixtureId` AS `FixtureId`,
-        `predictions`.`DateTimeEntered`, 
-        `fixtureresults`.`HomeTeam` AS `HomeTeam`,
-        `fixtureresults`.`AwayTeam` AS `AwayTeam`,
-        `fixtureresults`.`Result` AS `Result`,
-        `predictions`.`PredictionID` AS `PredictionID`,
-        `predictions`.`UserName` AS `username`,
-        `predictions`.`TeamName` AS `PredictedTeam`
-    from
-        (`fixtureresults`
-        join `predictions` ON ((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`)))
-    where
-        `predictions`.`GameWeek` = inGameWeek
-   ORDER BY  `predictions`.`DateTimeEntered` DESC;
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showCurrentStandings` ()  BEGIN
-select username, FullName, CompStatus from users where PaymentStatus='Paid';
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showNullResultFixtures` ()  NO SQL
-    COMMENT 'Shows all past fixtures which have a null value for result'
-select * from fixtureresults where Result is null and KickOffTime < (select now())$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showPredsByGameWeek` (IN `inGameWeek` INT)  NO SQL
-select * from predictions where gameweek=inGameWeek$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showSelectionsPostDeadline` ()  NO SQL
-    COMMENT 'Shows all user selections for the next round of games.'
-BEGIN
-
-DECLARE inGameWeek int (11);
-DECLARE deadline datetime;
-
-SET inGameWeek =  (select GameWeek from gameweekmap where DateTo > (select CURRENT_TIMESTAMP) limit 1);
-SET deadline = (select DateFrom from gameweekmap where GameWeek = (select inGameWeek));
-
-if ((select now()) > (select deadline))
-THEN
-	select 
-        `fixtureresults`.`KickOffTime` AS `KickOffTime`,
-        `fixtureresults`.`FixtureId` AS `FixtureId`,
-        `predictions`.`DateTimeEntered`, 
-        `fixtureresults`.`HomeTeam` AS `HomeTeam`,
-        `fixtureresults`.`AwayTeam` AS `AwayTeam`,
-        `fixtureresults`.`Result` AS `Result`,
-        `predictions`.`PredictionID` AS `PredictionID`,
-        `predictions`.`UserName` AS `username`,
-        `predictions`.`TeamName` AS `PredictedTeam`,
-		`predictions`.`EntryType` AS `EntryType`,
-	`users`.`FullName` AS `FullName`
-    from
-        (`fixtureresults`
-        join `predictions` ON (`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`)
-		join `users` ON (`predictions`.`UserName` = `users`.`username`))
-    where
-        `predictions`.`GameWeek` = inGameWeek
-   ORDER BY  `predictions`.`DateTimeEntered` DESC;
-ELSE
-	SELECT deadline as TIME_PUBLIC;
-END IF;
-   
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showUserCurrentSelection` (IN `inUserName` VARCHAR(255))  BEGIN
-
-DECLARE inGameWeek int (11);
-SET inGameWeek =  (select GameWeek from gameweekmap where DateFrom > (select CURRENT_TIMESTAMP) limit 1);
-
-select 
-        `fixtureresults`.`KickOffTime` AS `KickOffTime`,
-        `fixtureresults`.`FixtureId` AS `FixtureId`,
-        `fixtureresults`.`HomeTeam` AS `HomeTeam`,
-        `fixtureresults`.`AwayTeam` AS `AwayTeam`,
-        `fixtureresults`.`Result` AS `Result`,
-        `predictions`.`PredictionID` AS `PredictionID`,
-        `predictions`.`UserName` AS `username`,
-        `predictions`.`TeamName` AS `PredictedTeam`
-    from
-        (`fixtureresults`
-        join `predictions` ON ((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`)))
-    where
-        (`predictions`.`UserName` = inUserName)
-		and
-		(`predictions`.`GameWeek` = inGameWeek);
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `showUserPredictionHistory` (IN `inUsername` VARCHAR(255))  BEGIN
-
-
-select 
-`fixtureresults`.`KickOffTime` AS `KickOffTime`,
-`fixtureresults`.`FixtureId` AS `FixtureId`,
-`fixtureresults`.`HomeTeam` AS `HomeTeam`,
-`fixtureresults`.`AwayTeam` AS `AwayTeam`,
-`fixtureresults`.`Result` AS `Result`,
-`predictions`.`PredictionID` AS `PredictionID`,
-`predictions`.`TeamName` AS `PredictedWinner`, 
-`predictions`.`PredictedResult` AS `PredictedResult`, 
-`predictions`.`PredictionCorrect` AS `PredictedResult` 
-from (`fixtureresults` join `predictions` 
-on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where 
-(`predictions`.`UserName`= inUsername and
-`fixtureresults`.`KickOffTime` < 
-/*
-(select DateTo from gameweekmap where DateFrom > (SELECT NOW()) limit 1));
-*/
-(select now())) ORDER BY KickOffTime DESC;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `updateMatchScore` (IN `inFixtureID` INT(11), IN `inHomeScore` INT(11), IN `inAwayScore` INT(11), IN `inResult` INT(11))  BEGIN
-
-update fixtureresults 
-set HomeTeamScore=inHomeScore, AwayTeamScore=inAwayScore, Result=inResult
-where FixtureId = inFixtureID;
-
-END$$
-
-CREATE DEFINER=`lms`@`%` PROCEDURE `updatePaymentStatus` (IN `inUserName` VARCHAR(255), IN `inPayStat` VARCHAR(45))  BEGIN
-
-update users set PaymentStatus=inPayStat where username=inUserName;
-
-END$$
-
-DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
 -- Stand-in structure for view `allfixturesandclubinfo`
+-- (See below for the actual view)
 --
 CREATE TABLE `allfixturesandclubinfo` (
 `FixtureId` int(11)
@@ -352,6 +100,7 @@ INSERT INTO `clubs` (`ClubId`, `LongName`, `MedName`, `ShortName`, `CrestURLSmal
 
 --
 -- Stand-in structure for view `detailedpredictions`
+-- (See below for the actual view)
 --
 CREATE TABLE `detailedpredictions` (
 `FullName` varchar(45)
@@ -1796,21 +1545,7 @@ CREATE TABLE `gameweekmap` (
 --
 
 INSERT INTO `gameweekmap` (`GameWeek`, `DateFrom`, `DateTo`) VALUES
-(1, '2022-08-05 19:00:00', '2022-08-07 22:20:00'),
-(2, '2021-02-12 23:59:00', '2021-02-15 22:20:00'),
-(3, '2021-02-19 19:00:00', '2021-02-22 22:20:00'),
-(4, '2021-02-27 10:50:00', '2021-03-01 22:20:00'),
-(14, '2021-05-28 18:45:00', '2021-05-29 23:00:00'),
-(15, '2021-06-11 18:45:00', '2021-06-12 23:00:00'),
-(27, '2021-03-06 11:30:00', '2021-03-08 22:30:00'),
-(28, '2021-03-12 19:30:00', '2021-03-15 22:20:00'),
-(30, '2021-04-03 11:30:00', '2021-04-05 22:30:00'),
-(31, '2021-04-09 19:00:00', '2021-04-12 22:30:00'),
-(32, '2021-04-16 19:00:00', '2021-04-22 22:15:00'),
-(34, '2021-04-30 19:00:00', '2021-05-02 22:30:00'),
-(35, '2021-05-07 19:00:00', '2021-05-10 22:30:00'),
-(36, '2021-05-11 17:00:00', '2021-05-16 21:30:00'),
-(37, '2021-05-18 17:00:00', '2021-05-19 22:30:00');
+(1, '2022-08-05 19:00:00', '2022-08-07 23:59:59');
 
 -- --------------------------------------------------------
 
@@ -1859,7 +1594,10 @@ INSERT INTO `league_memberships` (`league_mem_id`, `user_id`, `league_id`) VALUE
 (7, 2076, 555),
 (8, 2078, 555),
 (9, 2083, 555),
-(10, 2088, 555);
+(10, 2088, 555),
+(16, 2090, 555),
+(18, 2095, 323),
+(19, 2096, 323);
 
 -- --------------------------------------------------------
 
@@ -1914,6 +1652,7 @@ INSERT INTO `passwordresettokens` (`idpasswordResetTokens`, `token`, `username`,
 
 --
 -- Stand-in structure for view `playingnotpaid`
+-- (See below for the actual view)
 --
 CREATE TABLE `playingnotpaid` (
 `username` varchar(255)
@@ -2068,7 +1807,8 @@ INSERT INTO `predictionstrash` (`DateTimeEntered`, `EntryType`, `PredictionID`, 
 ('2021-04-16 12:55:29', 'MANUAL', 899, 32, 1205, 'tommygrealy', 'Man Utd', 1, 'C', NULL),
 ('2021-04-22 23:34:33', 'MANUAL', 904, 34, 1223, 'tommygrealy', 'Everton', 1, 'C', NULL),
 ('2021-05-20 10:15:34', 'MANUAL', 917, 14, 1274, 'tommygrealy', 'Shamrock Rovers', 3, 'C', NULL),
-('2022-07-30 11:23:06', 'MANUAL', 929, 1, 1337, 'tommygrealy', 'Brentford', 3, 'C', NULL);
+('2022-07-30 11:23:06', 'MANUAL', 929, 1, 1337, 'tommygrealy', 'Brentford', 3, 'C', NULL),
+('2022-07-31 17:22:47', 'MANUAL', 930, 1, 1339, 'tommygrealy', 'Leeds', 1, 'C', NULL);
 
 -- --------------------------------------------------------
 
@@ -2439,6 +2179,7 @@ INSERT INTO `predictions_archive` (`DateTimeEntered`, `EntryType`, `PredictionID
 
 --
 -- Stand-in structure for view `showloosingpredictions`
+-- (See below for the actual view)
 --
 CREATE TABLE `showloosingpredictions` (
 `KickOffTime` datetime
@@ -2455,6 +2196,7 @@ CREATE TABLE `showloosingpredictions` (
 
 --
 -- Stand-in structure for view `showwinningpredictions`
+-- (See below for the actual view)
 --
 CREATE TABLE `showwinningpredictions` (
 `KickOffTime` datetime
@@ -2490,9 +2232,10 @@ INSERT INTO `status` (`StatusID`, `Description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `thisWeeksFixtures`
+-- Stand-in structure for view `thisweeksfixtures`
+-- (See below for the actual view)
 --
-CREATE TABLE `thisWeeksFixtures` (
+CREATE TABLE `thisweeksfixtures` (
 `FixtureId` int(11)
 ,`KickOffTime` datetime
 ,`HomeTeam` varchar(50)
@@ -2550,14 +2293,21 @@ INSERT INTO `users` (`id`, `username`, `FullName`, `password`, `salt`, `PrivLeve
 (2080, 'Mheg2021', 'Cairbre O Donnell', 'd9466f0a4b6178f21ab84dc2ca962683af3b4050a6eaf5d23bc3396b21e9d435', '6e5d6aa6ffeb1b8', 1, 'cairbre.odonnell@me.com', 'Playing', 'Paid'),
 (2081, 'Bort United', 'Thomas Bartlett', '524146a99fcd2dacdc31f3677cc679e141297df6c551cbd9c1d0ced3416a398c', '710ee7e579ea7f6e', 1, 'thomasbartlet@gmail.com', 'Playing', 'Paid'),
 (2082, 'Krustu', 'Krustu', 'a6499235ef6935327ef664ed89288e4507f55f63eeb4951d24f50685f202d62d', '284d0a0231278c06', 1, 'b_o_farrell@yahoo.com', 'Playing', 'Paid'),
-(2083, 'test', 'testy', '831cbafba30b6e34773d1067940ca6ea4473cdc9a687feaf6f6709cf928d5089', '359b22061cebadf3', 1, 'doshaug@tcd.ie', 'Playing', 'Pending'),
 (2086, 'Hutto', 'Dougie Hutton', 'cf3a639345b71cd05c8a08ca4931a6eb88f84dae64ce8ed634f8348f8c14a019', '71f4950a4717afdf', 1, 'huttod76@gmail.com', 'Playing', 'Paid'),
-(2088, 'tommygrealy', 'Tommy Grealy', '1710c8b4e408ff44ea1bf42dd78a8e15cd7a08001438b412498fae0a924155cf', '14d238201c07fa05', 3, 'tommygrealy@gmail.com', 'Playing', 'Paid');
+(2088, 'tommygrealy', 'Tommy Grealy', '1710c8b4e408ff44ea1bf42dd78a8e15cd7a08001438b412498fae0a924155cf', '14d238201c07fa05', 3, 'tommygrealy@gmail.com', 'Playing', 'Paid'),
+(2090, 'test01', 'test', '6bbe9d38efa6617b235a71399ff4a5af0fbab2d24804cfcba7cf91b4f2b70b33', '5f07c915580d84a', 1, 'test@tefkwpo.com', 'Playing', 'Paid'),
+(2091, 'tommy323', 'Tommy 323', 'bb23c1dd50913157a9abfb6cc3fffc103e0208433d2c18db0c7fcdb69348c661', '3b71f582636ad8e2', 1, 'tommy323@fucwkop.com', 'Playing', 'Pending'),
+(2092, 'tommy10', 'Tommy Grealy', 'c275b16f9527a07a3f7d1339c6aa0625082e3a8c0b2a292e15d06a9978186926', '6458a8932b87aa2f', 1, 'tommygrealy@10.com', 'Playing', 'Pending'),
+(2093, 'tommy11', 'tommy11', 'c77661a36f0ac79f1750af51e3b37a35abdfaba7926ee53f1d9086882d5fefd4', '3cf7a6cb36a1536f', 1, 'tommy11@gmail.com', 'Playing', 'Pending'),
+(2094, 'tommy12', 'tommy12', '034f08dd79096eae96af88b87bd4e1fbedfac73e04b000fd394b1767f584186e', '2fbca3043f900c47', 1, 'tommy12@gmail.com', 'Playing', 'Pending'),
+(2095, 'tommy13', 'tommy13', '021e9da9c951e3fbe5a1383bbf6da1e3a4674c33b680e548b5774250c439c470', '373670c134cea81c', 1, 'tommy13@gmail.com', 'Playing', 'Paid'),
+(2096, 'tommy14', 'tommy14', '118ede124833f506ee7d254bea59aa620dfed5944cad9980f86e144ca104ac21', '1452c38c4c87ca20', 1, 'tommy14@gmail.com', 'Playing', 'Paid');
 
 -- --------------------------------------------------------
 
 --
 -- Stand-in structure for view `usersnotsubmitted`
+-- (See below for the actual view)
 --
 CREATE TABLE `usersnotsubmitted` (
 `Email` varchar(255)
@@ -2568,11 +2318,30 @@ CREATE TABLE `usersnotsubmitted` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `users_join_leagues`
+-- (See below for the actual view)
+--
+CREATE TABLE `users_join_leagues` (
+`id` int(11)
+,`username` varchar(255)
+,`FullName` varchar(45)
+,`password` char(64)
+,`salt` char(16)
+,`PrivLevel` int(11)
+,`email` varchar(255)
+,`CompStatus` varchar(45)
+,`PaymentStatus` varchar(45)
+,`league_id` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `allfixturesandclubinfo`
 --
 DROP TABLE IF EXISTS `allfixturesandclubinfo`;
 
-CREATE  VIEW `allfixturesandclubinfo`  AS  select distinct `fr`.`FixtureId` AS `FixtureId`,`fr`.`KickOffTime` AS `KickOffTime`,`fr`.`HomeTeam` AS `HomeTeam`,`fr`.`AwayTeam` AS `AwayTeam`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `ShortNameHome`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `ShortNameAway`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `MedNameHome`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `MedNameAway`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `HomeCrestImg`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `AwayCrestImg` from (`fixtureresults` `fr` join `clubs` `cl`) where ((convert(`fr`.`HomeTeam` using utf8) = `cl`.`LongName`) or (convert(`fr`.`AwayTeam` using utf8) = `cl`.`LongName`)) order by `fr`.`KickOffTime` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `allfixturesandclubinfo`  AS  select distinct `fr`.`FixtureId` AS `FixtureId`,`fr`.`KickOffTime` AS `KickOffTime`,`fr`.`HomeTeam` AS `HomeTeam`,`fr`.`AwayTeam` AS `AwayTeam`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `ShortNameHome`,(select `clubs`.`ShortName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `ShortNameAway`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `MedNameHome`,(select `clubs`.`MedName` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `MedNameAway`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`HomeTeam` using utf8))) AS `HomeCrestImg`,(select `clubs`.`CrestURLSmall` from `clubs` where (`clubs`.`LongName` = convert(`fr`.`AwayTeam` using utf8))) AS `AwayCrestImg` from (`fixtureresults` `fr` join `clubs` `cl`) where ((convert(`fr`.`HomeTeam` using utf8) = `cl`.`LongName`) or (convert(`fr`.`AwayTeam` using utf8) = `cl`.`LongName`)) order by `fr`.`KickOffTime` ;
 
 -- --------------------------------------------------------
 
@@ -2581,7 +2350,7 @@ CREATE  VIEW `allfixturesandclubinfo`  AS  select distinct `fr`.`FixtureId` AS `
 --
 DROP TABLE IF EXISTS `detailedpredictions`;
 
-CREATE  VIEW `detailedpredictions`  AS  select `users`.`FullName` AS `FullName`,`users`.`email` AS `email`,`fixtureresults`.`KickOffTime` AS `KickOffTime`,(select concat(`fixtureresults`.`HomeTeam`,' vs ',`fixtureresults`.`AwayTeam`)) AS `FixtureDetail`,`predictions`.`TeamName` AS `User Selected`,`predictions`.`DateTimeEntered` AS `DateTimeEntered`,`predictions`.`PredictionID` AS `PredictionID` from ((`users` join `predictions` on((`users`.`username` = `predictions`.`UserName`))) join `fixtureresults` on((`predictions`.`FixtureID` = `fixtureresults`.`FixtureId`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `detailedpredictions`  AS  select `users`.`FullName` AS `FullName`,`users`.`email` AS `email`,`fixtureresults`.`KickOffTime` AS `KickOffTime`,(select concat(`fixtureresults`.`HomeTeam`,' vs ',`fixtureresults`.`AwayTeam`)) AS `FixtureDetail`,`predictions`.`TeamName` AS `User Selected`,`predictions`.`DateTimeEntered` AS `DateTimeEntered`,`predictions`.`PredictionID` AS `PredictionID` from ((`users` join `predictions` on((`users`.`username` = `predictions`.`UserName`))) join `fixtureresults` on((`predictions`.`FixtureID` = `fixtureresults`.`FixtureId`))) ;
 
 -- --------------------------------------------------------
 
@@ -2590,7 +2359,7 @@ CREATE  VIEW `detailedpredictions`  AS  select `users`.`FullName` AS `FullName`,
 --
 DROP TABLE IF EXISTS `playingnotpaid`;
 
-CREATE  VIEW `playingnotpaid`  AS  select `users`.`username` AS `username`,`users`.`FullName` AS `FullName`,`users`.`email` AS `email` from `users` where ((`users`.`CompStatus` = 'Playing') and (`users`.`PaymentStatus` <> 'Paid')) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `playingnotpaid`  AS  select `users`.`username` AS `username`,`users`.`FullName` AS `FullName`,`users`.`email` AS `email` from `users` where ((`users`.`CompStatus` = 'Playing') and (`users`.`PaymentStatus` <> 'Paid')) ;
 
 -- --------------------------------------------------------
 
@@ -2599,7 +2368,7 @@ CREATE  VIEW `playingnotpaid`  AS  select `users`.`username` AS `username`,`user
 --
 DROP TABLE IF EXISTS `showloosingpredictions`;
 
-CREATE  VIEW `showloosingpredictions`  AS  select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where ((`fixtureresults`.`Result` <> `predictions`.`PredictedResult`) and (`fixtureresults`.`Result` is not null)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `showloosingpredictions`  AS  select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where ((`fixtureresults`.`Result` <> `predictions`.`PredictedResult`) and (`fixtureresults`.`Result` is not null)) ;
 
 -- --------------------------------------------------------
 
@@ -2608,16 +2377,16 @@ CREATE  VIEW `showloosingpredictions`  AS  select `fixtureresults`.`KickOffTime`
 --
 DROP TABLE IF EXISTS `showwinningpredictions`;
 
-CREATE  VIEW `showwinningpredictions`  AS  select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` = `predictions`.`PredictedResult`) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `showwinningpredictions`  AS  select `fixtureresults`.`KickOffTime` AS `KickOffTime`,`fixtureresults`.`FixtureId` AS `FixtureId`,`fixtureresults`.`HomeTeam` AS `HomeTeam`,`fixtureresults`.`AwayTeam` AS `AwayTeam`,`fixtureresults`.`Result` AS `Result`,`predictions`.`PredictionID` AS `PredictionID`,`predictions`.`UserName` AS `username`,`predictions`.`PredictedResult` AS `PredictedResult` from (`fixtureresults` join `predictions` on((`fixtureresults`.`FixtureId` = `predictions`.`FixtureID`))) where (`fixtureresults`.`Result` = `predictions`.`PredictedResult`) ;
 
 -- --------------------------------------------------------
 
 --
--- Structure for view `thisWeeksFixtures`
+-- Structure for view `thisweeksfixtures`
 --
-DROP TABLE IF EXISTS `thisWeeksFixtures`;
+DROP TABLE IF EXISTS `thisweeksfixtures`;
 
-CREATE VIEW `thisWeeksFixtures`  AS  select `allfixturesandclubinfo`.`FixtureId` AS `FixtureId`,`allfixturesandclubinfo`.`KickOffTime` AS `KickOffTime`,`allfixturesandclubinfo`.`HomeTeam` AS `HomeTeam`,`allfixturesandclubinfo`.`AwayTeam` AS `AwayTeam`,`allfixturesandclubinfo`.`ShortNameHome` AS `ShortNameHome`,`allfixturesandclubinfo`.`ShortNameAway` AS `ShortNameAway`,`allfixturesandclubinfo`.`MedNameHome` AS `MedNameHome`,`allfixturesandclubinfo`.`MedNameAway` AS `MedNameAway`,`allfixturesandclubinfo`.`HomeCrestImg` AS `HomeCrestImg`,`allfixturesandclubinfo`.`AwayCrestImg` AS `AwayCrestImg` from `allfixturesandclubinfo` where (`allfixturesandclubinfo`.`KickOffTime` between (select `gameweekmap`.`DateFrom` from `gameweekmap` where (`gameweekmap`.`DateFrom` > (select now())) order by `gameweekmap`.`DateFrom` limit 1) and (select `gameweekmap`.`DateTo` from `gameweekmap` where (`gameweekmap`.`DateTo` > (select now())) order by `gameweekmap`.`DateTo` limit 1)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thisweeksfixtures`  AS  select `allfixturesandclubinfo`.`FixtureId` AS `FixtureId`,`allfixturesandclubinfo`.`KickOffTime` AS `KickOffTime`,`allfixturesandclubinfo`.`HomeTeam` AS `HomeTeam`,`allfixturesandclubinfo`.`AwayTeam` AS `AwayTeam`,`allfixturesandclubinfo`.`ShortNameHome` AS `ShortNameHome`,`allfixturesandclubinfo`.`ShortNameAway` AS `ShortNameAway`,`allfixturesandclubinfo`.`MedNameHome` AS `MedNameHome`,`allfixturesandclubinfo`.`MedNameAway` AS `MedNameAway`,`allfixturesandclubinfo`.`HomeCrestImg` AS `HomeCrestImg`,`allfixturesandclubinfo`.`AwayCrestImg` AS `AwayCrestImg` from `allfixturesandclubinfo` where (`allfixturesandclubinfo`.`KickOffTime` between (select `gameweekmap`.`DateFrom` from `gameweekmap` where (`gameweekmap`.`DateFrom` > (select now())) order by `gameweekmap`.`DateFrom` limit 1) and (select `gameweekmap`.`DateTo` from `gameweekmap` where (`gameweekmap`.`DateTo` > (select now())) order by `gameweekmap`.`DateTo` limit 1)) ;
 
 -- --------------------------------------------------------
 
@@ -2626,7 +2395,16 @@ CREATE VIEW `thisWeeksFixtures`  AS  select `allfixturesandclubinfo`.`FixtureId`
 --
 DROP TABLE IF EXISTS `usersnotsubmitted`;
 
-CREATE  VIEW `usersnotsubmitted`  AS  select `users`.`email` AS `Email`,`users`.`FullName` AS `FullName`,`users`.`username` AS `username` from `users` where ((not(`users`.`username` in (select `predictions`.`UserName` from `predictions` where (`predictions`.`GameWeek` = (select `gameweekmap`.`GameWeek` from `gameweekmap` where (`gameweekmap`.`DateTo` > (select now())) order by `gameweekmap`.`DateTo` limit 1))))) and (`users`.`CompStatus` = 'Playing') and (`users`.`PaymentStatus` = 'Paid')) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `usersnotsubmitted`  AS  select `users`.`email` AS `Email`,`users`.`FullName` AS `FullName`,`users`.`username` AS `username` from `users` where ((not(`users`.`username` in (select `predictions`.`UserName` from `predictions` where (`predictions`.`GameWeek` = (select `gameweekmap`.`GameWeek` from `gameweekmap` where (`gameweekmap`.`DateTo` > (select now())) order by `gameweekmap`.`DateTo` limit 1))))) and (`users`.`CompStatus` = 'Playing') and (`users`.`PaymentStatus` = 'Paid')) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `users_join_leagues`
+--
+DROP TABLE IF EXISTS `users_join_leagues`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `users_join_leagues`  AS  select `u`.`id` AS `id`,`u`.`username` AS `username`,`u`.`FullName` AS `FullName`,`u`.`password` AS `password`,`u`.`salt` AS `salt`,`u`.`PrivLevel` AS `PrivLevel`,`u`.`email` AS `email`,`u`.`CompStatus` AS `CompStatus`,`u`.`PaymentStatus` AS `PaymentStatus`,`l`.`league_id` AS `league_id` from (`users` `u` join `league_memberships` `l` on((`u`.`id` = `l`.`user_id`))) ;
 
 --
 -- Indexes for dumped tables
@@ -2704,41 +2482,49 @@ ALTER TABLE `users`
 --
 ALTER TABLE `clubs`
   MODIFY `ClubId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+
 --
 -- AUTO_INCREMENT for table `fixtureresults`
 --
 ALTER TABLE `fixtureresults`
   MODIFY `FixtureId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1715;
+
 --
 -- AUTO_INCREMENT for table `leagues`
 --
 ALTER TABLE `leagues`
   MODIFY `leagueId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=556;
+
 --
 -- AUTO_INCREMENT for table `league_memberships`
 --
 ALTER TABLE `league_memberships`
-  MODIFY `league_mem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `league_mem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
 --
 -- AUTO_INCREMENT for table `predictions`
 --
 ALTER TABLE `predictions`
-  MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=930;
+  MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=931;
+
 --
 -- AUTO_INCREMENT for table `predictionstrash`
 --
 ALTER TABLE `predictionstrash`
-  MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=930;
+  MODIFY `PredictionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=931;
+
 --
 -- AUTO_INCREMENT for table `userfeedback`
 --
 ALTER TABLE `userfeedback`
   MODIFY `commentId` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2089;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2097;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
