@@ -21,16 +21,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
 ?> 
 <html>
     <head>
-        <!--<link rel="stylesheet" href="styles/themes/actionshots_mobile.min.css" />
-        <link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />-->
-        <link rel="stylesheet" href="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css">
-        <link rel="stylesheet" href="styles/themes/bluyel.min.css">
-        <link rel="stylesheet" href="styles/style.css">
-        <title>Last Man Standing - Home</title>
-        <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
-        <script src="scripts/lastmanstanding.js"></script>
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+        <?php include 'includes/common_html_head.php';?>
         <script>
             $(document).ready(function() {
                 loadUserOpts();
@@ -118,7 +109,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             <div data-role="content"><p>
 
                 <div data-role="fieldcontain">
-				Payment can be made in cash to Tommy Grealy (IR5-2-B4) or to James O'Neill or online using the payment form below<br> 
+				Payment can be made by revolut to Tommy Grealy <a href="https://revolut.me/tommy5kit">@tommy5kit</a> or online using the payment form below<br> 
 				Note that this will take you to paypal in order to complete the payment. You do not need to have a Paypal account 
 				to complete payment, just click the "Don't have a Paypal Account" or "Pay with Card" link.
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
