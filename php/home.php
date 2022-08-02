@@ -118,9 +118,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             <div data-role="content"><p>
 
                 <div data-role="fieldcontain">
-				Payment can be made in cash to Tommy Grealy (IR5-2-B4) or to James O'Neill or online using the payment form below<br> 
-				Note that this will take you to paypal in order to complete the payment. You do not need to have a Paypal account 
-				to complete payment, just click the "Don't have a Paypal Account" or "Pay with Card" link.
+				Payment can be made by revolut to Tommy Grealy <a href="https://revolut.me/tommy5kit">@tommy5kit</a> or online using the payment form below<br>
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
                         <input type="hidden" name="business" value="payments@actionshots.ie">
