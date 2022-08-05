@@ -118,7 +118,8 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             <div data-role="content"><p>
 
                 <div data-role="fieldcontain">
-				Payment can be made by revolut to Tommy Grealy <a href="https://revolut.me/tommy5kit">@tommy5kit</a> or online using the payment form below<br>
+				<p style="font-weight: bold;">Entry fee is €10</p>
+                Payment can be made by revolut to Tommy Grealy. <br>Revolut username: @tommy5kit <!--or online using the payment form below<br>
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
                         <input type="hidden" name="business" value="payments@actionshots.ie">
@@ -143,10 +144,11 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
                         <input type="hidden" name="option_amount1" value="15.00">
                         <input type="hidden" name="option_select2" value="Entry + 15 Euro Donation">
                         <input type="hidden" name="option_amount2" value="20.00">
-                        <input type="hidden" name="option_index" value="0"-->
+                        <input type="hidden" name="option_index" value="0" -->
+                        <!--
                         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                    </form>
+                    </form>-->  
                 </div> 
 
             </div>
