@@ -203,12 +203,12 @@ if (!empty($_POST)) {
          <meta name="viewport" content="initial-scale=1, maximum-scale=1">
          <script>
              $(document).ready(function(){
-                var params = new window.URLSearchParams(window.location.search);
-                var league_id_from_qs = params.get('league_id')
-                if (league_id_from_qs != null){
-                    $('#league_id').val(params.get('league_id'))
-                    $('#league_id').prop( "disabled", true );
-                }
+                //fvar params = new window.URLSearchParams(window.location.search);
+                //var league_id_from_qs = params.get('league_id')
+                //if (league_id_from_qs != null){
+                //    $('#league_id').val(params.get('league_id'))
+                //    $('#league_id').prop( "disabled", true );
+                //}
              })
              
 
@@ -234,7 +234,7 @@ if (!empty($_POST)) {
                     <input type="password" name="password" value="" /> 
                     <br /><br /> 
                     League/Invite ID:</br >
-                    <input type="text" id="league_id" name="league_id"/> 
+                    <input type="text" id="fm_league_id" name="league_id" value="<?php echo($_GET['lid']);?>" /> 
                     <br /><br />
 
                     <input type="submit" value="Register" /> 
