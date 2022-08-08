@@ -19,8 +19,9 @@ if (!empty($_POST)) {
                 password, 
                 salt, 
                 PrivLevel,
-                email 
-            FROM users 
+                email,
+                league_id 
+            FROM users_join_leagues 
             WHERE 
                 username = :username 
         ";

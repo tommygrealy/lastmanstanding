@@ -53,6 +53,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
                 if ($lms_privlevel >=3){
                     echo "(admin) - Access admin functions <a href=\"admin.php\" data-ajax=\"false\">here</a>";
                 }
+                echo "<br>League ID: " . $_SESSION['user']['league_id'];
                 ?> <br><br /> 
                 <div id="currentSelection" data-transition="slide" >
                     <h3>Your Selection</h3>
