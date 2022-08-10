@@ -119,7 +119,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             <div data-role="content"><p>
 
                 <div data-role="fieldcontain">
-				<p style="font-weight: bold;">Entry fee is €10</p>
+				<p style="font-weight: bold;">Entry fee is €5</p>
                 Payment can be made by revolut to Tommy Grealy. <br>Revolut username: @tommy5kit <!--or online using the payment form below<br>
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                         <input type="hidden" name="cmd" value="_xclick">
