@@ -208,6 +208,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
             </div>
             <div data-role="content">
                 <h3>Current Player Standings</h3>
+                <h4>&#9917;&nbsp;= lives remaining.</h4>
                 <h5>Search Players
                     <form class="ui-filterable">
                         <input id="myFilter" data-type="search">
