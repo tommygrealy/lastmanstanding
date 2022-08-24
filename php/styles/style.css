@@ -44,6 +44,18 @@ td.availableHomeTeam{
     color: #009933;
 }
 
+.player3lives{
+    color: #009933;
+}
+
+.player2lives{
+    color: yellow;
+}
+
+.player1lives{
+    color: orange;
+}
+
 .elimPlayerName{
     color: #f00;
     text-decoration: line-through;

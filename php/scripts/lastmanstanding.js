@@ -220,9 +220,11 @@ function displayPlayerStandings() {
 
             $.each(json, function (key, value) {
                 var markUp = "";
+                var ballshtml="&#9917;&nbsp;".repeat(value["lives"])
                 console.log("value = " + value["username"]);
+                console.log("lives = " + value["lives"])
                 if (value["CompStatus"] == "Playing") {
-                    markUp = '<span class="activePlayerName">';
+                    markUp = '<span class="activePlayerName">' + ballshtml;
                 }
                 else if (value["CompStatus"] == "Eliminated") {
                     markUp = '<span class="elimPlayerName">';
