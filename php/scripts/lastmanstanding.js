@@ -220,7 +220,10 @@ function displayPlayerStandings() {
 
             $.each(json, function (key, value) {
                 var markUp = "";
-                var ballshtml="&#9917;&nbsp;".repeat(value["lives"])
+                lives_lost = 3 - value["lives"]
+                lives_rem = value["lives"]
+                ballshtml = "&#10060;&nbsp;".repeat(lives_lost)
+                ballshtml += "&#9917;&nbsp;".repeat(value["lives"])
                 console.log("value = " + value["username"]);
                 console.log("lives = " + value["lives"])
                 if (value["CompStatus"] == "Playing") {
