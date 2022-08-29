@@ -95,6 +95,15 @@ class dal {
         return $results;
     }
 
+    public function getResultsHistory(){
+        $mylink = $this->connect();
+        $query = ("select * from fixtureresults where HomeTeamScore is not NULL order by fixtureresults.KickOffTime DESC;");
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
     public function getUserSelectionForThisWeek($UserName) {
         $mylink = $this->connect();
         $query = ("call showUserCurrentSelection (:userName)");
