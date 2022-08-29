@@ -97,7 +97,7 @@ class dal {
 
     public function getResultsHistory(){
         $mylink = $this->connect();
-        $query = ("select * from fixtureresults where HomeTeamScore is not NULL order by fixtureresults.KickOffTime DESC;");
+        $query = ("select * from fixtureresults where HomeTeamScore is not NULL order by fixtureresults.KickOffTime;");
         $stmt = $mylink->prepare($query);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

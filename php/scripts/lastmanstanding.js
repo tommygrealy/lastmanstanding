@@ -57,15 +57,19 @@ function loadUserOpts() {
                         AwayTeamAvailableMarkup = '<span class="unavilableAwayTeam">'
                     }
 
+                    var HomeTeamFormHtml = json.formguide[value.HomeTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;")
+                    var AwayTeamFormHtml = json.formguide[value.AwayTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128994;")
+
 
                     $("#upComingFixtureList").append(
                             '<li data-role="list-divider"><table><tr><td><span class="kickoffTime">'
                             + value.KickOffTime.substring(0, value.KickOffTime.length - 3) + '</span></td><td><image src="' + value.HomeCrestImg + '" width=30 height=30 /></td><td><span class="vsSeparator">vs</span> </td><td><image src="' + value.AwayCrestImg + '" width=30 height=30 /></td></tr></table>' +
                             '</li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + ')" >' + HomeTeamAvilableMarkup + value.HomeTeam + '</a></li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + ')" >' + AwayTeamAvailableMarkup + value.AwayTeam + '</a></li>'
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + ')" >' + HomeTeamAvilableMarkup + value.HomeTeam  + HomeTeamFormHtml + '</a></li>' +
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + ')" >' + AwayTeamAvailableMarkup + value.AwayTeam + AwayTeamFormHtml    + '</a></li>'
 
                             )
+                    console.log(value.HomeTeam + ", form:" + json.formguide[value.HomeTeam] )
                 });
                 $('#upComingFixtureList').listview("refresh");
             }
@@ -224,8 +228,6 @@ function displayPlayerStandings() {
                 lives_rem = value["lives"]
                 ballshtml = "&#10060;&nbsp;".repeat(lives_lost)
                 ballshtml += "&#9917;&nbsp;".repeat(value["lives"])
-                console.log("value = " + value["username"]);
-                console.log("lives = " + value["lives"])
                 if (value["CompStatus"] == "Playing") {
                     markUp = '<span class="activePlayerName">' + ballshtml;
                 }
