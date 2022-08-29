@@ -58,7 +58,7 @@ function loadUserOpts() {
                     }
 
                     var HomeTeamFormHtml = json.formguide[value.HomeTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;")
-                    var AwayTeamFormHtml = json.formguide[value.AwayTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128994;")
+                    var AwayTeamFormHtml = json.formguide[value.AwayTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;")
 
 
                     $("#upComingFixtureList").append(
