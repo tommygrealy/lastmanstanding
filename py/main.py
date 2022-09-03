@@ -1,18 +1,22 @@
 import requests
 import json
 from datetime import datetime
+from dal import dal
+import argparse
 
+mode="api"
+#mode="local"
 
-#mode="api"
-mode="local"
+conn=dal()
 
+matchday = 6
 
 with open("team_names.json", "r") as teaminfofile:
     teaminfojson = teaminfofile.read()
 
 team_translator = json.loads(teaminfojson)
 
-url = "https://heisenbug-premier-league-live-scores-v1.p.rapidapi.com/api/premierleague?matchday=5"
+url = "https://heisenbug-premier-league-live-scores-v1.p.rapidapi.com/api/premierleague?matchday=" + str(matchday)
 
 if mode == "api":
     payload={}
@@ -40,18 +44,25 @@ gameweek_query += "WHERE KickOffTime > (SELECT gameweekmap.DateFrom from gamewee
 gameweek_query += "and KickOffTime < (SELECT gameweekmap.DateTo from gameweekmap WHERE gameweekmap.GameWeek = 5)"
 
 for match in data['matches']:
+    homeTeam = match.get('team1').get('teamName')
+    awayTeam = match.get('team2').get('teamName')
+    homeTeamScore = match.get('team1').get('teamScore')
+    awayTeamScore = match.get('team2').get('teamScore')
+    if any(item is None for item in [homeTeam, awayTeam, homeTeamScore, awayTeamScore]):
+        continue
     result=0
-    if match['team1']['teamScore'] > match['team2']['teamScore']:
+    if homeTeamScore > awayTeamScore:
         result=1 # home win
-    if match['team1']['teamScore'] == match['team2']['teamScore']:
+    if homeTeamScore == awayTeamScore:
         result=2 # draw
-    if match['team1']['teamScore'] < match['team2']['teamScore']:
+    if homeTeamScore < awayTeamScore:
         result=3  # away win
     sql = "update fixtureresults set result = " + str(result)
     sql += ", HomeTeamScore = " + str(match['team1']['teamScore'])
     sql += ", AwayTeamScore = " + str(match['team2']['teamScore'])
     sql += " where HomeTeam = '" + team_translator[str(match['team1']['teamName'])] + "'"
     sql += " and AwayTeam = '" + team_translator[match['team2']['teamName']] + "';"
+    conn.exe_sql(sql)
     print(sql)
 
 

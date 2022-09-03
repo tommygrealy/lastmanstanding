@@ -13,8 +13,8 @@ class dal():
         self.db_conn = self.connect()
 
     def connect(self):
-        return  mysql.connector.connect(host=ps_cfg["host"], user=ps_cfg["user"],
-                                        password=ps_cfg["password"], database=ps_cfg["database"])
+        return  mysql.connector.connect(host=dbConfig["host"], user=dbConfig["username"],
+                                        password=dbConfig["password"], database=dbConfig["dbname"])
 
     def exe_sql(self, sql):
         mycursor = self.db_conn.cursor()
