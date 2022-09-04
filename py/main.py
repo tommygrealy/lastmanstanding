@@ -4,10 +4,10 @@ from datetime import datetime
 from dal import dal
 import argparse
 
-mode="api"
+mode = "api"
 #mode = "local"
 
-#conn=dal()
+conn = dal()
 
 matchday = 6
 
@@ -64,7 +64,7 @@ for match in data['data'][0]['matches']:
         sql += ", AwayTeamScore = " + str(awayTeamScore)
         sql += " where HomeTeam = '" + team_translator[homeTeam] + "'"
         sql += " and AwayTeam = '" + team_translator[awayTeam] + "';"
-        #conn.exe_sql(sql)
+        conn.exe_sql(sql)
         print(sql)
 
 
