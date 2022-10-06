@@ -76,7 +76,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
                 <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
                     <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
                     <div role="main" class="ui-content">
-                        <h3 class="ui-title">Sorry, you are no longer in the competition.</h3>
+                        <h3 class="ui-title">Fuck off, you're out. Click X to close this window.</h3>
 
                     </div>
                     <p>Your most recent match winning prediction was incorrect. </p>
