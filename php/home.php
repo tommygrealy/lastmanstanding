@@ -79,7 +79,7 @@ $lms_privlevel = $_SESSION['user']['PrivLevel'];
                         <h3 class="ui-title">Fuck off, you're out. Click X to close this window.</h3>
 
                     </div>
-                    <p>Your most recent match winning prediction was incorrect. </p>
+                    <p>dick...! </p>
                     <p><a href="#userHistory" onclick="userToView='<?php echo $lms_username ?>'" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
 
                 </div>
