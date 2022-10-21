@@ -172,13 +172,13 @@ function makeSubmission(fixid, select)
             }
             if (data.reason == "Payment Pending") {
                 // redirect to payment page.
-                UsrMsg = "Entry fee not yet paid";
+                UsrMsg = "Show me the money";
                 $('#submitNow').css("display: none;");
                 $('#submitCancel').css("display: none;");
                 $('#goPayment').show();
             }
 
-            if (data.reason == "eliminated from comp") {
+            if (data.reason == "already told you, you're out. fuck off") {
                 // redirect to payment page.
                 UsrMsg = " because you have been eliminated from this competition";
                 $('#submitNow').css("display: none;");
@@ -187,7 +187,7 @@ function makeSubmission(fixid, select)
             }
 
             //$('#currentSelection').empty();
-            $('#csTeamWin').html("Could not submit prediction <br> \n" + UsrMsg);
+            $('#csTeamWin').html("No! <br> \n" + UsrMsg);
 
 
         }
