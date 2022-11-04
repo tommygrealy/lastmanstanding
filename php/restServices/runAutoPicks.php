@@ -34,7 +34,8 @@ foreach ($LazyUsers as $luser){
     $myPred = new prediction();
     $myPred->UserName =  $luser['username'];
     $teamsAvilable = $dal->getTeamsAvilableToUser($luser['username']);
-    $team=$teamsAvilable[0]['LongName'];
+    $random = rand(0, count($teamsAvilable) - 1);
+    $team=$teamsAvilable[$random]['LongName'];
     $autoFixture = $dal->getNextFixtureForTeam($team);
     $myPred->FixtureID=$autoFixture['FixtureId'];
     if ($autoFixture['HomeTeam']==$team){
