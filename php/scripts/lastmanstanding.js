@@ -57,22 +57,22 @@ function loadUserOpts() {
                         AwayTeamAvailableMarkup = '<span class="unavilableAwayTeam">'
                     }
 
-                    if json.formguide.length > 0 {
+                    /*if json.formguide.length > 0 {
                         var HomeTeamFormHtml = json.formguide[value.HomeTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;")
                         var AwayTeamFormHtml = json.formguide[value.AwayTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;") 
                     }
                     else{
                         var HomeTeamFormHtml = ""
                         var AwayTeamFormHtml = ""
-                    }
+                    }*/
 
 
                     $("#upComingFixtureList").append(
                             '<li data-role="list-divider"><table><tr><td><span class="kickoffTime">'
                             + value.KickOffTime.substring(0, value.KickOffTime.length - 3) + '</span></td><td><image src="' + value.HomeCrestImg + '" width=30 height=30 /></td><td><span class="vsSeparator">vs</span> </td><td><image src="' + value.AwayCrestImg + '" width=30 height=30 /></td></tr></table>' +
                             '</li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + ')" >' + HomeTeamAvilableMarkup + value.HomeTeam  + HomeTeamFormHtml + '</a></li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + ')" >' + AwayTeamAvailableMarkup + value.AwayTeam + AwayTeamFormHtml    + '</a></li>'
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + ')" >' + HomeTeamAvilableMarkup + value.HomeTeam  + /*HomeTeamFormHtml +*/ '</a></li>' +
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + ')" >' + AwayTeamAvailableMarkup + value.AwayTeam + /*AwayTeamFormHtml    +*/ '</a></li>'
 
                             )
                     console.log(value.HomeTeam + ", form:" + json.formguide[value.HomeTeam] )
