@@ -178,22 +178,22 @@ function makeSubmission(fixid, select)
             }
             if (data.reason == "Payment Pending") {
                 // redirect to payment page.
-                UsrMsg = "Show me the money";
+                UsrMsg = "Pay Tommy First - revolut 5 to @tommy5kit";
                 $('#submitNow').css("display: none;");
                 $('#submitCancel').css("display: none;");
                 $('#goPayment').show();
             }
 
-            if (data.reason == "already told you, you're out. fuck off") {
+            if (data.reason == "You're out ") {
                 // redirect to payment page.
-                UsrMsg = " because you have been eliminated from this competition";
+                UsrMsg = " fooljaws";
                 $('#submitNow').css("display: none;");
                 $('#submitCancel').css("display: none;");
                 $('goMyHistory').show();
             }
 
             //$('#currentSelection').empty();
-            $('#csTeamWin').html("No! <br> \n" + UsrMsg);
+            $('#csTeamWin').html("Nope! <br> \n" + UsrMsg);
 
 
         }
