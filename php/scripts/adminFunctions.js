@@ -71,8 +71,8 @@ function displayPlayingUsersNotPaid(){
 function updateScore(fixtureId){
     var homeScoreElId = '#homeScore_' + fixtureId;
     var awayScoreElid = '#awayScore_' + fixtureId;
-    homeScore = $(homeScoreElId).val() 
-    awayScore = $(awayScoreElid).val();
+    homeScore = parseInt($(homeScoreElId).val()) 
+    awayScore = parseInt($(awayScoreElid).val());
     
     var result;
     if (homeScore>awayScore){
