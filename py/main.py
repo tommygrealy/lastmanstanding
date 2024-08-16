@@ -4,12 +4,12 @@ from datetime import datetime
 from dal import dal
 import argparse
 
-mode = "api"
-#mode = "local"
+#mode = "api"
+mode = "local"
 
 conn = dal()
 
-matchday = 6
+matchday = 1
 
 with open("team_names.json", "r") as teaminfofile:
     teaminfojson = teaminfofile.read()
@@ -31,7 +31,7 @@ if mode == "api":
     response_json = response.text
 
 if mode == "local":
-    with open ("sample_response.json", "r") as in_json:
+    with open ("match_results_example.json", "r") as in_json:
         response_json=in_json.read()
 
 if mode == "api":
@@ -46,10 +46,10 @@ gameweek_query = "SELECT * FROM fixtureresults "
 gameweek_query += "WHERE KickOffTime > (SELECT gameweekmap.DateFrom from gameweekmap WHERE gameweekmap.GameWeek=5)"
 gameweek_query += "and KickOffTime < (SELECT gameweekmap.DateTo from gameweekmap WHERE gameweekmap.GameWeek = 5)"
 
-for match in data['data'][0]['matches']:
+for match in data['events']:
     if match['status'] == 'FT':
-        homeTeam = match.get('team_1').get('name')
-        awayTeam = match.get('team_2').get('name')
+        homeTeam = match.get('homeTeam').get('name')
+        awayTeam = match.get('awayTeam').get('name')
         homeTeamScore = int(match.get('score').get('full_time').get('team_1'))
         awayTeamScore = int(match.get('score').get('full_time').get('team_2'))
         result=0
