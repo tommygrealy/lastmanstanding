@@ -92,3 +92,27 @@ class dal():
         self.db_conn.commit()
         mycursor.close()
 
+    def set_fixture_result(self, home_team, away_team, home_score, away_score, result, round_number):
+        params={
+            "home_team": home_team,
+            "away_team": away_team,
+            "home_score": home_score,
+            "away_score": away_score,
+            "result": result,
+            "round_number": round_number,
+        }
+        sql = f"""
+        UPDATE fixtureresults 
+        SET HomeTeamScore = %(home_score)s, AwayTeamScore = %(away_score)s, Result = %(result)s
+        WHERE HomeTeam = %(home_team)s 
+          AND AwayTeam = %(away_team)s
+          AND KickOffTime BETWEEN 
+            (SELECT DateFrom FROM gameweekmap WHERE GameWeek = %(round_number)s) 
+            AND (SELECT DateTo FROM gameweekmap WHERE GameWeek = %(round_number)s);
+        """
+        mycursor = self.db_conn.cursor()
+        mycursor.execute(sql, params)
+        retval = mycursor.rowcount
+        mycursor.close()
+        return retval
+

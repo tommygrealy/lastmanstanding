@@ -9,8 +9,8 @@
   "Everton": "Everton",
   "Arsenal": "Arsenal",
   "Aston Villa": "Aston Villa",
-  "AFC Bournemouth": "Bournemouth",
-  "Wolverhampton Wanderers": "Wolves",
+  "Bournemouth": "Bournemouth",
+  "Wolverhampton": "Wolves",
   "Manchester City": "Man City",
   "Nottingham Forest": "Nottingham Forest",
   "West Ham United": "West Ham",
@@ -18,5 +18,6 @@
   "Liverpool": "Liverpool",
   "Newcastle United": "Newcastle",
   "Leicester City": "Leicester",
-  "Manchester United": "Man Utd"
+  "Manchester United": "Man Utd",
+  "Ipswich Town": "Ipswich"
 }
