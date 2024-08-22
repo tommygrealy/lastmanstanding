@@ -17,7 +17,7 @@ $mailNotifier = new lmsEmailNotifier();
 $requestStatus = new requestStatus();
 
 $auth = new Authenticator();
-$user_info=$auth->get_current_user($_SESSION, $_HEADERS);
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
 $current_user = $user_info['username'];
 
