@@ -1,19 +1,23 @@
 <?php
 // First we execute our common code to connection to the database and start the session 
 require("common.php");
+require("authenticator.php");
 
 // At the top of the page we check to see whether the user is logged in or not 
-if (empty($_SESSION['user'])) {
-    // If they are not, we redirect them to the login page. 
-    header("Location: login.php");
+// if (empty($_SESSION['user'])) {
+//     // If they are not, we redirect them to the login page. 
+//     header("Location: login.php");
 
-    // Remember that this die statement is absolutely critical.  Without it, 
-    // people can view your members-only content without logging in. 
-    die("Redirecting to login.php");
-}
+//     // Remember that this die statement is absolutely critical.  Without it, 
+//     // people can view your members-only content without logging in. 
+//     die("Redirecting to login.php");
+// }
 
-$lms_username = $_SESSION['user']['username'];
-$lms_privlevel = $_SESSION['user']['PrivLevel'];
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_HEADERS);
+
+$lms_username = $user_info['username'];
+$lms_privlevel = $user_info['PrivLevel'];
 
 // Everything below this point in the file is secured by the login system 
 // We can display the user's username to them by reading it from the session array.  Remember that because 
