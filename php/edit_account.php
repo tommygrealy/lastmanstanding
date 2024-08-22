@@ -1,16 +1,11 @@
 <?php
 // First we execute our common code to connection to the database and start the session 
 require("common.php");
+require("authenticator.php");
 
 // At the top of the page we check to see whether the user is logged in or not 
-if (empty($_SESSION['user'])) {
-    // If they are not, we redirect them to the login page. 
-    header("Location: login.php");
-
-    // Remember that this die statement is absolutely critical.  Without it, 
-    // people can view your members-only content without logging in. 
-    die("Redirecting to login.php");
-}
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_HEADERS);
 
 // This if statement checks to determine whether the edit form has been submitted 
 // If it has, then the account updating code is run, otherwise the form is displayed 

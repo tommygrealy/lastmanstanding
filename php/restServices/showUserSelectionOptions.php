@@ -13,18 +13,10 @@ $dal = new dal();
 
 $response=new genericResponse;
 
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
-if (empty($_SESSION['user'])) {
-    $requestStatus = new requestStatus();
-    $requestStatus->status = 0;
-    $requestStatus->reason = "No valid user is logged in";
-    echo json_encode($requestStatus);
-    die();
-}
-
-$current_user = ($_SESSION['user']['username']);
-
-
+$current_user = $user_info['username'];
 
 $HasUserPredictedThisWeek=$dal->getUserSelectionForThisWeek($current_user);
 if(count($HasUserPredictedThisWeek)>0){

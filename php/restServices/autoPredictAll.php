@@ -27,23 +27,18 @@ $requestStatus = new requestStatus();
 
 $arrayOfPredictions=new ArrayObject();
 
-if (empty($_SESSION['user'])) {
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
+
+$current_user = $user_info['username'];
+$priv_level = ($user_info['PrivLevel']);
+
+if ($priv_level < 3) {
     $requestStatus->status = 0;
-    $requestStatus->reason = "No valid user is logged in";
+    $requestStatus->reason = "Insufficient Privilage";
     echo json_encode($requestStatus);
     die();
 }
-
-$current_user = ($_SESSION['user']['username']);
-//TODO: Replace below with priv level when implemented
-if ($current_user != 'tommygrealy') {
-    $requestStatus->status = 0;
-    $requestStatus->reason = "Need admin privilage to invoke this service";
-    echo json_encode($requestStatus);
-    die();
-}
-
-
 
 $users = $dal->getLazyUsers();
 foreach ($users as $nUser) {

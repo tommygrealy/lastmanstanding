@@ -1,5 +1,6 @@
 <?php
 require_once 'serverConfig.php';
+require_once 'authenticator.php';
 
 ini_set('display_errors', '1');
 // http://forums.devshed.com/php-faqs-stickies-167/program-basic-secure-login-system-using-php-mysql-891201.html

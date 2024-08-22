@@ -16,16 +16,12 @@ $dal = new dal();
 
 $requestStatus = new requestStatus();
 
-if (empty($_SESSION['user'])) {
-    $requestStatus->status = 0;
-    $requestStatus->reason = "No valid user is logged in";
-    echo json_encode($requestStatus);
-    die();
-}
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
+$current_user = $user_info['username'];
+$priv_level = ($user_info['PrivLevel']);
 
-$current_user = ($_SESSION['user']['username']);
-$priv_level = ($_SESSION['user']['PrivLevel']);
 if ($priv_level < 3) {
     $requestStatus->status = 0;
     $requestStatus->reason = "Insufficient Privilage";

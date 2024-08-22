@@ -3,17 +3,12 @@
 require("common.php");
 
 // At the top of the page we check to see whether the user is logged in or not 
-if (empty($_SESSION['user'])) {
-    // If they are not, we redirect them to the login page. 
-    header("Location: login.php");
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
-    // Remember that this die statement is absolutely critical.  Without it, 
-    // people can view your members-only content without logging in. 
-    die("Redirecting to login.php");
-}
+$lms_username = $user_info['username'];
+$lms_privlevel = $user_info['PrivLevel'];
 
-$lms_username = $_SESSION['user']['username'];
-$lms_privlevel = $_SESSION['user']['PrivLevel'];
 
 if ($lms_privlevel < 3) {
     header("Location: login.php");

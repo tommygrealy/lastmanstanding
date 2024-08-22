@@ -2,8 +2,11 @@
 // First we execute our common code to connection to the database and start the session 
 require("common.php");
 
-// At the top of the page we check to see whether the user is logged in or not 
-if (empty($_SESSION['user'])) {
+// At the top of the page we check to see whether the user is logged in or not
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
+
+if (empty($user_info)) {
     // If they are not, we redirect them to the login page. 
     header("Location: login.php");
 

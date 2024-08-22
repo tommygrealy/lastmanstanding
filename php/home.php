@@ -1,7 +1,6 @@
 <?php
 // First we execute our common code to connection to the database and start the session 
 require("common.php");
-require("authenticator.php");
 
 // At the top of the page we check to see whether the user is logged in or not 
 // if (empty($_SESSION['user'])) {
@@ -14,7 +13,7 @@ require("authenticator.php");
 // }
 
 $auth = new Authenticator();
-$user_info=$auth->get_current_user($_SESSION, $_HEADERS);
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
 $lms_username = $user_info['username'];
 $lms_privlevel = $user_info['PrivLevel'];

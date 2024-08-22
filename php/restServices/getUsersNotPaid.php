@@ -15,16 +15,12 @@ $response=new genericResponse;
 
 
 
-if (empty($_SESSION['user'])) {
-    $requestStatus = new requestStatus();
-    $requestStatus->status = 0;
-    $requestStatus->reason = "No valid user is logged in";
-    echo json_encode($requestStatus);
-    die();
-}
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
-$current_user = ($_SESSION['user']['username']);
-$priv_level = ($_SESSION['user']['PrivLevel']);
+$current_user = $user_info['username'];
+$priv_level = ($user_info['PrivLevel']);
+
 if ($priv_level < 3) {
     $requestStatus->status = 0;
     $requestStatus->reason = "Insufficient Privilage";
@@ -32,8 +28,6 @@ if ($priv_level < 3) {
     die();
 }
 
-
-$current_user = ($_SESSION['user']['username']);
 $usersNotSubmitted = $dal->getPlayingUsersNotPaid();
 $pre_output = json_encode($usersNotSubmitted);
 echo str_replace('"\u000', '"',$pre_output); // to strop out unicode escape characters '\000 inserted by json_encode function

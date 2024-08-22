@@ -13,12 +13,15 @@ $dal = new dal();
 
 $response=new genericResponse;
 
+$auth = new Authenticator();
+$user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
+$current_user = $user_info['username'];
+$priv_level = ($user_info['PrivLevel']);
 
-if (($_SESSION['user']['PrivLevel']) < 3) {
-    $requestStatus = new requestStatus();
+if ($priv_level < 3) {
     $requestStatus->status = 0;
-    $requestStatus->reason = "Admin access only";
+    $requestStatus->reason = "Insufficient Privilage";
     echo json_encode($requestStatus);
     die();
 }
