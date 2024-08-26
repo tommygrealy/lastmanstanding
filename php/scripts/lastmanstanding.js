@@ -81,7 +81,7 @@ function loadUserOpts() {
                         AwayTeamAvailableMarkup = '<span class="unavilableAwayTeam">'
                     }
 
-                    if (json.formguide.length > 0) {
+                    if (json.formguide) {
                         var HomeTeamFormHtml = json.formguide[value.HomeTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;")
                         var AwayTeamFormHtml = json.formguide[value.AwayTeam].replaceAll("WIN,", " &#128994;").replaceAll("LOS,"," &#128308;").replaceAll("DRW,"," &#128993;") 
                     }
@@ -90,12 +90,24 @@ function loadUserOpts() {
                         var AwayTeamFormHtml = ""
                     }
 
+                    var KillerHomeTeamMarkup = ""
+                    var KillerAwayTeamMarkup = ""
+                    var killerSelected = 0
+                    if (value.KillerTeam == 1){
+                        killerSelected = 1
+                        KillerHomeTeamMarkup += " &#x1f9e8;"
+                    }
+                    if (value.KillerTeam == 3){
+                        killerSelected = 3
+                        KillerAwayTeamMarkup += " &#x1f9e8;"
+                    }
+
                     $("#upComingFixtureList").append(
                             '<li data-role="list-divider"><table><tr><td><span class="kickoffTime">'
                             + value.KickOffTime.substring(0, value.KickOffTime.length - 3) + '</span></td><td><image src="' + value.HomeCrestImg + '" width=30 height=30 /></td><td><span class="vsSeparator">vs</span> </td><td><image src="' + value.AwayCrestImg + '" width=30 height=30 /></td></tr></table>' +
                             '</li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + ')" >' + HomeTeamAvilableMarkup + value.HomeTeam  + HomeTeamFormHtml + '</a></li>' +
-                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + ')" >' + AwayTeamAvailableMarkup + value.AwayTeam + AwayTeamFormHtml + '</a></li>'
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 1 + "," + killerSelected + ')" >' + KillerHomeTeamMarkup + ' ' + HomeTeamAvilableMarkup + value.HomeTeam  + HomeTeamFormHtml  + '</a></li>' +
+                            '<li><a href="#" onclick="updateSelection(' + value.FixtureId + ',\'' + value.HomeTeam + '\', \'' + value.AwayTeam + '\',' + 3 + "," + killerSelected + ')" >' + KillerAwayTeamMarkup + ' ' + AwayTeamAvailableMarkup + value.AwayTeam + AwayTeamFormHtml + '</a></li>'
 
                             )
                     console.log(value.HomeTeam + ", form:" + json.formguide[value.HomeTeam] )
@@ -113,16 +125,27 @@ function loadUserOpts() {
 }
 
 
-function updateSelection(fixid, homeTeam, awayTeam, selected) {
+function updateSelection(fixid, homeTeam, awayTeam, selected, killer=false) {
     //TODO: update the currentSelection div
+    var killerTeamMsg = "<br><br>Select {teamname} this week and if they win," +
+            " you get to REMOVE a life from another player of your choice"
     $("#submitNow").unbind("click");
     switch (selected) {
         case 1:
             $('#csTeamWin').text(homeTeam + "(home) to beat " + awayTeam);
+            if (killer==1){
+                $('#csTeamWin').append(killerTeamMsg.replace("{teamname}", 
+                homeTeam))
+            }
             break;
         case 3:
             $('#csTeamWin').text(awayTeam + "(away) to beat " + homeTeam);
+            if (killer==3){
+                $('#csTeamWin').append(killerTeamMsg.replace("{teamname}", 
+                awayTeam))
+            }
             break;
+            
     }
 
     $('#currentSelection').slideDown();
