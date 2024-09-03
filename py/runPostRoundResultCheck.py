@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from dal import dal
 import requests
 import argparse
@@ -67,7 +68,6 @@ for match_data in result_data['events']:
                                round_number)
     else:
         print(f"No result available for {home_team} vs {away_team} at present")
- 
- print("Final step - call checkResultsVsPredictions");
- conn.exe_sql("call checkResultsVsPredictions")
- 
+
+print("Final step - call checkResultsVsPredictions");
+conn.exe_sql("call checkResultsVsPredictions")
