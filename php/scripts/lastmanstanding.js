@@ -278,8 +278,8 @@ function displayPlayerStandings() {
                 var markUp = "";
                 lives_lost = 3 - value["lives"]
                 lives_rem = value["lives"]
-                ballshtml = "&#10060;&nbsp;".repeat(lives_lost)
-                ballshtml += "&#9917;&nbsp;".repeat(value["lives"])
+                ballshtml = "&#9917;&nbsp;".repeat(value["lives"])
+                ballshtml += "&#10060;&nbsp;".repeat(lives_lost)
                 if (value["CompStatus"] == "Playing") {
                     markUp = '<span class="activePlayerName">' + ballshtml;
                 }
