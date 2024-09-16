@@ -8,6 +8,17 @@ class Authenticator {
             return $session['user'];
         }
 
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+            // Check if the header starts with "Bearer"
+            if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+                $token = $matches[1]; // Extracted token
+                echo "Token: " . $token;
+            } else {
+                echo "Invalid Authorization header format.";
+            }
+        }
+
         # if we have reached this point, all authentication checks failed
         $requestStatus = new RequestStatus();
         $requestStatus->status = 0;

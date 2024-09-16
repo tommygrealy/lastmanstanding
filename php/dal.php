@@ -141,7 +141,7 @@ class dal {
         $check = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $check;
     }
-    
+
     public function getUserPredictionHistory($UserName) {
         $mylink = $this->connect();       
         $query = "call showUserPredictionHistory (:userName)";
@@ -297,6 +297,17 @@ class dal {
         else{
             return FALSE;
         }
+    }
+
+    public function getUserDetailsFromApiToken($token){
+        $mylink=$this->connect();
+        $query = "select * from users where id =  ";
+        $query .= "(select fk_user_id from api_tokens ";
+        $query .= "where token = :token;";
+        $stmt->bindParam(':token',$token);
+        $stmt->execute();
+        $userdetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $userdetails[0];
     }
             
     function disconnect() {

@@ -79,7 +79,7 @@ $lms_privlevel = $user_info['PrivLevel'];
                 <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
                     <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
                     <div role="main" class="ui-content">
-                        <h3 class="ui-title">Fuck off, you're out. Click X to close this window.</h3>
+                        <h3 class="ui-title">You have been eliminated. Click X to close this window.</h3>
 
                     </div>
                     <p>dick...! </p>
