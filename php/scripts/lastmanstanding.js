@@ -232,14 +232,14 @@ function makeSubmission(fixid, select)
 
             if (data.reason == "You're out ") {
                 // redirect to payment page.
-                UsrMsg = " fooljaws";
+                UsrMsg = "Eliminated";
                 $('#submitNow').css("display: none;");
                 $('#submitCancel').css("display: none;");
                 $('goMyHistory').show();
             }
 
             //$('#currentSelection').empty();
-            $('#csTeamWin').html("Nope! <br> \n" + UsrMsg);
+            $('#csTeamWin').html("Cannot submit this prediciton<br> \n" + UsrMsg);
 
 
         }
@@ -318,8 +318,17 @@ function displaySelectionsPostDeadline() {
                     else {
                         selectionMethodText="Selected: ";
                     }
+                    var dynamite = ""
+                    if (value["KillerTeam"] != null){
+                        if (value["PredictedTeam"] == value["HomeTeam"] && value["KillerTeam"] == 1){
+                            dynamite=" &#x1f9e8;"
+                        }
+                        if (value["PredictedTeam"] == value["AwayTeam"] && value["KillerTeam"] == 3){
+                            dynamite=" &#x1f9e8;"
+                        }
+                    }
                     $('#publicSelectionsList').append(
-                            '<li data-role="list-divider">Player: ' + value["FullName"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + " - " + formatDateTime(value["KickOffTime"]) + '</li><li>'+ selectionMethodText + '<strong>' + value["PredictedTeam"] + '</strong></li>'
+                            '<li data-role="list-divider">Player: ' + value["FullName"] + '</li><li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + " - " + formatDateTime(value["KickOffTime"]) + '</li><li>'+ selectionMethodText + '<strong>' + value["PredictedTeam"] + dynamite + '</strong></li>'
                             )
                 });
                 $('#publicSelectionsList').listview("refresh");
