@@ -5,7 +5,7 @@ dbConfig = {
     "username": "lms",
     "password": "th!isisnew12@",
     "host": "localhost",
-    "dbname": "lastmanstanding",
+    "dbname": "lastmanstanding-dev",
 }
 
 
