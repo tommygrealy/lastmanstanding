@@ -28,10 +28,12 @@ $lms_privlevel = $user_info['PrivLevel'];
         <link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />-->
         <link rel="stylesheet" href="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css">
         <link rel="stylesheet" href="styles/themes/bluyel.min.css">
-        <link rel="stylesheet" href="styles/style.css">
+        <link rel="stylesheet" href="styles/style.css?v=4">
         <title>Last Man Standing - Home</title>
         <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
         <script src="scripts/lastmanstanding.js"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <script>
@@ -79,17 +81,14 @@ $lms_privlevel = $user_info['PrivLevel'];
                 <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
                     <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
                     <div role="main" class="ui-content">
-                        <h3 class="ui-title">You have been eliminated. Click X to close this window.</h3>
+                        <h3 class="ui-title">You have been eliminated.</h3>
 
                     </div>
-                    <p>dick...! </p>
                     <p><a href="#userHistory" onclick="userToView='<?php echo $lms_username ?>'" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>  
 
                 </div>
 
                 <div id="alreadyPredictedDetails"></div>
-
-
 
                 <span id="messageInformSelect"> </span>
                 <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
@@ -231,7 +230,56 @@ $lms_privlevel = $user_info['PrivLevel'];
         </div>
         
         
-        
+            <!-- dynamite page -->
+            <div data-role="page" id="dynamite_page">
+            <div data-role="header" data-position="fixed">
+                <?php
+                include 'includes/header.php';
+                ?>
+            </div>
+
+            <div data-role="content">
+
+                <!-- dynamite pop up dialogs -->
+                <div id="dynamiteSelection" data-transition="slide" >
+                    <h3 id="dynamite-drop-h3">Drop dynamite on </h3>
+                    <span id="dynamiteAction"></span><br>                    
+                    <a href="#" id="submitNow" data-role="button">YES</a>
+                    <a href="#" id="submitCancel" data-role="button" onclick="$('#dynamiteSelection').slideToggle();">NO</a>
+                </div>
+
+                <!-- top container -->
+                <div id="dynamite-top-contianer">
+                    <!-- Draggable Dynamite div -->
+                    <div id="dynamite"><h1>🧨</h1></div>
+                    Drag and drop the dynamite on a user below:
+                </div>
+
+                
+                
+                <!-- Droppable text divs -->
+                <div class="drop-tile-container" id="player-tile-targets">
+                </div>
+                
+
+
+                <script>
+                    
+                </script>
+
+                <ul data-role="listview" id="dynamiteActionsList" data-filter="true" data-input="#myFilter" data-inset="true">
+
+                    <!-- this list is dynamically updated on page init -->
+                </ul>
+
+
+            </div>
+            <div data-role="footer" data-position="fixed">
+                <?php
+                include 'includes/footer.php';
+                ?>
+            </div>
+        </div>
                 
         <!-- payment confirmed page -->
         <div data-role="page" id="paymentConfirmed">

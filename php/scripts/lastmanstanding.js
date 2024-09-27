@@ -16,6 +16,9 @@ $(document).on("pageshow", "#userHistory", function () {
     showPlayerHist(userToView);
 });
 
+$(document).on("pageinit", "#dynamite_page", function(){
+    displayPlayersForDynamite();
+})
 
 var params = new window.URLSearchParams(window.location.search);
 
@@ -292,6 +295,51 @@ function displayPlayerStandings() {
 
             });
             $('#playerStandingsList').listview("refresh");
+
+        }
+    });
+}
+
+
+function displayPlayersForDynamite() {
+    $.ajax({
+        'url':
+                'restServices/userStandings.php',
+        dataType: 'json',
+        success: function (json) {
+            $.each(json, function (key, value) {
+                var player_tile_class = "";
+                lives_lost = 3 - value["lives"]
+                lives_rem = value["lives"]
+                ballshtml = "&#9917;&nbsp;".repeat(value["lives"])
+                ballshtml += "&#10060;&nbsp;".repeat(lives_lost)
+                if (value["CompStatus"] == "Playing") {
+                    player_tile_class = 'drop-target'
+                }
+                else if (value["CompStatus"] == "Eliminated") {
+                    player_tile_class = 'gone-target';
+                }
+                $('#player-tile-targets').append(
+                    '<div class="' + player_tile_class + '" id="'+ value["FullName"] +'">' + value["FullName"] +  '<br>' + ballshtml + '</div>'
+                )
+
+            });
+            $(function() {
+            // Make the element draggable using jQuery UI
+            $("#dynamite").draggable();
+            
+            // Make the target divs droppable
+            $(".drop-target").droppable({
+                accept: "#dynamite",
+                hoverClass: "active", // Add the active class when dynamite is dragged over
+                drop: function(event, ui) {
+                    // Event handler for when the dynamite is dropped on the div
+                    $('#dynamiteSelection').slideDown()
+                    const dropTargetId = $(this).attr('id');
+                    $("#dynamite-drop-h3").text("Drop 🧨 on " + $(this).attr('id') + "?")                  
+                    }
+                });
+            });
 
         }
     });
