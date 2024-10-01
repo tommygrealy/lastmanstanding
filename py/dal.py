@@ -5,7 +5,7 @@ dbConfig = {
     "username": "lms",
     "password": "th!isisnew12@",
     "host": "localhost",
-    "dbname": "lastmanstanding-dev",
+    "dbname": "lastmanstanding",
 }
 
 
@@ -14,8 +14,11 @@ class dal():
         self.db_conn = self.connect()
 
     def connect(self):
-        return mysql.connector.connect(host=dbConfig["host"], user=dbConfig["username"], autocommit=True,
-                                       password=dbConfig["password"], database=dbConfig["dbname"])
+        return mysql.connector.connect(host=dbConfig["host"], 
+                                       user=dbConfig["username"],
+                                       autocommit=True,
+                                       password=dbConfig["password"],
+                                       database=dbConfig["dbname"])
 
     def exe_sql(self, sql):
         mycursor = self.db_conn.cursor()
@@ -41,6 +44,23 @@ class dal():
         mycursor.execute(sql)
         retval = mycursor.fetchall()
         mycursor.close()
+        return retval
+    
+    def get_all_unused_teams(self):
+        sql_teams_picked = """
+            create TEMPORARY table alreadyPicked as 
+            SELECT distinct TeamName FROM lastmanstanding.predictions where username in
+            (  select UserName from users where compstatus = 'Playing' );"""
+        sql_available_teams = """
+            select distinct HomeTeam from fixtureresults
+            where HomeTeam not in (select TeamName from alreadyPicked);
+        """
+        mycursor = self.db_conn.cursor()
+        mycursor.execute(sql_teams_picked)
+        mycursor.execute(sql_available_teams)
+        result = mycursor.fetchall()
+        mycursor.close()
+        retval = [row[0] for row in result]
         return retval
 
     def get_next_fixture_for_team(self, teamname):
