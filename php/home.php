@@ -28,7 +28,7 @@ $lms_privlevel = $user_info['PrivLevel'];
         <link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />-->
         <link rel="stylesheet" href="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css">
         <link rel="stylesheet" href="styles/themes/bluyel.min.css">
-        <link rel="stylesheet" href="styles/style.css?v=4">
+        <link rel="stylesheet" href="styles/style.css?v=5">
         <title>Last Man Standing - Home</title>
         <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -238,13 +238,19 @@ $lms_privlevel = $user_info['PrivLevel'];
                 ?>
             </div>
 
-            <div data-role="content">
+            <div data-role="content" id="no-dynamite-msg">
+                    You have no dynamite to drop. 
+                    Dynamite can be earned by slecting 
+                    a team labelled with 🧨 when making your weekly prediction
+            </div>
+
+            <div data-role="content" id="dynamite-drop-options">
 
                 <!-- dynamite pop up dialogs -->
                 <div id="dynamiteSelection" data-transition="slide" >
-                    <h3 id="dynamite-drop-h3">Drop dynamite on </h3>
+                    <h3 id="dynamite-drop-h3"></h3>
                     <span id="dynamiteAction"></span><br>                    
-                    <a href="#" id="submitNow" data-role="button">YES</a>
+                    <a href="#" id="submitNow" onclick="dropDynamite()" data-role="button">YES</a>
                     <a href="#" id="submitCancel" data-role="button" onclick="$('#dynamiteSelection').slideToggle();">NO</a>
                 </div>
 
@@ -260,12 +266,7 @@ $lms_privlevel = $user_info['PrivLevel'];
                 <!-- Droppable text divs -->
                 <div class="drop-tile-container" id="player-tile-targets">
                 </div>
-                
 
-
-                <script>
-                    
-                </script>
 
                 <ul data-role="listview" id="dynamiteActionsList" data-filter="true" data-input="#myFilter" data-inset="true">
 

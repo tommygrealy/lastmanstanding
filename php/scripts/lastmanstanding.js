@@ -7,6 +7,9 @@ var noFixToDisplayMsg = "There are currently no fixtures available for selection
     fixtures for the next round will be avilable for selection at the concusion of the current round of matches";
 
 var userToView = "";
+var currentUsername ="";
+var user_dynamite_id = null
+var dynamiteTargetUser = "";
 
 $(document).on("pageinit", "#standings", function () {
     displayPlayerStandings();
@@ -17,7 +20,23 @@ $(document).on("pageshow", "#userHistory", function () {
 });
 
 $(document).on("pageinit", "#dynamite_page", function(){
-    displayPlayersForDynamite();
+    $.ajax({
+        url: 'restServices/showUserDynamiteOptions.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.length > 0 && response[0].status === 1) {
+                localStorage.setItem('updatedAt', response[0].updated_at);
+                user_dynamite_id = response[0].dynamite_id
+                displayPlayersForDynamite()
+                $('#no-dynamite-msg').hide()
+                $('#no-dynamite-msg').show()
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('Error: unexpected response from ' + url + ', ' + error);
+        }
+    });
 })
 
 var params = new window.URLSearchParams(window.location.search);
@@ -53,6 +72,7 @@ function loadUserOpts() {
         dataType: 'json',
         success: function (json) {
             if (json.userstatus) {
+                currentUsername = json.userstatus.username
                 if (json.userstatus.CompStatus == "Eliminated") {
                     console.log("Elim");
                     $("#elminiatedNotifyPopup").popup();
@@ -250,6 +270,58 @@ function makeSubmission(fixid, select)
     //}
 }
 
+function dropDynamite(){
+    let check_timestamp = localStorage.getItem('updatedAt');
+    var selection = {"user_last_update": check_timestamp, "drop_on_user": dynamiteTargetUser, "dynamite_id": user_dynamite_id};
+    //if (confirm('Are you sure you want to submit this prediction? \nOnce a prediction has been submitted it cannot be changed!')) {
+    console.log("Posting to restServices/submitDynamiteDrop.php, data = " + JSON.stringify(selection))
+    var posting = $.post("restServices/submitDynamiteDrop.php", selection);
+    $.mobile.loading('show', {
+        text: 'Loading',
+        textVisible: false,
+        theme: 'z',
+        html: ""
+    });
+
+    posting.done(function(data){
+        console.log("POSTING WAS SUCCESSFUL: " + JSON.stringify(data))
+        $.mobile.loading('hide')
+        $("#dynamite").fadeOut();
+        // remove and refresh the player tiles
+        $(".drop-target, .gone-target").remove();
+        $("#dynamite_page").trigger("pageinit")
+        $("#dynamiteSelection").slideUp()
+
+        
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log("Request failed: " + textStatus); // Error handling
+    });
+
+   /*posting.done(function (data) {
+        $.mobile.loading('hide');
+        console.log(JSON.stringify(data));
+        if (data.status == 1) {
+            $('#csTeamWin').text("Done, bla bla now has x lives remaining, good job")
+        }
+        else {
+            
+            console.log((data.reason));
+            console.log(data.reason[0].substring(data.reason[0].length - 13, data.reason[0].length));
+            //TODO: Select/case for every possible reason type
+            var UsrMsg = ""
+            //TODO: Below should be a switch/case to handle more error types
+            if (data.reason[0] == "stale_info") {
+                UsrMsg = "Someone else has dropped dynamite since you opened this page " +
+                "click continue to refresh the options list and try again";
+            }
+            $('#csTeamWin').html("Cannot drop dynamite becuase <br> \n" + UsrMsg);
+
+
+        }
+    });*/
+
+}
+
 function showAlreadyPlayed(selectionData) {
     //$("#alreadyPredictedDetails").empty();
     //console.log("already played funciton hit")
@@ -320,7 +392,10 @@ function displayPlayersForDynamite() {
                     player_tile_class = 'gone-target';
                 }
                 $('#player-tile-targets').append(
-                    '<div class="' + player_tile_class + '" id="'+ value["FullName"] +'">' + value["FullName"] +  '<br>' + ballshtml + '</div>'
+                    '<div class="' + player_tile_class + '"' + 
+                    'id="'+ value["FullName"] + '" user_attr="' + value["username"] +
+                    '">' + value["FullName"] 
+                    +  '<br>' + ballshtml + '</div>'
                 )
 
             });
@@ -333,14 +408,17 @@ function displayPlayersForDynamite() {
                 accept: "#dynamite",
                 hoverClass: "active", // Add the active class when dynamite is dragged over
                 drop: function(event, ui) {
-                    // Event handler for when the dynamite is dropped on the div
-                    $('#dynamiteSelection').slideDown()
-                    const dropTargetId = $(this).attr('id');
-                    $("#dynamite-drop-h3").text("Drop 🧨 on " + $(this).attr('id') + "?")                  
+                        // Event handler for when the dynamite is dropped on the div
+                        $('#dynamiteSelection').slideDown()
+                        const dropTargetId = $(this).attr('id');
+                        $("#dynamite-drop-h3").text("Drop 🧨 on " + $(this).attr('id') + "?") 
+                        dynamiteTargetUser = $(this).attr('user_attr')
+                        console.log(currentUsername + " drops dynamite on " + dynamiteTargetUser)
                     }
                 });
             });
-
+            $('#no-dynamite-msg').hide()
+            $('#dynamite-drop-options').show() 
         }
     });
 }
