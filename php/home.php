@@ -250,8 +250,8 @@ $lms_privlevel = $user_info['PrivLevel'];
                 <div id="dynamiteSelection" data-transition="slide" >
                     <h3 id="dynamite-drop-h3"></h3>
                     <span id="dynamiteAction"></span><br>                    
-                    <a href="#" id="submitNow" onclick="dropDynamite()" data-role="button">YES</a>
-                    <a href="#" id="submitCancel" data-role="button" onclick="$('#dynamiteSelection').slideToggle();">NO</a>
+                    <a href="#" id="submitDynamiteNow" onclick="dropDynamite()" data-role="button">YES</a>
+                    <a href="#" id="submitDynamiteCancel" data-role="button" onclick="$('#dynamiteSelection').slideToggle();">NO</a>
                 </div>
 
                 <!-- top container -->

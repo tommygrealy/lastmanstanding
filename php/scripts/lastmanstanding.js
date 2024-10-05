@@ -10,6 +10,7 @@ var userToView = "";
 var currentUsername ="";
 var user_dynamite_id = null
 var dynamiteTargetUser = "";
+var dynamiteTargetFullName = "";
 
 $(document).on("pageinit", "#standings", function () {
     displayPlayerStandings();
@@ -285,13 +286,25 @@ function dropDynamite(){
 
     posting.done(function(data){
         console.log("POSTING WAS SUCCESSFUL: " + JSON.stringify(data))
+        var post_throw_msg = "";
         $.mobile.loading('hide')
+        if (data['reason']['lives_remaining'] < 1){
+            post_throw_msg= data['reason']['player_hit'] + " is out.. good job!";
+        }
+        else{
+            post_throw_msg = "You took a life from " + dynamiteTargetFullName + ", they now have " + data['reason']['lives_remaining'] + " lives"
+        }
         $("#dynamite").fadeOut();
         // remove and refresh the player tiles
-        $(".drop-target, .gone-target").remove();
-        $("#dynamite_page").trigger("pageinit")
-        $("#dynamiteSelection").slideUp()
-
+        $("#dynamite-drop-h3").text(post_throw_msg)
+        $("#submitDynamiteCancel").remove()
+        $("#submitDynamiteNow").text("Continue")
+        $('#submitDynamiteNow').attr('onclick',             
+            '$("#dynamite_page").trigger("pageinit"); ' +
+            '$("#dynamiteSelection").slideUp(); ' +
+            '$(".drop-target, .gone-target").remove();' +
+            '$("#dynamite_page").trigger("pageinit");'
+        );
         
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log("Request failed: " + textStatus); // Error handling
@@ -411,8 +424,11 @@ function displayPlayersForDynamite() {
                         // Event handler for when the dynamite is dropped on the div
                         $('#dynamiteSelection').slideDown()
                         const dropTargetId = $(this).attr('id');
-                        $("#dynamite-drop-h3").text("Drop 🧨 on " + $(this).attr('id') + "?") 
+                        dynamiteTargetFullName = $(this).attr('id')
                         dynamiteTargetUser = $(this).attr('user_attr')
+                        $("#dynamite-drop-h3").text("Drop 🧨 on " + dynamiteTargetFullName + "?") 
+                        
+                        
                         console.log(currentUsername + " drops dynamite on " + dynamiteTargetUser)
                     }
                 });
