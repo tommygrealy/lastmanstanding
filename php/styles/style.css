@@ -76,7 +76,7 @@ td.availableHomeTeam{
     width: 30%;
 }
 
-#currentSelection{
+#currentSelection, #dynamiteSelection{
     color: #333;
     position: fixed;
     left: auto; /* had been right 100px - changed to left 5px, then left auto */
@@ -99,13 +99,63 @@ td.availableHomeTeam{
 #goPayment{
     display: none;
 }
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : 02-Oct-2014, 10:48:01
-    Author     : tgrealy
-*/
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.grid-item {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+#dynamite-drop-options {
+    display: none; /* none by default will set to display if they have a stick */
+  }
+  
+
+#dynamite {
+    cursor: grab;
+    position: absolute;   
+  }
+
+.drop-tile-container {
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Set both horizontal and vertical spacing */
+}
+
+.drop-target, .gone-target {
+    width: 100px;
+    color: #333;
+    background-color: #1bbbff;
+    height: 70px;
+    border: 2px solid #0e668c;
+    /* margin: 20px; */
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    /*line-height: 60px;*/
+    transition: background-color 0.3s;
+    }
+
+.gone-target {
+    background-color: #9fa9ad; /* Specific to gone-target */
+    }
+
+/* Styles for highlighting */
+.drop-target.active {
+    background-color: yellow;
+    border-color: #0e668c;
+    }
 

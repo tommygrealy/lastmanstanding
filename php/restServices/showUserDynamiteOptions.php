@@ -10,25 +10,22 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: http://www.actionshots.ie');
 
 $dal = new dal();
-
 $requestStatus = new requestStatus();
 
 $auth = new Authenticator();
 $user_info=$auth->get_current_user($_SESSION, $_REQUEST);
 
 $current_user = $user_info['username'];
-$priv_level = ($user_info['PrivLevel']);
+$current_user_id = $user_info['id'];
 
-if ($priv_level < 3) {
-    $requestStatus->status = 0;
-    $requestStatus->reason = "Insufficient Privilage";
-    echo json_encode($requestStatus);
-    die();
+$userDynamiteOptions=$dal->getDynamiteDataForUser($current_user_id);
+if(count($userDynamiteOptions)>0){
+    echo json_encode($userDynamiteOptions);
 }
-
-$thisWeeksSelections = $dal->getAllSelectionsForThisWeek();
-$pre_output = json_encode($thisWeeksSelections);
-echo str_replace('"\u000', '"',$pre_output); // to strop out unicode escape characters '\000 inserted by json_encode function
-
+else{
+    $requestStatus->status = 0;
+    $requestStatus->reason = "No dynamite";
+    echo json_encode($requestStatus);
+}
 ?>
  
