@@ -13,5 +13,5 @@ mysql-connector-python==9.0.0
 PyJWT==2.9.0
 requests==2.32.3
 twilio==9.2.3
-urllib3==2.2.2
+urllib3==1.26.20
 yarl==1.9.4
