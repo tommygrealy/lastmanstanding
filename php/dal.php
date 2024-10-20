@@ -189,10 +189,25 @@ class dal {
     
      public function updateCompStatus($username, $status) {
         $mylink = $this->connect();
-        $query = "call updateCompStatus (:userName, :status);";
+        $query = "update users set CompStatus = :status where username = :userName;";
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':userName', $username);
         $stmt->bindParam(':status', $status);
+        if ($stmt->execute()) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function updateDynamite($dynamite_id, $used_on){
+        $mylink = $this->connect();
+        $query = "UPDATE dynamite SET target_user_fk = ";
+        $query .= "(select id from users where username = :target_user), ";
+        $query .= "status = 0 WHERE dynamite_id = :dynamite_id;";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':target_user', $used_on);
+        $stmt->bindParam(':dynamite_id', $dynamite_id);
         if ($stmt->execute()) {
             return TRUE;
         } else {
@@ -308,6 +323,77 @@ class dal {
         $stmt->execute();
         $userdetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $userdetails[0];
+    }
+
+    public function getDynamiteDataForUser($user_id){
+        $mylink=$this->connect();
+        $query = "SELECT * FROM  dynamite where ";
+        $query .= "dynamite.granted_to_user_fk = :user_id and status = 1;";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $dyn_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $dyn_details;
+    }
+
+    public function getDynamiteLastUpdatedTimeStamp(){
+        $mylink=$this->connect();
+        $query =  "SELECT updated_at FROM  dynamite order by updated_at desc limit 1;";
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result[0]['updated_at'];
+    }
+
+    public function grantDynamiteToUser($user_id, $fixture_id){
+
+    }
+
+    public function dropDynamiteOnUser($dynamite_id, $target_user_id){
+        $mylink=$this->connect();
+
+        try {
+            // Prepare the UPDATE query to decrement lives
+            $sql_update = "UPDATE users SET lives = lives - 1 WHERE username = :target_user";
+            $stmt_update = $mylink->prepare($sql_update);
+            $stmt_update->bindParam(":target_user", $target_user_id);
+            $stmt_update->execute();
+
+            if ($stmt_update->rowCount() > 0){
+                $sql_select = "SELECT lives FROM users WHERE username = :target_user";
+                $stmt_select = $mylink->prepare($sql_select);
+                $stmt_select->bindParam(":target_user", $target_user_id);
+                $stmt_select->execute();
+                $result = $stmt_select->fetch();
+                return $result[0];
+            }
+            else {
+                return "Failed";
+            }
+
+        
+            /*// Prepare the SELECT query to retrieve the new lives value
+            $sql_select = "SELECT lives FROM users WHERE username = :target_user";
+            $stmt_select = $mylink->prepare($sql_select);
+            $stmt_select->bindParam(":target_user", $target_user_id);
+            $stmt_select->execute();
+        
+            // Fetch the result
+            $result = $stmt_select->fetch();
+        
+            // Commit transaction
+            $mylink->commit();
+
+            return $result;*/
+        
+        } catch (Exception $e) {
+            // Rollback transaction in case of an error
+            $mylink->rollback();
+            echo "Failed to update $e :-(";
+            return "update failed";
+        }
+        
+        
     }
             
     function disconnect() {
