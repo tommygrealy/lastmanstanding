@@ -64,7 +64,7 @@ for match in data['events']:
         sql += ", AwayTeamScore = " + str(awayTeamScore)
         sql += " where HomeTeam = '" + team_translator[homeTeam] + "'"
         sql += " and AwayTeam = '" + team_translator[awayTeam] + "';"
-        conn.exe_sql(sql)
+        conn.exe_sql_read(sql)
         print(sql)
 
 

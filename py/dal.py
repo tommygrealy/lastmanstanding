@@ -5,7 +5,7 @@ dbConfig = {
     "username": "lms",
     "password": "th!isisnew12@",
     "host": "localhost",
-    "dbname": "lastmanstanding",
+    "dbname": "lastmanstanding-dev",
 }
 
 
@@ -61,6 +61,18 @@ class dal():
         result = mycursor.fetchall()
         mycursor.close()
         retval = [row[0] for row in result]
+        return retval
+
+    def get_fixture_info_by_details(self, hometeam, awayteam, gameweek_start, gameweek_end):
+        sql = f"""
+        select * from fixtureresults where KickOffTime between 
+        '{gameweek_start}' and '{gameweek_end}' and 
+        homeTeam = '{hometeam}' and awayTeam ='{awayteam}';
+        """
+        mycursor = self.db_conn.cursor()
+        mycursor.execute(sql)
+        retval = mycursor.fetchall()
+        mycursor.close()
         return retval
 
     def get_next_fixture_for_team(self, teamname):

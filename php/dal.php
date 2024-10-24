@@ -40,7 +40,7 @@ class dal {
 
 
         if ($stmt->execute()) {
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);            
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return "success|" . $result[0]['PredictionID'];
         } else {
             $myErrorArray = array($stmt->errorInfo());
@@ -327,8 +327,10 @@ class dal {
 
     public function getDynamiteDataForUser($user_id){
         $mylink=$this->connect();
-        $query = "SELECT * FROM  dynamite where ";
-        $query .= "dynamite.granted_to_user_fk = :user_id and status = 1;";
+        $query = "SELECT";
+        $query .= " dynamite_id, granted_to_user_fk, target_user_fk, won_in_fixture_id, status,";
+        $query .= " (select updated_at from dynamite order by updated_at desc limit 1) as 'updated_at'";
+        $query .= " FROM  dynamite where dynamite.granted_to_user_fk = :user_id and status = 1;";
         $stmt = $mylink->prepare($query);
         $stmt->bindParam(':user_id', $user_id);
         $stmt->execute();

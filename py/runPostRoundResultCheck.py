@@ -3,6 +3,9 @@ from dal import dal
 import requests
 import argparse
 import json
+import sys
+
+print(f"py interpreter is: {sys.executable}")
 
 conn = dal()
 
@@ -70,4 +73,4 @@ for match_data in result_data['events']:
         print(f"No result available for {home_team} vs {away_team} at present")
 
 print("Final step - call checkResultsVsPredictions");
-conn.exe_sql("call checkResultsVsPredictions")
+conn.exe_sql_read("call checkResultsVsPredictions")

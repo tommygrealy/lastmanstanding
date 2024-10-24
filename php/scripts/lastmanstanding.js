@@ -267,6 +267,9 @@ function makeSubmission(fixid, select)
 
 
         }
+    }).fail(function(jqXHR, textStatus, errorThrown){
+        // exact same thing cos DONE never fires FFS    
+        console.log("Error: " + JSON.stringify(jqXHR))
     });
     //}
 }
@@ -288,11 +291,26 @@ function dropDynamite(){
         console.log("POSTING WAS SUCCESSFUL: " + JSON.stringify(data))
         var post_throw_msg = "";
         $.mobile.loading('hide')
-        if (data['reason']['lives_remaining'] < 1){
+        if (data['reason'] == "stale data"){
+            post_throw_msg = "Cannot drop now as another user has recently" 
+            post_throw_msg += " dropped a dynamite, please click continue"
+            post_throw_msg += " to refresh this page and see the latest info"
+            $("#submitDynamiteCancel").remove()
+            $("#submitDynamiteNow").text("Continue")
+            $("#submitDynamiteNow").click(function(){location.reload();})
+
+        }
+        else if (data['reason']['lives_remaining'] < 1){
             post_throw_msg= data['reason']['player_hit'] + " is out.. good job!";
+            $("#dynamite").fadeOut();
+            $("#submitDynamiteNow").text("Continue")
+            $("#submitDynamiteNow").click(function(){location.href = '/home.php#standings';})
         }
         else{
             post_throw_msg = "You took a life from " + dynamiteTargetFullName + ", they now have " + data['reason']['lives_remaining'] + " lives"
+            $("#dynamite").fadeOut();
+            $("#submitDynamiteNow").text("Continue")
+            $("#submitDynamiteNow").click(function(){location.href = '/home.php#standings';})
         }
         $("#dynamite").fadeOut();
         // remove and refresh the player tiles
