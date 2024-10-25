@@ -38,6 +38,7 @@ $(document).on("pageinit", "#dynamite_page", function(){
             console.log('Error: unexpected response from ' + url + ', ' + error);
         }
     });
+    showDynamiteHist();
 })
 
 var params = new window.URLSearchParams(window.location.search);
@@ -495,6 +496,22 @@ function displaySelectionsPostDeadline() {
             }
         }
     });
+}
+
+function showDynamiteHist() {
+    $('#dynamiteActionsList').empty();
+    $.ajax({
+        'url': 'restServices/getDynamiteDropHistory.php',
+        success: function(data){
+            $.each(data, function (key, value) {
+                $('#dynamiteActionsList').append(
+                    "<li>On " + formatDateTime(value["updated_at"]) + ", " +
+                    value["SourceFullName"] + " threw 🧨 at " +
+                    value["TargetFullName"] + "</li>"
+                )
+            })
+        }
+    })
 }
 
 function showPlayerHist(inUser) {

@@ -338,6 +338,26 @@ class dal {
         return $dyn_details;
     }
 
+    public function getDynamiteDropHistory(){
+        $mylink=$this->connect();
+        $query = " 
+            SELECT 
+                dynamite.updated_at,
+                source_user.FullName AS SourceFullName,
+                target_user.FullName AS TargetFullName
+            FROM 
+                dynamite
+            JOIN 
+                users AS source_user ON dynamite.granted_to_user_fk = source_user.id
+            JOIN 
+                users AS target_user ON dynamite.target_user_fk = target_user.id
+            ORDER by dynamite.updated_at desc;
+        ";
+        $stmt = $mylink->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getDynamiteLastUpdatedTimeStamp(){
         $mylink=$this->connect();
         $query =  "SELECT updated_at FROM  dynamite order by updated_at desc limit 1;";

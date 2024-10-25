@@ -240,7 +240,7 @@ $lms_privlevel = $user_info['PrivLevel'];
 
             <div data-role="content" id="no-dynamite-msg">
                     You have no dynamite to drop. 
-                    Dynamite can be earned by slecting 
+                    Dynamite can be earned by selecting 
                     a team labelled with 🧨 when making your weekly prediction
             </div>
 
@@ -265,16 +265,15 @@ $lms_privlevel = $user_info['PrivLevel'];
                 
                 <!-- Droppable text divs -->
                 <div class="drop-tile-container" id="player-tile-targets">
+                
                 </div>
-
-
-                <ul data-role="listview" id="dynamiteActionsList" data-filter="true" data-input="#myFilter" data-inset="true">
-
-                    <!-- this list is dynamically updated on page init -->
-                </ul>
-
-
             </div>
+            <div  data-role="content" id="dynaDropHistory">
+                    <hr/>
+                    Recent 🧨 drops:
+                    <ul id="dynamiteActionsList">
+                    <ul>
+                </div>
             <div data-role="footer" data-position="fixed">
                 <?php
                 include 'includes/footer.php';
