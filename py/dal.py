@@ -1,12 +1,31 @@
 import mysql.connector
 from datetime import datetime
+import os
 
-dbConfig = {
-    "username": "lms",
-    "password": "th!isisnew12@",
-    "host": "localhost",
-    "dbname": "lastmanstanding-dev",
-}
+environment = os.environ.get('RUN_ENVIRON')
+if environment == None:
+    print ("Env variable RUN_ENVIRON is not set! Exiting")
+    exit(1)
+
+if os.environ['RUN_ENVIRON']=='DEV':
+    dbConfig = {
+        "username": "lms",
+        "password": "th!isisnew12@",
+        "host": "localhost",
+        "dbname": "lastmanstanding-dev",
+    }
+elif os.environ['RUN_ENVIRON']=='PROD':
+    dbConfig = {
+        "username": "lms",
+        "password": "th!isisnew12@",
+        "host": "localhost",
+        "dbname": "lastmanstanding",
+    }
+else:
+    print("Environment variable RUN_ENVIRON must be set to PROD or DEV")
+    print("Run either:")
+    print("export RUN_ENVIRON='PROD'")
+    print("export RUN_ENVIRON='DEV'")
 
 
 class dal():
@@ -18,7 +37,8 @@ class dal():
                                        user=dbConfig["username"],
                                        autocommit=True,
                                        password=dbConfig["password"],
-                                       database=dbConfig["dbname"])
+                                       database=dbConfig["dbname"]
+                                       )
 
     def exe_sql(self, sql):
         mycursor = self.db_conn.cursor()
@@ -26,6 +46,42 @@ class dal():
         self.db_conn.commit()
         mycursor.close()
         return mycursor.rowcount
+    
+    def fetch_rows_with_filters(self, table, filters):
+        mycursor = self.db_conn.cursor()
+        query = f"SELECT * FROM {table}"
+        if filters:
+            where_clause = " AND ".join([f"{column} = %s" for column in filters.keys()])
+            query += f" WHERE {where_clause}"
+        
+        try:
+            mycursor.execute(query, list(filters.values()))
+            rows = mycursor.fetchall()
+            return rows
+        finally:
+            mycursor.close()
+    
+    def update_table(self, table_name, update_columns, filter_columns):
+        mycursor = self.db_conn.cursor()
+        # Construct the SET clause
+        set_clause = ", ".join([f"{col} = %s" for col in update_columns.keys()])
+        # Construct the WHERE clause
+        where_clause = " AND ".join([f"{col} = %s" for col in filter_columns.keys()])
+        
+        # Prepare the full SQL query
+        query = f"UPDATE {table_name} SET {set_clause} WHERE {where_clause}"
+        
+        # Combine values for the query execution
+        values = list(update_columns.values()) + list(filter_columns.values())
+        
+        # Execute the query and commit the changes
+        try:
+            mycursor.execute(query, values)
+        except mysql.connector.Error as e:
+            print(f"Error updating table: {e}")
+        finally:
+            mycursor.close()
+
 
     def get_users_not_submitted(self):
         sql = "SELECT * FROM `usersnotsubmitted`;"
@@ -100,6 +156,21 @@ class dal():
         mycursor.execute(sql, params)
         retval = mycursor.fetchall()[0][0]
         mycursor.close()
+        return retval
+    
+    def get_all_fixtures_for_gameweek(self, gameweek):
+        mycursor = self.db_conn.cursor(dictionary=True)
+        params = (gameweek, gameweek)
+        sql = f"""
+                select * from fixtureresults where
+                KickOfftime >  (select DateFrom from gameweekmap where gameweek = %s)
+                and
+                KickOffTime < (select DateTo from gameweekmap where gameweek = %s)
+                order by KickOffTime;
+                """
+        mycursor = self.db_conn.cursor(dictionary=True)
+        mycursor.execute(sql, params)
+        retval = mycursor.fetchall()
         return retval
 
 
