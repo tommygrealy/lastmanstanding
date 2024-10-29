@@ -115,7 +115,7 @@ for user in dynamite_winners:
     success = conn.insert_into_table(
         table_name="dynamite",
         insert_columns={
-            "granted_to_user_fk":f"{usernames_ids[user['username']]}",
+            "granted_to_user_fk":f"{usernames_ids[username]}",
             "won_in_fixture_id":f"{fixtureid}"
         }
     )
