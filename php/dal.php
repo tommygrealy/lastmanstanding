@@ -95,9 +95,19 @@ class dal {
         return $results;
     }
 
-    public function getResultsHistory(){
+    public function getResultsHistory($lookback_matches){
         $mylink = $this->connect();
-        $query = ("select * from fixtureresults where HomeTeamScore is not NULL order by fixtureresults.KickOffTime;");
+        $query = "
+            SELECT * 
+            FROM (
+                SELECT * 
+                FROM fixtureresults 
+                WHERE HomeTeamScore IS NOT NULL 
+                ORDER BY KickOffTime DESC 
+                LIMIT $lookback_matches
+            ) AS last_five
+            ORDER BY KickOffTime ASC;
+        ";
         $stmt = $mylink->prepare($query);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
