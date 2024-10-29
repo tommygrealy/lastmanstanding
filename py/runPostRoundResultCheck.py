@@ -45,6 +45,8 @@ else:
     }
     response = requests.request("GET", results_url, headers=headers)
     result_data = json.loads(response.text)
+    with open ("matches_by_round_example.json", "w") as out_json:
+        out_json.write(response.text)
 
 for match_data in result_data['events']:
     home_team = match_data['homeTeam']['name']
@@ -72,5 +74,50 @@ for match_data in result_data['events']:
     else:
         print(f"No result available for {home_team} vs {away_team} at present")
 
-print("Final step - call checkResultsVsPredictions");
-conn.exe_sql_read("call checkResultsVsPredictions")
+print("Calling checkResultsVsPredictions");
+conn.exe_sql("call checkResultsVsPredictions")
+
+## TODO: Now apply dynamite based on predictions list
+# get round fixtures
+round_fixtures = conn.fetch_rows_with_filters(
+    table="fixtures_join_gameweek",
+    filters={'gameweek': round_number}
+    )
+
+# get round predictions
+round_predictions = conn.fetch_rows_with_filters(table='predictions', filters={"GameWeek": round_number})
+
+# filter for dynamite
+dynamite_fixtures = {}
+for fixture in round_fixtures:
+    if fixture['KillerTeam']==1 or fixture['KillerTeam']==3:
+        dynamite_fixtures[fixture['FixtureId']] = fixture['KillerTeam']
+
+usernames_ids={}
+userinfo = conn.fetch_rows_with_filters('users', {'CompStatus':'Playing'})
+for user in userinfo:
+    usernames_ids[user['username']] = user['id']
+
+dynamite_winners = []
+for prediction in round_predictions:
+    if prediction['PredictionCorrect']==1:
+        if prediction['FixtureID'] in dynamite_fixtures.keys():
+            if prediction['PredictedResult']==dynamite_fixtures[prediction['FixtureID']]:
+                dynamite_winners.append({
+                    "username":[prediction['UserName']][0],
+                    "fixtureId":[prediction['FixtureID']][0]
+                    })
+
+print("Winners of dynamite:")
+for user in dynamite_winners:
+    username = user['username']
+    fixtureid = user['fixtureId']
+    success = conn.insert_into_table(
+        table_name="dynamite",
+        insert_columns={
+            "granted_to_user_fk":f"{usernames_ids[username]}",
+            "won_in_fixture_id":f"{fixtureid}"
+        }
+    )
+    if success:
+        print(f"Dynamite awarded to {username} for fixture {fixtureid}")
