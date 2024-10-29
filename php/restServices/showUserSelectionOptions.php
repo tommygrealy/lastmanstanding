@@ -35,7 +35,7 @@ for ($i=0;$i<count($teamsAvilable);$i++){
 }
 
 
-$resultsHistory = $dal->getResultsHistory();
+$resultsHistory = $dal->getResultsHistory(50);
 $formguide = [];
 //echo json_encode($resultsHistory);
 
