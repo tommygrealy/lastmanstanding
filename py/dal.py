@@ -47,11 +47,11 @@ class dal():
         mycursor.close()
         return mycursor.rowcount
     
-    def fetch_rows_with_filters(self, table, filters):
-        mycursor = self.db_conn.cursor()
+    def fetch_rows_with_filters(self, table, filters, operator="AND"):
+        mycursor = self.db_conn.cursor(dictionary=True)
         query = f"SELECT * FROM {table}"
         if filters:
-            where_clause = " AND ".join([f"{column} = %s" for column in filters.keys()])
+            where_clause = f" {operator} ".join([f"{column} = %s" for column in filters.keys()])
             query += f" WHERE {where_clause}"
         
         try:
@@ -60,6 +60,23 @@ class dal():
             return rows
         finally:
             mycursor.close()
+    
+    def insert_into_table(self, table_name, insert_columns):
+        mycursor = self.db_conn.cursor()
+        # Construct the column names and placeholders for the INSERT statement
+        columns = ", ".join(insert_columns.keys())
+        placeholders = ", ".join(["%s"] * len(insert_columns))
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        values = list(insert_columns.values())
+        try:
+            mycursor.execute(query, values)
+            return True
+        except mysql.connector.Error as e:
+            print(f"Error inserting into table: {e}")
+            return False
+        finally:
+            mycursor.close()
+
     
     def update_table(self, table_name, update_columns, filter_columns):
         mycursor = self.db_conn.cursor()
