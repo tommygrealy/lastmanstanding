@@ -6,5 +6,5 @@ export logfile=/home/tgrealy/postround_cronjob.txt
 echo "${now} post round checks triggered by cron" > $logfile
 cd /home/tgrealy/workspace/lastmanstanding/py/
 source venv/bin/activate
-python run.py >> $logfile
+python runPostRoundResultCheck.py >> $logfile
 deactivate
