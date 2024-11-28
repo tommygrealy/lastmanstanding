@@ -4,6 +4,7 @@ import requests
 import argparse
 import json
 import sys
+from datetime import datetime, timedelta
 
 print(f"py interpreter is: {sys.executable}")
 
@@ -13,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--round",
     type=int,
-    required=True,
+    required=False,
     help="An integer value for the 'round' argument"
 )
 parser.add_argument(
@@ -26,8 +27,19 @@ parser.add_argument(
 args = parser.parse_args()
 
 # Access the arguments
-round_number = args.round
 local_mode = args.local
+
+if args.round:
+    round_number = args.round
+else:
+today = datetime.now()
+# Saturday is day 5 in Python's weekday(), Monday is 0
+days_since_saturday = (today.weekday() + 2) % 7
+last_saturday = today - timedelta(days=days_since_saturday)
+last_saturday_dtstr = last_saturday.strftime('%Y-%m-%d')
+last_round_number = int(conn.datestamp_to_gameweek(last_saturday_dtstr))
+round_number = last_round_number
+
 
 # Team names vary depending on results API in use. Use the team mapping JSON to
 # ensure the team names match our lms DB

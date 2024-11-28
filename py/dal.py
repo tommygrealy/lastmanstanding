@@ -163,11 +163,12 @@ class dal():
         return retval
 
     def datestamp_to_gameweek(self, in_dt):
-        params = (in_dt, in_dt)
+        params = (in_dt,)
         sql = f"""
                 select GameWeek from gameweekmap
-                where dateFrom <= %s
-                and dateTo > %s
+                where dateFrom >= %s
+                and dateTo <=  (select now())
+                limit 1;
                 """
         mycursor = self.db_conn.cursor()
         mycursor.execute(sql, params)
