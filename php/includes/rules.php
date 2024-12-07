@@ -1,17 +1,46 @@
 <?php ?>
+<h2>Last Man Standing: Competition Rules</h2>
+    <ol>
+        <li>
+            <strong>Entry Fee:</strong>
+            <ul>
+                <li><A href="#paymentPage">Pay</A> your entry fee in Week 1. No additional payments are required afterward.</li>
+                <li>All entry fees contribute to the prize pot.</li>
+            </ul>
+        </li>
 
-<h3>Competition Rules</h3>
-<A href="#paymentPage">Pay</A> your entry fee at week 1 — no need to pay again. All money collected through entry fees go into the pot to be won.
-Each week, simply pick a team playing a match that week – 
-if your team wins, you go through, lose or draw and you’re out.
-You can only pick the same team once in the competition, 
-so be tactical about who you pick and when.
-All selections must be in 1 hour before kick off of the first match 
-— you can change your selection any time up to this deadline by logging on to the competition website and selecting "cancel prediction".
-In the event that you do not submit a team, the top team from an alphabetically ordered list (note spellings as per official league website).
- of the teams which are still available to you will be selected for you.
+        <li>
+            <strong>Weekly Team Selection:</strong>
+            <ul>
+                <li>Each week, select a team playing a match that week.</li>
+                <li>If your team <strong>wins</strong>, you advance. If your team <strong>loses</strong> or <strong>draws</strong>, you are eliminated.</li>
+                <li>You may only select each team <strong>once</strong> during the competition.</li>
+            </ul>
+        </li>
 
-The competition continues until only one person remains and wins the pot. 
-If all remaining players loose in the same round, they all go through to the next round.
+        <li>
+            <strong>Deadline for Selections:</strong>
+            <ul>
+                <li>All selections must be made before the <strong>kick-off of the first match</strong> of the game week.</li>
+                <li>You can change your selection up until this deadline by logging into the competition website and selecting <em>“cancel prediction.”</em></li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Missed Submission:</strong>
+            <ul>
+                <li>If you fail to submit a selection, the system will automatically pick a <strong>randomly chosen team</strong> from the teams still available to you.</li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Winning the Competition:</strong>
+            <ul>
+                <li>The competition continues until only <strong>one player remains</strong>. This player wins the pot.</li>
+                <li>If all remaining players lose in the same round, they all advance to the next round.</li>
+                <li>If only <strong>two players remain</strong>, the competition ends if they both lose more than once while it remains just the two of them. In this case, the pot is split equally.</li>
+            </ul>
+        </li>
+    </ol>
 
 
