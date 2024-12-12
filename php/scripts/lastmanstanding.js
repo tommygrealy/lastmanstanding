@@ -162,12 +162,18 @@ function updateSelection(fixid, homeTeam, awayTeam, selected, killer=false) {
                 $('#csTeamWin').append(killerTeamMsg.replace("{teamname}", 
                 homeTeam))
             }
+            if (homeTeam == 'Brighton' && currentUsername == 'LordStyxofdeNordsoide'){
+                $('#csTeamWin').append("<br>Really Styx? Brighton? Again?")
+            }
             break;
         case 3:
             $('#csTeamWin').text(awayTeam + "(away) to beat " + homeTeam);
             if (killer==3){
                 $('#csTeamWin').append(killerTeamMsg.replace("{teamname}", 
                 awayTeam))
+            }
+            if (awayTeam == 'Brighton' && currentUsername == 'LordStyxofdeNordsoide'){
+                $('#csTeamWin').append("<br>Really Styx? Brighton? Again?")
             }
             break;
             
