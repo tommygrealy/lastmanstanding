@@ -16,7 +16,7 @@ class serverConfig {
     public $username = "lms";
     public $password = "th!isisnew12@";
     public $host = "localhost";
-    public $dbname = "lastmanstanding-dev";
+    public $dbname = "lastmanstanding";
     public $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');
     public $http_protocol = "https";
 }

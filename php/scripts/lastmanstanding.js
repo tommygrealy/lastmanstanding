@@ -249,7 +249,7 @@ function makeSubmission(fixid, select)
             }
             if (data.reason == "Payment Pending") {
                 // redirect to payment page.
-                UsrMsg = "Pay Tommy First - revolut 5 to @tommy5kit";
+                UsrMsg = "Pay Tommy First - revolut 10 to @tommy5kit";
                 $('#submitNow').css("display: none;");
                 $('#submitCancel').css("display: none;");
                 $('#goPayment').show();
