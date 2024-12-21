@@ -513,7 +513,7 @@ function showDynamiteHist() {
         success: function(data){
             $.each(data, function (key, value) {
                 $('#dynamiteActionsList').append(
-                    "<li>On " + formatDateTime(value["updated_at"]) + ", " +
+                    "<li>On " + value["updated_at"] + ", " +
                     value["SourceFullName"] + " threw 🧨 at " +
                     value["TargetFullName"] + "</li>"
                 )
