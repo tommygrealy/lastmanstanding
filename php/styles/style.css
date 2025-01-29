@@ -159,3 +159,9 @@ td.availableHomeTeam{
     border-color: #0e668c;
     }
 
+#countdown_days_hours_min {
+        font-weight: bold;
+        color: #f40000;
+        background-color: #2ad;
+    }
+

@@ -91,7 +91,7 @@ function loadUserOpts() {
             }
 
             if (json.fixtures) {
-                $('#messageInformSelect').html("Please select one match winner from the list of fixtures below: <br>")
+                $('#messageInformSelect').html("Please select one match winner from the list of fixtures below<br>")
                 var AllowedTeams = json.availableTeams;
                 console.log(JSON.stringify(AllowedTeams));
                 $("#upComingFixtureList").empty();
@@ -138,6 +138,8 @@ function loadUserOpts() {
                     console.log(value.HomeTeam + ", form:" + json.formguide[value.HomeTeam] )
                 });
                 $('#upComingFixtureList').listview("refresh");
+                updateCountdown();
+                document.addEventListener("DOMContentLoaded", updateCountdown);
             }
             else {
                 showAlreadyPlayed(json);
@@ -602,4 +604,49 @@ function doPassReset(data) {
         }
     })
 
+}
+
+function findEarliestKickoff() {
+    const elements = document.querySelectorAll("#upComingFixtureList .kickoffTime");
+    let earliestTime = null;
+
+    elements.forEach(el => {
+        const dateTime = new Date(el.textContent.trim().replace(" ", "T")); // Ensure valid format
+        if (!earliestTime || dateTime < earliestTime) {
+            earliestTime = dateTime;
+        }
+    });
+
+    return earliestTime;
+}
+
+function updateCountdown() {
+    const countdownSpan = document.getElementById("countdown_days_hours_min");
+    const earliestTime = findEarliestKickoff();
+
+    if (!earliestTime) {
+        countdownSpan.textContent = "No info on next match kickoff time is available";
+        return;
+    }
+
+    function tick() {
+        const now = new Date();
+        const diff = earliestTime - now;
+
+        if (diff <= 0) {
+            countdownSpan.textContent = "Deadline passed";
+            clearInterval(interval);
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        countdownSpan.textContent = `Deadline in ${days} Days, ${hours} Hours, ${minutes} Minutes ${seconds} seconds:`;
+    }
+
+    tick(); // Run immediately
+    const interval = setInterval(tick, 1000); // Update every minute
 }

@@ -91,6 +91,7 @@ $lms_privlevel = $user_info['PrivLevel'];
                 <div id="alreadyPredictedDetails"></div>
 
                 <span id="messageInformSelect"> </span>
+                <span id="countdown_days_hours_min"></span>
                 <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a">
 
                 </ul>
