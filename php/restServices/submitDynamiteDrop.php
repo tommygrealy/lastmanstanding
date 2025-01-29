@@ -28,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
 
     $db_last_update = $dal->getDynamiteLastUpdatedTimeStamp();
 
+    $dynamite_expiry - $dal->getDynamiteExpiry($dynamiteId);
+
     // check if user has a stale version of the player standings
     if ($db_last_update != $userLastUpdate){
         $requestStatus->status=1;

@@ -118,12 +118,14 @@ print("Winners of dynamite:")
 for user in dynamite_winners:
     username = user['username']
     fixtureid = user['fixtureId']
+    expiry_time = datetime.now() + timedelta(hours=24)  # Calculate expiry time
     success = conn.insert_into_table(
         table_name="dynamite",
         insert_columns={
             "granted_to_user_fk":f"{usernames_ids[username]}",
             "won_in_fixture_id":f"{fixtureid}",
             "status": 1,
+            "expiry": expiry_time.strftime('%Y-%m-%d %H:%M:%S'),  # Format datetime as a string
         }
     )
     if success:

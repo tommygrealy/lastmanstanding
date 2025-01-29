@@ -377,8 +377,14 @@ class dal {
         return $result[0]['updated_at'];
     }
 
-    public function grantDynamiteToUser($user_id, $fixture_id){
-
+    public function getDynamiteExpiry($dynamite_id){
+        $mylink=$this->connect();
+        $query =  "SELECT expiry from dynamite where dynamite_id = :dynamite_id;";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':dynamite_id', $dynamite_id);
+        $stmt->execute();
+        $dyn_details = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $dyn_details['expiry'];
     }
 
     public function dropDynamiteOnUser($dynamite_id, $target_user_id){
