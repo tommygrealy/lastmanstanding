@@ -41,11 +41,7 @@ td.availableHomeTeam{
 }
 
 .activePlayerName{
-    color: #009933;
-}
-
-.player3lives{
-    color: #009933;
+    color: #19a548;
 }
 
 .player2lives{
@@ -57,7 +53,7 @@ td.availableHomeTeam{
 }
 
 .elimPlayerName{
-    color: #f00;
+    color: #e98888;
     text-decoration: line-through;
 }
 
