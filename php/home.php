@@ -33,7 +33,7 @@ $lms_privlevel = $user_info['PrivLevel'];
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script src="<?php echo $myServerConfig->http_protocol?>://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-        <script src="scripts/lastmanstanding.js"></script>
+        <script src="scripts/lastmanstanding.js?v=20250409"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <script>
             $(document).ready(function() {
