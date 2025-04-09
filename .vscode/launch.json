@@ -11,8 +11,9 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "python": "${command:python.interpreterPath}",
-            "args": ["--local"],
+            "python": "venv/bin/python",
+            "env": {"RUN_ENVIRON":"PROD", "LMS_PASS":"th!isisnew12@"},
+            "args": ["--round", "30"],
             "cwd": "${workspaceFolder}/py"
         }
     ]

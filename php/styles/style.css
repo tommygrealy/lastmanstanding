@@ -161,3 +161,21 @@ td.availableHomeTeam{
         background-color: #2ad;
     }
 
+.prediction-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 15px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-header {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.prediction-body {
+    font-size: 14px;
+}
+    

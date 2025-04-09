@@ -544,15 +544,24 @@ function showPlayerHist(inUser) {
                 }
 
                 $('#userHistoryList').append(
-                        '<li><table class="predictTable"> \n <tr><td class="predictTableLabel">Fixture Date/Time: </td><td>' + value["KickOffTime"] + '</td></tr>' +
-                        '<tr><td class="predictTableLabel">Home Team: </td><td>' + value["HomeTeam"] +
-                        '</td></tr><tr><td class="predictTableLabel">Away Team: </td><td>' + value["AwayTeam"] +
-                        '</td></tr><tr><td class="predictTableLabel">Selected: </td><td>' + value["PredictedWinner"] + '</td></tr>' +
-                        '<tr><td class="predictTableLabel">Result: </td>' + markUp + '</tr></table></li>'
-                        )
+                    '<div class="prediction-card" style="border:1px solid #ccc; border-radius:10px; margin:10px 0; padding:15px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">' +
+                        '<div class="prediction-header" style="font-weight:bold; font-size:16px; margin-bottom:8px;">' +
+                            new Date(value["KickOffTime"]).toISOString().split('T')[0] + ' — ' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] +
+                        '</div>' +
+                        '<div class="prediction-body" style="font-size:14px;">' +
+                            inUser + ' predicted ' + value["PredictedWinner"] + ' to win.<br>' +
+                            ((value["PredictedResult"] == 1) ? 
+                                '<span style="color:green; font-weight:bold;">Win</span>' : 
+                                (value["PredictedResult"] == 0) ? 
+                                '<span style="color:red; font-weight:bold;">Lose</span>' : 
+                                '<span style="color:orange; font-weight:bold;">Pending</span>'
+                            ) +
+                        '</div>' +
+                    '</div>'
+                );
 
             });
-            $('#userHistoryList').listview("refresh");
+            //$('#userHistoryList').listview("refresh");
 
         }
     });
