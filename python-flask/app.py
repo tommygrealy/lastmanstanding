@@ -95,6 +95,10 @@ def create_app() -> Flask:
             password = request.form.get("password", "")
             row = dal.get_user_by_username(submitted_username)
             if row and dal.verify_password(password, row["password"], row["salt"]):
+                # Upgrade legacy SHA-256 passwords to Werkzeug PBKDF2 on login
+                if dal._is_legacy_hash(row["password"]):
+                    dal.upgrade_password_to_modern(row["id"], password)
+                    row = dal.get_user_by_id(row["id"])
                 login_user(User(row))
                 return redirect(url_for("home"))
             error = "Invalid username or password."
@@ -568,4 +572,5 @@ def create_app() -> Flask:
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug)

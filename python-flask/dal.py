@@ -7,6 +7,10 @@ Key improvements over the PHP version:
 - Uses parameterised queries throughout to prevent SQL injection.
 - Available-teams exclusion is done via a ClubId sub-query so that a prediction
   recorded under either the LongName or the MedName correctly blocks the team.
+- Passwords for new accounts use Werkzeug's PBKDF2-SHA256 algorithm (via
+  werkzeug.security).  Existing accounts still use the legacy SHA-256 + 65 536-
+  round KDF stored in the ``password`` / ``salt`` columns; they are upgraded
+  transparently on next login (upgrade-on-login pattern).
 """
 
 import hashlib
@@ -15,6 +19,8 @@ import secrets
 
 import pymysql
 import pymysql.cursors
+from werkzeug.security import check_password_hash as wz_check
+from werkzeug.security import generate_password_hash as wz_generate
 
 
 def _get_db_config():
@@ -38,7 +44,19 @@ def get_connection():
 # Password helpers
 # ---------------------------------------------------------------------------
 
-def hash_password(password: str, salt: str) -> str:
+# NOTE — legacy SHA-256 KDF
+# The existing database stores passwords hashed with SHA-256 + a custom
+# 65 536-round KDF (as implemented by the original PHP code).  This is weaker
+# than a modern algorithm such as bcrypt / Argon2.  New passwords are hashed
+# with Werkzeug's PBKDF2-SHA256 (stored with no legacy salt column value).
+# Existing users are upgraded transparently on their next successful login.
+
+def _is_legacy_hash(stored_hash: str) -> bool:
+    """Return True for old SHA-256 hex hashes (64 lower-hex chars)."""
+    return len(stored_hash) == 64 and all(c in "0123456789abcdef" for c in stored_hash)
+
+
+def hash_password_legacy(password: str, salt: str) -> str:
     """Reproduce the PHP SHA-256 + 65536-round KDF used for existing passwords."""
     h = hashlib.sha256((password + salt).encode()).hexdigest()
     for _ in range(65536):
@@ -51,8 +69,19 @@ def generate_salt() -> str:
     return secrets.token_hex(8)  # 16 hex chars
 
 
+def hash_password_modern(password: str) -> str:
+    """Hash a password with Werkzeug PBKDF2-SHA256."""
+    return wz_generate(password)
+
+
 def verify_password(password: str, stored_hash: str, salt: str) -> bool:
-    return hash_password(password, salt) == stored_hash
+    """
+    Verify a password against either a legacy SHA-256 hash or a modern
+    Werkzeug hash.  Returns True on match, False otherwise.
+    """
+    if _is_legacy_hash(stored_hash):
+        return hash_password_legacy(password, salt) == stored_hash
+    return wz_check(stored_hash, password)
 
 
 # ---------------------------------------------------------------------------
@@ -109,15 +138,15 @@ def email_exists(email: str) -> bool:
 def create_user(username: str, full_name: str, email: str,
                 password: str, league_id: int) -> int:
     """Insert a new user and league membership; return the new user id."""
-    salt = generate_salt()
-    hashed = hash_password(password, salt)
+    # New users get the modern Werkzeug hash; salt column left blank.
+    hashed = hash_password_modern(password)
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 """INSERT INTO users (username, FullName, email, password, salt,
                                      PrivLevel, lives, CompStatus, PaymentStatus)
-                   VALUES (%s, %s, %s, %s, %s, 1, 3, 'Playing', 'Pending')""",
-                (username, full_name, email, hashed, salt),
+                   VALUES (%s, %s, %s, %s, '', 1, 3, 'Playing', 'Pending')""",
+                (username, full_name, email, hashed),
             )
             user_id = cur.lastrowid
             cur.execute(
@@ -136,15 +165,19 @@ def update_user_email(user_id: int, new_email: str) -> None:
 
 
 def update_user_password(user_id: int, new_password: str) -> None:
-    salt = generate_salt()
-    hashed = hash_password(new_password, salt)
+    hashed = hash_password_modern(new_password)
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "UPDATE users SET password = %s, salt = %s WHERE id = %s",
-                (hashed, salt, user_id),
+                "UPDATE users SET password = %s, salt = '' WHERE id = %s",
+                (hashed, user_id),
             )
         conn.commit()
+
+
+def upgrade_password_to_modern(user_id: int, new_password: str) -> None:
+    """Upgrade a legacy SHA-256 password to a modern Werkzeug hash in-place."""
+    update_user_password(user_id, new_password)
 
 
 def update_payment_status(username: str, status: str) -> bool:
@@ -711,12 +744,11 @@ def reset_password_by_token(token: str, new_password: str) -> bool:
 
 
 def update_user_password_by_username(username: str, new_password: str) -> None:
-    salt = generate_salt()
-    hashed = hash_password(new_password, salt)
+    hashed = hash_password_modern(new_password)
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "UPDATE users SET password = %s, salt = %s WHERE username = %s",
-                (hashed, salt, username),
+                "UPDATE users SET password = %s, salt = '' WHERE username = %s",
+                (hashed, username),
             )
         conn.commit()
