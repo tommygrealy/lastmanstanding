@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %} - Edit Account{% endblock %}
+{% block body %}
+<div data-role="page">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        <h3>Edit Account</h3>
+
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+        {% if success %}
+        <p style="color:green;">{{ success }}</p>
+        {% endif %}
+
+        <form data-ajax="false" action="{{ url_for('edit_account') }}" method="post">
+            Email Address:<br/>
+            <input type="email" name="email" value="{{ user.email }}" /><br/><br/>
+
+            New Password (leave blank to keep current):<br/>
+            <input type="password" name="password" value="" /><br/><br/>
+
+            Confirm New Password:<br/>
+            <input type="password" name="password_confirm" value="" /><br/><br/>
+
+            <input type="submit" value="Save Changes" />
+        </form>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+{% endblock %}

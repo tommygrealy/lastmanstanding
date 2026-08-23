@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %} - Home{% endblock %}
+{% block head_extra %}
+<script>
+    $(document).ready(function() {
+        loadUserOpts();
+        displaySelectionsPostDeadline();
+    });
+</script>
+{% endblock %}
+{% block body %}
+<!-- homescreen page -->
+<div data-role="page" id="homescreen">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        You are logged in as: <strong>{{ username }}</strong>
+        {% if priv_level >= 3 %}
+        (admin) - Access admin functions <a href="{{ url_for('admin') }}" data-ajax="false">here</a>
+        {% endif %}
+        <br><br/>
+
+        <div id="paymentNotifyPopup" data-role="popup" data-overlay-theme="a">
+            <div data-role="header" data-theme="a"><h1>Payment Due</h1></div>
+            <div role="main" class="ui-content">
+                <h3 class="ui-title">Entry fee needs to be paid before playing</h3>
+            </div>
+            <p><a href="#paymentPage" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">Go to Payment Page</a></p>
+        </div>
+
+        <div id="elminiatedNotifyPopup" data-role="popup" data-overlay-theme="a">
+            <div data-role="header" data-theme="a"><h1>Player Eliminated</h1></div>
+            <div role="main" class="ui-content">
+                <h3 class="ui-title">You have been eliminated.</h3>
+            </div>
+            <p><a href="#userHistory" onclick="userToView='{{ username }}'" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">My Predictions</a></p>
+        </div>
+
+        <div id="currentSelection" data-transition="slide">
+            <h3>Your Selection</h3>
+            <span id="csTeamWin"></span><br>
+            <a href="#" id="submitNow" data-role="button">Submit</a>
+            <a href="#" id="submitCancel" data-role="button" onclick="$('#currentSelection').slideToggle();">Cancel</a>
+        </div>
+
+        <div id="alreadyPredictedDetails"></div>
+
+        <span id="messageInformSelect"></span>
+        <span id="countdown_days_hours_min"></span>
+        <ul id="upComingFixtureList" data-role="listview" data-inset="true" data-divider-theme="a"></ul>
+
+        <h3 id="publicSelectionsListLabel"></h3>
+        <ul data-role="listview" id="publicSelectionsList" data-filter="true" data-input="#myFilter" data-inset="true"></ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- payment page -->
+<div data-role="page" id="paymentPage">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        <p style="font-weight: bold;">Entry fee is €10</p>
+        Payment can be made by Revolut to Tommy Grealy.<br>
+        Revolut username: @tommy5kit
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- rules page -->
+<div data-role="page" id="rules">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        {% include "includes/rules.html" %}
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- standings page -->
+<div data-role="page" id="standings">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        <h3>Current Player Standings</h3>
+        <h4>&#9917;&nbsp;= lives remaining.</h4>
+        <h5>Search Players
+            <form class="ui-filterable">
+                <input id="myFilter" data-type="search">
+            </form>
+        </h5>
+        <ul data-role="listview" id="playerStandingsList" data-filter="true" data-input="#myFilter" data-inset="true"></ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- dynamite page -->
+<div data-role="page" id="dynamite_page">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content" id="no-dynamite-msg">
+        You have no dynamite to drop.
+        Dynamite can be earned by selecting a team labelled with 🧨 when making your weekly prediction
+    </div>
+    <div data-role="content" id="dynamite-drop-options">
+        <div id="dynamiteSelection" data-transition="slide">
+            <h3 id="dynamite-drop-h3"></h3>
+            <span id="dynamiteAction"></span><br>
+            <a href="#" id="submitDynamiteNow" onclick="dropDynamite()" data-role="button">YES</a>
+            <a href="#" id="submitDynamiteCancel" data-role="button" onclick="$('#dynamiteSelection').slideToggle();">NO</a>
+        </div>
+        <div id="dynamite-top-contianer">
+            <div id="dynamite"><h1>🧨</h1></div>
+            Drag and drop the dynamite on a user below:
+        </div>
+        <div class="drop-tile-container" id="player-tile-targets"></div>
+    </div>
+    <div data-role="content" id="dynaDropHistory">
+        <hr/>
+        Recent 🧨 drops:
+        <ul id="dynamiteActionsList"></ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- user prediction history page -->
+<div data-role="page" id="userHistory">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header.html" %}
+    </div>
+    <div data-role="content">
+        <h3>History for <span id="histForUser"></span></h3>
+        <div id="userHistoryList" class="card-container"></div>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+{% endblock %}
