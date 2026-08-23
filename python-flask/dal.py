@@ -57,10 +57,16 @@ def _is_legacy_hash(stored_hash: str) -> bool:
 
 
 def hash_password_legacy(password: str, salt: str) -> str:
-    """Reproduce the PHP SHA-256 + 65536-round KDF used for existing passwords."""
+    """Reproduce the PHP SHA-256 + 65536-round KDF used for existing passwords.
+
+    NOTE: This intentionally uses SHA-256 only to *verify* passwords already
+    stored in the database.  New passwords are never hashed this way — see
+    hash_password_modern().  The lgtm suppression below acknowledges this.
+    """
+    # lgtm[py/weak-sensitive-data-hashing]
     h = hashlib.sha256((password + salt).encode()).hexdigest()
     for _ in range(65536):
-        h = hashlib.sha256((h + salt).encode()).hexdigest()
+        h = hashlib.sha256((h + salt).encode()).hexdigest()  # lgtm[py/weak-sensitive-data-hashing]
     return h
 
 
