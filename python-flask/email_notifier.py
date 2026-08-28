@@ -13,7 +13,7 @@ def _send(to_name: str, to_email: str, subject: str, html_body: str) -> bool:
 
     try:
         response = requests.post(
-            f"https://api.mailgun.net/v3/{domain}/messages",
+            f"https://api.eu.mailgun.net/v3/{domain}/messages",
             auth=("api", api_key),
             data={
                 "from": f"{from_name} <{from_addr}>",

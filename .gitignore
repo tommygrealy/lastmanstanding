@@ -5,3 +5,4 @@ config.json
 python-flask/__pycache__/
 python-flask/*.pyc
 python-flask/.env
+.env

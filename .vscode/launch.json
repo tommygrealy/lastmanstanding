@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/python-flask/app.py",
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/python-flask/.venv/bin/python",
-            "env": {"LMS_DB_PASSWORD": "th!isisnew12@"}
+            "envFile": "${workspaceFolder}/.env",
         },
         {
             "name": "Python Debugger: setupNextRound",
@@ -22,7 +22,7 @@
             "cwd": "${workspaceFolder}/py",
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/py/venv/bin/python",
-            "env": {"LMS_PASS": "th!isisnew12@", "RUN_ENVIRON": "PROD"},
+            "envFile": "${workspaceFolder}/.env",
             "args": ["--round", "2"]
         }
     ]
