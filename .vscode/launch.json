@@ -6,15 +6,24 @@
     "configurations": [
 
         {
-            "name": "Python Debugger: Current File",
+            "name": "Python Debugger: APP",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/python-flask/app.py",
             "console": "integratedTerminal",
-            "python": "venv/bin/python",
-            "env": {"RUN_ENVIRON":"PROD", "LMS_PASS":"th!isisnew12@"},
-            "args": ["--round", "30"],
-            "cwd": "${workspaceFolder}/py"
+            "python": "${workspaceFolder}/python-flask/.venv/bin/python",
+            "env": {"LMS_DB_PASSWORD": "th!isisnew12@"}
+        },
+        {
+            "name": "Python Debugger: setupNextRound",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py/setupNextRound.py",
+            "cwd": "${workspaceFolder}/py",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/py/venv/bin/python",
+            "env": {"LMS_PASS": "th!isisnew12@", "RUN_ENVIRON": "PROD"},
+            "args": ["--round", "2"]
         }
     ]
 }

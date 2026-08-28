@@ -77,8 +77,8 @@ gameweek_full_time = gameweek_end_dt + timedelta(hours=2, minutes=15)
 for match_data in response_json['events']:
     existing_details_correct = True
     kick_off_time = datetime.fromtimestamp(match_data['startTimestamp'])
-    home_team = match_data['homeTeam']['name']
-    away_team = match_data['awayTeam']['name']
+    home_team = match_data['homeTeam']['shortName']
+    away_team = match_data['awayTeam']['shortName']
     db_home_team = team_names_map[home_team]
     db_away_team = team_names_map[away_team]
 
@@ -94,6 +94,13 @@ for match_data in response_json['events']:
             print(f"Fixture {home_team} vs {away_team}, kickoff time changed to {kick_off_time}")
         else:
             print(f"Fixture {home_team} vs {away_team} is already correct: {existing_fixture_in_db[0][1]}")
+    else:
+        # insert new fixture into DB
+        conn.exe_sql(f"""
+            insert into fixtureresults (KickOffTime, HomeTeam, AwayTeam) values
+            ('{kick_off_time}', '{db_home_team}', '{db_away_team}')
+            """)
+        print(f"Fixture {home_team} vs {away_team} has been inserted")
     
 gameweek_defined = conn.exe_sql(f"""
         insert into gameweekmap (GameWeek, DateFrom, DateTo) values

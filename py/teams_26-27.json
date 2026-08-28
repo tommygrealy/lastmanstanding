@@ -1,0 +1,1329 @@
+{
+    "teams": [
+        {
+            "name": "Arsenal",
+            "slug": "arsenal",
+            "shortName": "Arsenal",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 4093626,
+            "nameCode": "ARS",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 42,
+            "teamColors": {
+                "primary": "#cc0000",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "ارسنال",
+                    "bn": "আর্সেনাল",
+                    "hi": "आर्सेनल",
+                    "ru": "Арсенал"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Leeds United",
+            "slug": "leeds-united",
+            "shortName": "Leeds",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 276504,
+            "nameCode": "LEE",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 34,
+            "teamColors": {
+                "primary": "#ffffff",
+                "secondary": "#1d4189",
+                "text": "#1d4189"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "ليدز يونايتد",
+                    "bn": "লিডস",
+                    "hi": "लीड्स यूनाइटेड",
+                    "ru": "Лидс Юнайтед"
+                },
+                "shortNameTranslation": {
+                    "ar": "ليدز",
+                    "hi": "लीड्स",
+                    "ru": "Лидс"
+                }
+            }
+        },
+        {
+            "name": "Brighton & Hove Albion",
+            "slug": "brighton-and-hove-albion",
+            "shortName": "Brighton",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 461552,
+            "nameCode": "BHA",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 30,
+            "teamColors": {
+                "primary": "#0054a6",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "برايتون أند هوف ألبيون",
+                    "hi": "ब्राइटोन एंड होव एल्बिओन ऍफ़सी",
+                    "ru": "Брайтон энд Хоув Альбион"
+                },
+                "shortNameTranslation": {
+                    "ar": "برايتون",
+                    "bn": "ব্রাইটন",
+                    "hi": "ब्राइटन"
+                }
+            }
+        },
+        {
+            "name": "Brentford",
+            "slug": "brentford",
+            "shortName": "Brentford",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 320676,
+            "nameCode": "BRE",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 50,
+            "teamColors": {
+                "primary": "#ffffff",
+                "secondary": "#ff0000",
+                "text": "#ff0000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "برينتفورد",
+                    "bn": "ব্রেন্টফোর্ড",
+                    "hi": "ब्रेंटफोर्ड",
+                    "ru": "Брентфорд"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Sunderland",
+            "slug": "sunderland",
+            "shortName": "Sunderland",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 237977,
+            "nameCode": "SUN",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 41,
+            "teamColors": {
+                "primary": "#ffffff",
+                "secondary": "#ca0000",
+                "text": "#ca0000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "سندرلاند",
+                    "ru": "Сандерленд"
+                },
+                "shortNameTranslation": {
+                    "ru": "Сандерленд"
+                }
+            }
+        },
+        {
+            "name": "Bournemouth",
+            "slug": "bournemouth",
+            "shortName": "Bournemouth",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 351365,
+            "nameCode": "BOU",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 60,
+            "teamColors": {
+                "primary": "#000000",
+                "secondary": "#cc0000",
+                "text": "#cc0000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "بورنموث",
+                    "bn": "বোর্নেমাউথ",
+                    "hi": "बोर्नमाउथ",
+                    "ru": "Борнмут"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Aston Villa",
+            "slug": "aston-villa",
+            "shortName": "Aston Villa",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 1064106,
+            "nameCode": "AVL",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 40,
+            "teamColors": {
+                "primary": "#670e36",
+                "secondary": "#94bee5",
+                "text": "#94bee5"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "أستون فيلا",
+                    "bn": "অ্যাস্টন ভিলা",
+                    "hi": "एस्टन विला",
+                    "ru": "Астон Вилла"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Nottingham Forest",
+            "slug": "nottingham-forest",
+            "shortName": "Forest",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 463156,
+            "nameCode": "NFO",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 14,
+            "teamColors": {
+                "primary": "#cc0000",
+                "secondary": "#cc0000",
+                "text": "#cc0000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "نوتينغهام فورست",
+                    "hi": "नाटिंन्ग्हम फारेस्ट",
+                    "ru": "Ноттингем Форест"
+                },
+                "shortNameTranslation": {
+                    "ar": "نوتينغهام فورست",
+                    "bn": "ফরেস্ট",
+                    "hi": "फॉरेस्ट"
+                }
+            }
+        },
+        {
+            "name": "Hull City",
+            "slug": "hull-city",
+            "shortName": "Hull",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 81595,
+            "nameCode": "HUL",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 96,
+            "teamColors": {
+                "primary": "#de8f38",
+                "secondary": "#000000",
+                "text": "#000000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "هال سيتي",
+                    "hi": "हल सिटी",
+                    "ru": "Халл Сити"
+                },
+                "shortNameTranslation": {
+                    "ar": "هال سيتي"
+                }
+            }
+        },
+        {
+            "name": "Fulham",
+            "slug": "fulham",
+            "shortName": "Fulham",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 356425,
+            "nameCode": "FUL",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 43,
+            "teamColors": {
+                "primary": "#ffffff",
+                "secondary": "#000000",
+                "text": "#000000"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "فولهام",
+                    "bn": "ফুলহাম",
+                    "hi": "फुलहम",
+                    "ru": "Фулхэм"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Manchester City",
+            "slug": "manchester-city",
+            "shortName": "Man City",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 4645423,
+            "nameCode": "MCI",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 17,
+            "teamColors": {
+                "primary": "#66ccff",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "مانشستر سيتي",
+                    "hi": "मेनचेस्टर सिटी ऍफ़सी",
+                    "ru": "Манчестер Сити"
+                },
+                "shortNameTranslation": {
+                    "ar": "مانشستر سيتي",
+                    "bn": "ম্যান সিটি",
+                    "hi": "मैन सिटी"
+                }
+            }
+        },
+        {
+            "name": "Ipswich Town",
+            "slug": "ipswich-town",
+            "shortName": "Ipswich",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 136682,
+            "nameCode": "IPS",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 32,
+            "teamColors": {
+                "primary": "#0000ff",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "ايبسويتش تاون",
+                    "hi": "इप्स्विच टाउन",
+                    "ru": "Ипсвич Таун"
+                },
+                "shortNameTranslation": {
+                    "ar": "ايبسويتش"
+                }
+            }
+        },
+        {
+            "name": "Crystal Palace",
+            "slug": "crystal-palace",
+            "shortName": "Crystal Palace",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 468826,
+            "nameCode": "CRY",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 7,
+            "teamColors": {
+                "primary": "#0033ff",
+                "secondary": "#b90d2b",
+                "text": "#b90d2b"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "كريستال بالاس",
+                    "bn": "ক্রিস্টাল প্যালেস",
+                    "hi": "क्रिस्टल पैलेस",
+                    "ru": "Кристал Пэлас"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Tottenham Hotspur",
+            "slug": "tottenham-hotspur",
+            "shortName": "Tottenham",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 1631075,
+            "nameCode": "TOT",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 33,
+            "teamColors": {
+                "primary": "#ffffff",
+                "secondary": "#000066",
+                "text": "#000066"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "توتنهام هوتسبير",
+                    "hi": "टोटेनहैम हॉटस्पर ऍफ़सी",
+                    "ru": "Тоттенхэм Хотспур"
+                },
+                "shortNameTranslation": {
+                    "ar": "توتنهام",
+                    "bn": "টটেনহ্যাম",
+                    "hi": "टॉटनहैम"
+                }
+            }
+        },
+        {
+            "name": "Manchester United",
+            "slug": "manchester-united",
+            "shortName": "Man Utd",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 4156083,
+            "nameCode": "MUN",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 35,
+            "teamColors": {
+                "primary": "#ff0000",
+                "secondary": "#373737",
+                "text": "#373737"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "مانشستر يونايتد",
+                    "hi": "मेनचेस्टर यूनाइटेड ऍफ़सी",
+                    "ru": "Манчестер Юнайтед"
+                },
+                "shortNameTranslation": {
+                    "ar": "مانشستر يونايتد",
+                    "bn": "ম্যান ইউনাইটেড",
+                    "hi": "मैन यूनाइटेड"
+                }
+            }
+        },
+        {
+            "name": "Chelsea",
+            "slug": "chelsea",
+            "shortName": "Chelsea",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 3442081,
+            "nameCode": "CHE",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 38,
+            "teamColors": {
+                "primary": "#0310a7",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "تشيلسي",
+                    "bn": "চেলসি",
+                    "hi": "चेल्सी",
+                    "ru": "Челси"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Everton",
+            "slug": "everton",
+            "shortName": "Everton",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 406310,
+            "nameCode": "EVE",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 48,
+            "teamColors": {
+                "primary": "#274488",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "إيفرتون",
+                    "bn": "এভারটন",
+                    "hi": "एवर्टन",
+                    "ru": "Эвертон"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Newcastle United",
+            "slug": "newcastle-united",
+            "shortName": "Newcastle",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 963164,
+            "nameCode": "NEW",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 39,
+            "teamColors": {
+                "primary": "#000000",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "نيوكاسل يونايتد",
+                    "hi": "न्यू कास्सेल यूनाइटेड ऍफ़सी",
+                    "ru": "Ньюкасл Юнайтед"
+                },
+                "shortNameTranslation": {
+                    "ar": "نيوكاسل",
+                    "bn": "নিউক্যাসল",
+                    "hi": "न्यूकैसल"
+                }
+            }
+        },
+        {
+            "name": "Liverpool FC",
+            "slug": "liverpool",
+            "shortName": "Liverpool",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 4231423,
+            "nameCode": "LIV",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 44,
+            "teamColors": {
+                "primary": "#cc0000",
+                "secondary": "#ffffff",
+                "text": "#ffffff"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "ليفربول",
+                    "bn": "লিভারপুল",
+                    "hi": "लिवरपूल",
+                    "ru": "Ливерпуль"
+                },
+                "shortNameTranslation": {}
+            }
+        },
+        {
+            "name": "Coventry City",
+            "slug": "coventry-city",
+            "shortName": "Coventry",
+            "gender": "M",
+            "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+            },
+            "category": {
+                "name": "England",
+                "slug": "england",
+                "sport": {
+                    "name": "Football",
+                    "slug": "football",
+                    "id": 1
+                },
+                "priority": 10,
+                "country": {
+                    "alpha2": "EN",
+                    "alpha3": "ENG",
+                    "name": "England",
+                    "slug": "england"
+                },
+                "id": 1,
+                "flag": "england",
+                "alpha2": "EN",
+                "fieldTranslations": {
+                    "nameTranslation": {
+                        "ar": "إنجلترا",
+                        "hi": "इंग्लैंड",
+                        "bn": "ইংল্যান্ড",
+                        "ru": "Англия"
+                    },
+                    "shortNameTranslation": {}
+                }
+            },
+            "userCount": 109345,
+            "nameCode": "COC",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+                "alpha2": "EN",
+                "alpha3": "ENG",
+                "name": "England",
+                "slug": "england"
+            },
+            "id": 11,
+            "teamColors": {
+                "primary": "#0099cc",
+                "secondary": "#999999",
+                "text": "#999999"
+            },
+            "fieldTranslations": {
+                "nameTranslation": {
+                    "ar": "كوفنتري سيتي",
+                    "hi": "कोवेंट्री सिटी",
+                    "ru": "Ковентри Сити"
+                },
+                "shortNameTranslation": {
+                    "ar": "كوفنتري"
+                }
+            }
+        }
+    ]
+}
