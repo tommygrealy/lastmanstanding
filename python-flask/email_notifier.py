@@ -1,30 +1,29 @@
 """Email notification helpers for Last Man Standing."""
 
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
-
-def _smtp_connection():
-    host = os.environ.get("LMS_SMTP_HOST", "localhost")
-    port = int(os.environ.get("LMS_SMTP_PORT", "25"))
-    return smtplib.SMTP(host, port)
+import requests
 
 
 def _send(to_name: str, to_email: str, subject: str, html_body: str) -> bool:
+    api_key = os.environ.get("MAILGUN_API_KEY", "")
+    domain = os.environ.get("MAILGUN_DOMAIN", "")
     from_addr = os.environ.get("LMS_MAIL_FROM", "lms@actionshots.ie")
     from_name = os.environ.get("LMS_MAIL_FROM_NAME", "Last Man Standing")
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = f"{from_name} <{from_addr}>"
-    msg["To"] = f"{to_name} <{to_email}>"
-    msg.attach(MIMEText(html_body, "html"))
-
     try:
-        with _smtp_connection() as server:
-            server.sendmail(from_addr, [to_email], msg.as_string())
+        response = requests.post(
+            f"https://api.mailgun.net/v3/{domain}/messages",
+            auth=("api", api_key),
+            data={
+                "from": f"{from_name} <{from_addr}>",
+                "to": f"{to_name} <{to_email}>",
+                "subject": subject,
+                "html": html_body,
+            },
+            timeout=10,
+        )
+        response.raise_for_status()
         return True
     except Exception as exc:
         print(f"[email] Failed to send to {to_email}: {exc}")
