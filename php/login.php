@@ -50,17 +50,29 @@ if (!empty($_POST)) {
     // they entered is not registered. 
     $row = $stmt->fetch();
     if ($row) {
-        // Using the password submitted by the user and the salt stored in the database, 
-        // we now check to see whether the passwords match by hashing the submitted password 
-        // and comparing it to the hashed version already stored in the database. 
-        $check_password = hash('sha256', $_POST['password'] . $row['salt']);
-        for ($round = 0; $round < 65536; $round++) {
-            $check_password = hash('sha256', $check_password . $row['salt']);
-        }
-
-        if ($check_password === $row['password']) {
-            // If they do, then we flip this to true 
-            $login_ok = true;
+        // Using the password submitted by the user and the salt stored in the database,
+        // we now check to see whether the passwords match.
+        // Non-empty salt means the password was hashed with the legacy SHA-256 KDF.
+        // Empty salt means the password was hashed with PHP's password_hash() (bcrypt).
+        if (!empty($row['salt'])) {
+            // Legacy: SHA-256 + 65536-round KDF
+            // nosemgrep: php.lang.security.weak-crypto.weak-crypto
+            $check_password = hash('sha256', $_POST['password'] . $row['salt']);
+            for ($round = 0; $round < 65536; $round++) {
+                // nosemgrep: php.lang.security.weak-crypto.weak-crypto
+                $check_password = hash('sha256', $check_password . $row['salt']);
+            }
+            if ($check_password === $row['password']) {
+                $login_ok = true;
+                // Silently upgrade to bcrypt on first successful login
+                $new_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                $db->updatePasswordHash($row['id'], $new_hash);
+            }
+        } else {
+            // Modern: bcrypt via password_hash()
+            if (password_verify($_POST['password'], $row['password'])) {
+                $login_ok = true;
+            }
         }
     }
 

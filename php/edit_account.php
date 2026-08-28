@@ -50,14 +50,11 @@ if (!empty($_POST)) {
         }
     }
 
-    // If the user entered a new password, we need to hash it and generate a fresh salt 
-    // for good measure. 
+    // If the user entered a new password, hash it with bcrypt (PASSWORD_DEFAULT).
+    // The salt column is set to empty to signal this is a modern hash.
     if (!empty($_POST['password'])) {
-        $salt = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
-        $password = hash('sha256', $_POST['password'] . $salt);
-        for ($round = 0; $round < 65536; $round++) {
-            $password = hash('sha256', $password . $salt);
-        }
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $salt = '';
     } else {
         // If the user did not enter a new password we will not update their old one. 
         $password = null;
