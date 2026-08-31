@@ -44,7 +44,9 @@ if local_mode:
     with open("matches_by_round_example.json", "r") as json_fh:
         result_data = json.loads(json_fh.read())
 else:
-    results_url = f"https://footapi7.p.rapidapi.com/api/tournament/17/season/61627/matches/round/{round_number}"
+    rapid_api_tournament_id = 17 # https://footapi7.p.rapidapi.com/api/tournament/all/category/1
+    rapid_api_season_id = 96668 # 26/27 season, Premier League https://footapi7.p.rapidapi.com/api/tournament/17/seasons
+    results_url = f"https://footapi7.p.rapidapi.com/api/tournament/{rapid_api_tournament_id}/season/{rapid_api_season_id}/matches/round/{round_number}"
     headers = {
         'X-RapidAPI-Key': 'ab673339a3msh5690b3b9cb81b6dp106c1ejsn8aa70579921e',
         'X-RapidAPI-Host': 'footapi7.p.rapidapi.com'
@@ -55,8 +57,8 @@ else:
         out_json.write(response.text)
 
 for match_data in result_data['events']:
-    home_team = match_data['homeTeam']['name']
-    away_team = match_data['awayTeam']['name']
+    home_team = match_data['homeTeam']['shortName']
+    away_team = match_data['awayTeam']['shortName']
     if match_data['status']['code'] == 100:  # status code 100 means match has ended
         home_team_score = match_data['homeScore']['normaltime']
         away_team_score = match_data['awayScore']['normaltime']
