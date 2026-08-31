@@ -35,13 +35,9 @@ if ($newpass != $newpassConfirm){
 $usertoreset=$dal->getUsernameByToken($token);
 
 
-//Generate SALT and hash password
-$salt = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
-$newpass = hash('sha256', $newpass . $salt);
-// 65K itterations - mitigate against brute force attack
-for ($round = 0; $round < 65536; $round++) {
-        $newpass = hash('sha256', $newpass . $salt);
-    }
+//Hash password with bcrypt; leave salt empty to signal a modern hash
+$newpass = password_hash($newpass, PASSWORD_DEFAULT);
+$salt = '';
 
 
 

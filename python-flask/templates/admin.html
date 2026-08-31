@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %} - Admin{% endblock %}
+{% block head_extra %}
+<script src="{{ url_for('static', filename='scripts/adminFunctions.js') }}"></script>
+{% endblock %}
+{% block body %}
+<div data-role="page" id="homescreen">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header_admin.html" %}
+    </div>
+    <div data-role="content">
+        You are logged in as: <strong>{{ username }}</strong><br><br/>
+
+        <span id="scoreInputNeeded"><span id="numPending"></span> fixtures require score updates. Please enter the scores below.</span>
+        <span id="noScoreInputNeeded">All match scores are up to date - no input required</span>
+
+        <span id="messageInformSelect"> </span>
+        <ul id="updatePendingList" data-role="listview" data-inset="true" data-divider-theme="a"></ul>
+
+        <a href="#" id="btnExecuteAutoPic" data-role="button">Run auto-picks</a>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- payment page -->
+<div data-role="page" id="paymentPage">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header_admin.html" %}
+    </div>
+    <div data-role="content">
+        <p style="font-weight: bold;">Entry fee is €10</p>
+        Payment can be made by Revolut to Tommy Grealy.<br>
+        Revolut username: @tommy5kit
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+
+<!-- user activity page -->
+<div data-role="page" id="userActivity">
+    <div data-role="header" data-position="fixed">
+        {% include "includes/header_admin.html" %}
+    </div>
+    <div data-role="content">
+        <div id="usersNotPaid" data-inset="true">
+            <h3>Users not Paid</h3>
+        </div>
+        <ul data-role="listview" id="usersNotSubmittedList" data-filter="true" data-input="#myFilter" data-inset="true">
+            <li data-role="list-divider">Users not submitted <a href="#" onclick="sendReminder()"> send reminder</a></li>
+        </ul>
+        <h3>Current Selections:</h3>
+        <ul data-role="listview" id="currentSelectionsList" data-filter="true" data-input="#myFilter" data-inset="true"></ul>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        {% include "includes/footer.html" %}
+    </div>
+</div>
+{% endblock %}

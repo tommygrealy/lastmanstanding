@@ -2,3 +2,7 @@
 /py/.idea/*
 py/__pycache__/dal.cpython-310.pyc
 config.json
+python-flask/__pycache__/
+python-flask/*.pyc
+python-flask/.env
+.env

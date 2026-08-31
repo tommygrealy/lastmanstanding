@@ -4,6 +4,7 @@ import requests
 import argparse
 import json
 import sys
+import os
 from datetime import datetime, timedelta
 
 conn = dal()
@@ -37,22 +38,31 @@ else:
     round_number = last_round_number + 1
 
 local_mode = args.local
+if os.path.exists(f"matches_by_round_{round_number}.json"):
+    print(f"Using local file matches_by_round_{round_number}.json")
+    local_mode = True
 
 # Team names vary depending on results API in use. Use the team mapping JSON to
 # ensure the team names match our lms DB
 with open("team_names.json", "r") as team_name_fh:
     team_names_map=json.loads(team_name_fh.read())
 
+
 if local_mode:
-    with open("matches_by_round_example.json", "r") as json_fh:
+    with open(f"matches_by_round_{round_number}.json", "r") as json_fh:
         response_json = json.loads(json_fh.read())
 else:
-    fixtures_url = f"https://footapi7.p.rapidapi.com/api/tournament/17/season/61627/matches/round/{round_number}"
+    rapid_api_tournament_id = 17 # https://footapi7.p.rapidapi.com/api/tournament/all/category/1
+    rapid_api_season_id = 96668 # 26/27 season, Premier League https://footapi7.p.rapidapi.com/api/tournament/17/seasons
+    
+    fixtures_url = f"https://footapi7.p.rapidapi.com/api/tournament/{rapid_api_tournament_id}/season/{rapid_api_season_id}/matches/round/{round_number}"
     headers = {
         'X-RapidAPI-Key': 'ab673339a3msh5690b3b9cb81b6dp106c1ejsn8aa70579921e',
         'X-RapidAPI-Host': 'footapi7.p.rapidapi.com'
     }
     response = requests.request("GET", fixtures_url, headers=headers)
+    with open (f"matches_by_round_{round_number}.json", "w") as json_fh:
+        json_fh.write(response.text)
     response_json = json.loads(response.text)
 
 
@@ -67,8 +77,8 @@ gameweek_full_time = gameweek_end_dt + timedelta(hours=2, minutes=15)
 for match_data in response_json['events']:
     existing_details_correct = True
     kick_off_time = datetime.fromtimestamp(match_data['startTimestamp'])
-    home_team = match_data['homeTeam']['name']
-    away_team = match_data['awayTeam']['name']
+    home_team = match_data['homeTeam']['shortName']
+    away_team = match_data['awayTeam']['shortName']
     db_home_team = team_names_map[home_team]
     db_away_team = team_names_map[away_team]
 
@@ -84,6 +94,13 @@ for match_data in response_json['events']:
             print(f"Fixture {home_team} vs {away_team}, kickoff time changed to {kick_off_time}")
         else:
             print(f"Fixture {home_team} vs {away_team} is already correct: {existing_fixture_in_db[0][1]}")
+    else:
+        # insert new fixture into DB
+        conn.exe_sql(f"""
+            insert into fixtureresults (KickOffTime, HomeTeam, AwayTeam) values
+            ('{kick_off_time}', '{db_home_team}', '{db_away_team}')
+            """)
+        print(f"Fixture {home_team} vs {away_team} has been inserted")
     
 gameweek_defined = conn.exe_sql(f"""
         insert into gameweekmap (GameWeek, DateFrom, DateTo) values

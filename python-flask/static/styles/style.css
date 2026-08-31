@@ -1,0 +1,181 @@
+.darkDisableOverlay{
+    z-index: 124;
+    height: 100%;
+    width: 100%;
+    background-color: #f00;
+}
+
+
+td.availableHomeTeam{
+    padding: 15px;
+}
+
+.tdAvailableAwayTeam{
+    text-align: right;
+    padding: 15px;
+}
+
+.unavilableHomeTeam{
+    text-decoration: line-through;
+}
+
+.unavilableAwayTeam{
+    text-decoration: line-through;
+}
+
+.fixtureList{
+    width: 100%;
+}
+
+.teambtn{
+    width: 160 px !important;
+}
+
+.vsSeparator{
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.kickoffTime{
+    padding-right: 3em;
+}
+
+.activePlayerName{
+    color: #19a548;
+}
+
+.player2lives{
+    color: yellow;
+}
+
+.player1lives{
+    color: orange;
+}
+
+.elimPlayerName{
+    color: #e98888;
+    text-decoration: line-through;
+}
+
+.predictTable{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.predictTable td{
+    
+    background-color: #888;
+    border: 4px solid #ddd;
+    
+}
+.predictTableLabel{
+    width: 30%;
+}
+
+#currentSelection, #dynamiteSelection{
+    color: #333;
+    position: fixed;
+    left: auto; /* had been right 100px - changed to left 5px, then left auto */
+    top: 10px;
+    border-radius: 10px;
+    border: 3px solid #937777;
+    width: 250px;
+    /*height: 210px;*/
+    padding: 5px;
+    z-index: 1000;
+    background-color: #e0e0e0;
+    display: none;
+}
+
+
+#goMyHistory{
+    display: none;
+}
+
+#goPayment{
+    display: none;
+}
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.grid-item {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+#dynamite-drop-options {
+    display: none; /* none by default will set to display if they have a stick */
+  }
+  
+
+#dynamite {
+    cursor: grab;
+    position: absolute;   
+  }
+
+.drop-tile-container {
+    margin-top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Set both horizontal and vertical spacing */
+}
+
+.drop-target, .gone-target {
+    width: 100px;
+    color: #333;
+    background-color: #1bbbff;
+    height: 70px;
+    border: 2px solid #0e668c;
+    /* margin: 20px; */
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    /*line-height: 60px;*/
+    transition: background-color 0.3s;
+    }
+
+.gone-target {
+    background-color: #9fa9ad; /* Specific to gone-target */
+    }
+
+/* Styles for highlighting */
+.drop-target.active {
+    background-color: yellow;
+    border-color: #0e668c;
+    }
+
+#countdown_days_hours_min {
+        font-weight: bold;
+        color: #f40000;
+        background-color: #2ad;
+    }
+
+.prediction-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 15px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-header {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.prediction-body {
+    font-size: 14px;
+}
+    

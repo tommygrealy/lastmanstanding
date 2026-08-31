@@ -308,6 +308,15 @@ class dal {
         return $retval[0]['username'];
     }
 
+    public function updatePasswordHash($userId, $pass_enc){
+        $mylink=$this->connect();
+        $query="UPDATE users SET password = :password, salt = '' WHERE id = :id";
+        $stmt = $mylink->prepare($query);
+        $stmt->bindParam(':password', $pass_enc);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     public function passwordReset($user, $pass_enc, $salt){
         $mylink=$this->connect();
         $query="call passwordReset (:username, :password, :salt)";
