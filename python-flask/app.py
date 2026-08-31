@@ -8,6 +8,7 @@ can be adapted with minimal changes.
 
 import os
 import secrets
+from email_notifier import *
 
 from flask import (
     Flask,
@@ -19,6 +20,7 @@ from flask import (
     session,
     url_for,
 )
+import flask
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -300,6 +302,8 @@ def create_app() -> Flask:
         result = dal.submit_user_prediction(fixture_id, current_user.username,
                                             prediction, "MANUAL")
         if result["ok"]:
+            details = dal.get_prediction_details(result["prediction_id"])
+            send_prediction_confirmation(details)
             return jsonify({"status": 1, "reason": result["prediction_id"]})
         return jsonify({"status": 0, "reason": result["error"]})
 
@@ -315,6 +319,20 @@ def create_app() -> Flask:
         pred_id = int(request.form.get("predictionId", 0))
         result = dal.cancel_prediction(current_user.username, pred_id)
         return jsonify(result)
+
+    @app.route("/api/user-prediction")
+    @login_required
+    def api_user_prediction():
+        """Replaces: restServices/getUserPrediction.php"""
+        fixture_id = int(request.args.get("fixtureId", 0))
+        prediction = dal.get_user_prediction_for_fixture(current_user.username, fixture_id)
+        if prediction:
+            if hasattr(prediction.get("KickOffTime"), "isoformat"):
+                prediction["KickOffTime"] = prediction["KickOffTime"].strftime("%Y-%m-%d %H:%M:%S")
+            if hasattr(prediction.get("DateTimeEntered"), "isoformat"):
+                prediction["DateTimeEntered"] = prediction["DateTimeEntered"].strftime("%Y-%m-%d %H:%M:%S")
+            return jsonify(prediction)
+        return jsonify({"status": 0, "reason": "No prediction found"})
 
     @app.route("/api/user-standings")
     @login_required
