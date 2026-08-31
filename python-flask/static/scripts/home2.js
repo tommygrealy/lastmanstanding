@@ -74,7 +74,7 @@
         const createPickButton = (teamName, selected, opponent, killerSelected) => {
             const btn = document.createElement('button');
             const available = availableTeams.includes(teamName);
-            btn.className = 'clickable-row';
+            btn.className = 'lms-btn';
             if (!available) btn.classList.add('unavailable');
             const form = (formGuide[teamName] || '')
                 .replaceAll('WIN,', ' 🟢')

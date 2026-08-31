@@ -307,6 +307,7 @@ def create_app() -> Flask:
         result = dal.submit_user_prediction(fixture_id, current_user.username,
                                             prediction, "MANUAL")
         if result["ok"]:
+            email_notifier.send_prediction_confirmation(dal.get_prediction_details(result["prediction_id"]))
             return jsonify({"status": 1, "reason": result["prediction_id"]})
         return jsonify({"status": 0, "reason": result["error"]})
 

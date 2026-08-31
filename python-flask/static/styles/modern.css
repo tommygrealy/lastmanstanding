@@ -2,6 +2,7 @@
     --bg-main: #22275E;
     --bg-navbar: #005eb4;
     --bg-panel: #26324F;
+    --bg-fixture-card: #374462;
     --row-hover: #004096;
     --row-active: #00d9f7;
     --btn-border: #00d9f7;
@@ -120,7 +121,7 @@
 .prediction-card,
 .drop-target,
 .gone-target {
-    background-color: var(--bg-panel);
+    background-color: var(--bg-fixture-card);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 0.7rem;
     padding: 0.75rem;
