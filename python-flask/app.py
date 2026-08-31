@@ -156,6 +156,13 @@ def create_app() -> Flask:
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 
+    @app.route("/home2")
+    @login_required
+    def home2():
+        return render_template("home2.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
     @app.route("/admin")
     @login_required
     def admin():
