@@ -153,7 +153,7 @@ def create_app() -> Flask:
     @app.route("/home")
     @login_required
     def home():
-        return render_template("home.html",
+        return render_template("home2_home.html",
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 
