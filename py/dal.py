@@ -10,14 +10,14 @@ if environment == None:
 if os.environ['RUN_ENVIRON']=='DEV':
     dbConfig = {
         "username": "lms",
-        "password": os.environ.get('LMS_PASS'),
+        "password": os.environ.get('LMS_DB_PASSWORD'),
         "host": "localhost",
         "dbname": "lastmanstanding-dev",
     }
 elif os.environ['RUN_ENVIRON']=='PROD':
     dbConfig = {
         "username": "lms",
-        "password": os.environ.get('LMS_PASS'),
+        "password": os.environ.get('LMS_DB_PASSWORD'),
         "host": "localhost",
         "dbname": "lastmanstanding",
     }

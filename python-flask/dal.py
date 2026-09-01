@@ -430,6 +430,29 @@ def get_user_selection_for_this_week(username: str) -> list[dict]:
             cur.execute(sql, (username,))
             return cur.fetchall()
 
+def get_fixture_details(fixture_id: int) -> dict | None:
+    sql = f"""
+        SELECT {_fixture_with_club_info_cols()}
+        FROM fixtureresults f
+        {_fixture_club_joins()}
+        WHERE f.FixtureId = %s
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, (fixture_id,))
+            return cur.fetchone()
+
+
+def get_previously_selected_teams(username: str) -> list[str]:
+    """
+    Return all team names previously selected by the user.
+    """
+    sql = "SELECT TeamName FROM predictions WHERE UserName = %s"
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, (username,))
+            return [row["TeamName"] for row in cur.fetchall()]
+
 
 def submit_user_prediction(fixture_id: int, username: str,
                            predicted_result: int, entry_type: str) -> dict:

@@ -23,7 +23,21 @@
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/py/venv/bin/python",
             "envFile": "${workspaceFolder}/.env",
-            "args": ["--round", "2"]
+            "env": {"RUN_ENVIRON": "PROD"},
+            "args": ["--round", "3"]
+        },
+        {
+            "name": "Python Debugger: runPostRoundResultCheck (with args)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py/runPostRoundResultCheck.py",
+            "cwd": "${workspaceFolder}/py",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/py/venv/bin/python",
+            "envFile": "${workspaceFolder}/.env",
+            "args": ["--round", "3"],
+            "env": {"RUN_ENVIRON": "PROD"}
         }
+
     ]
 }

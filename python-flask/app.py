@@ -156,6 +156,13 @@ def create_app() -> Flask:
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 
+    @app.route("/home2")
+    @login_required
+    def home2():
+        return render_template("home2.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
     @app.route("/admin")
     @login_required
     def admin():
@@ -252,7 +259,8 @@ def create_app() -> Flask:
             return jsonify(existing)
 
         user_status = current_user.to_dict()
-        available_teams = dal.get_teams_available_to_user(username)
+        previously_selected_teams = dal.get_previously_selected_teams(username)
+
         fixtures = dal.get_this_weeks_fixtures()
         history = dal.get_results_history(50)
 
@@ -276,10 +284,9 @@ def create_app() -> Flask:
             if hasattr(f.get("KickOffTime"), "isoformat"):
                 f["KickOffTime"] = f["KickOffTime"].strftime("%Y-%m-%d %H:%M:%S")
 
-        short_names_avail = [t["ShortName"] for t in available_teams]
 
         return jsonify({
-            "availableTeams": short_names_avail,
+            "previouslySelected": previously_selected_teams,
             "fixtures": fixtures,
             "userstatus": user_status,
             "formguide": formguide,
@@ -289,17 +296,28 @@ def create_app() -> Flask:
     @login_required
     def api_submit_prediction():
         """Replaces: restServices/submitPredictionSvc.php"""
+
+        fixture_id = int(request.form.get("FixtureId", 0))
+        prediction = int(request.form.get("prediction", 0))
+        fixture_details = dal.get_fixture_details(fixture_id)
+
+        if not fixture_details:
+            return jsonify({"status": 0, "reason": "Fixture not found"})
+
+        selected_team_name = fixture_details["HomeTeam"] if prediction == 1 else fixture_details["AwayTeam"]
+
         if current_user.payment_status != "Paid":
             return jsonify({"status": 0, "reason": "Payment Pending"})
         if current_user.comp_status == "Eliminated":
             return jsonify({"status": 0, "reason": "eliminated from comp"})
-
-        fixture_id = int(request.form.get("FixtureId", 0))
-        prediction = int(request.form.get("prediction", 0))
+        previously_selected = dal.get_previously_selected_teams(current_user.username)
+        if selected_team_name in previously_selected:
+            return jsonify({"status": 0, "reason": "team already selected"})
 
         result = dal.submit_user_prediction(fixture_id, current_user.username,
                                             prediction, "MANUAL")
         if result["ok"]:
+            email_notifier.send_prediction_confirmation(dal.get_prediction_details(result["prediction_id"]))
             return jsonify({"status": 1, "reason": result["prediction_id"]})
         return jsonify({"status": 0, "reason": result["error"]})
 
