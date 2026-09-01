@@ -57,7 +57,7 @@
         return `${dayName} at ${formattedTime}`;
     }
 
-    function renderFixtureCard(fixture, availableTeams, formGuide) {
+    function renderFixtureCard(fixture, previouslySelected, formGuide) {
         const wrap = document.createElement('article');
         wrap.className = 'fixture-card';
 
@@ -73,7 +73,7 @@
 
         const createPickButton = (teamName, selected, opponent, killerSelected) => {
             const btn = document.createElement('button');
-            const available = availableTeams.includes(teamName);
+            const available = !previouslySelected.includes(teamName);
             btn.className = 'lms-btn';
             if (!available) btn.classList.add('unavailable');
             const form = (formGuide[teamName] || '')
@@ -236,9 +236,9 @@
 
             if (json.fixtures) {
                 document.getElementById('messageInformSelect').innerHTML = 'Please select one match winner from the list of fixtures below';
-                const availableTeams = json.availableTeams || [];
+                const previouslySelected = json.previouslySelected || [];
                 const formGuide = json.formguide || {};
-                json.fixtures.forEach(f => fixtureHost.appendChild(renderFixtureCard(f, availableTeams, formGuide)));
+                json.fixtures.forEach(f => fixtureHost.appendChild(renderFixtureCard(f, previouslySelected, formGuide)));
                 updateCountdown();
             } else {
                 showAlreadyPlayed(json);
@@ -304,8 +304,8 @@
                 const card = document.createElement('div');
                 card.className = 'prediction-card';
                 let result = '<span style="color:orange;font-weight:bold;">Pending</span>';
-                if (value.PredictedResult === 1) result = '<span style="color:#87f89f;font-weight:bold;">Win</span>';
-                if (value.PredictedResult === 0) result = '<span style="color:#ffc4c4;font-weight:bold;">Lose</span>';
+                if (value.PredictionCorrect === 1) result = '<span style="color:#87f89f;font-weight:bold;">Win</span>';
+                if (value.PredictionCorrect === 0) result = '<span style="color:#ffc4c4;font-weight:bold;">Lose</span>';
                 const date = new Date(value.KickOffTime).toISOString().split('T')[0];
                 card.innerHTML = `<strong>${date} — ${value.HomeTeam} vs ${value.AwayTeam}</strong><br>${username} predicted ${value.PredictedWinner} to win.<br>${result}`;
                 host.appendChild(card);
