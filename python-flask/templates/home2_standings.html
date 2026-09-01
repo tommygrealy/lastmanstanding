@@ -1,0 +1,24 @@
+{% extends "base_modern.html" %}
+{% block title %} - Home2 Standings{% endblock %}
+{% block head_extra %}
+<script>
+window.lmsCurrentUser = {{ username|tojson }};
+</script>
+<script src="{{ url_for('static', filename='scripts/home2.js') }}?v=1" defer></script>
+{% endblock %}
+{% block body %}
+{% include "includes/header_modern.html" %}
+
+<main class="modern-main">
+    <section id="standings-section" class="panel">
+        <h2>Current Player Standings</h2>
+        <p>⚽ = lives remaining.</p>
+        <label for="standingsFilter">Search Players</label>
+        <input id="standingsFilter" type="search" placeholder="Search by player name">
+        <div id="playerStandingsList" class="stack-list"></div>
+    </section>
+</main>
+
+{% include "includes/home2_modals.html" %}
+{% include "includes/footer_modern.html" %}
+{% endblock %}

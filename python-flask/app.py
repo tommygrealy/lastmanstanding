@@ -157,9 +157,45 @@ def create_app() -> Flask:
                                priv_level=current_user.priv_level)
 
     @app.route("/home2")
+    @app.route("/home2/home")
     @login_required
     def home2():
-        return render_template("home2.html",
+        return render_template("home2_home.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/rules")
+    @login_required
+    def home2_rules():
+        return render_template("home2_rules.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/standings")
+    @login_required
+    def home2_standings():
+        return render_template("home2_standings.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/dynamite")
+    @login_required
+    def home2_dynamite():
+        return render_template("home2_dynamite.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/payment")
+    @login_required
+    def home2_payment():
+        return render_template("home2_payment.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/about")
+    @login_required
+    def home2_about():
+        return render_template("home2_about.html",
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 

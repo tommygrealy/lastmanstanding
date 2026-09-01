@@ -1,0 +1,21 @@
+{% extends "base_modern.html" %}
+{% block title %} - Home2 About{% endblock %}
+{% block head_extra %}
+<script>
+window.lmsCurrentUser = {{ username|tojson }};
+</script>
+<script src="{{ url_for('static', filename='scripts/home2.js') }}?v=1" defer></script>
+{% endblock %}
+{% block body %}
+{% include "includes/header_modern.html" %}
+
+<main class="modern-main">
+    <section id="about-section" class="panel">
+        <h2>About</h2>
+        <p>Parallel modern responsive UI prototype page. Existing jQuery Mobile pages remain unchanged.</p>
+    </section>
+</main>
+
+{% include "includes/home2_modals.html" %}
+{% include "includes/footer_modern.html" %}
+{% endblock %}

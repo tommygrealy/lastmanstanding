@@ -21,21 +21,30 @@
     }
 
     function showModal(modalId) {
-        document.querySelector('[data-modal-backdrop]').classList.remove('hidden');
-        document.getElementById(modalId).classList.remove('hidden');
+        const backdrop = document.querySelector('[data-modal-backdrop]');
+        const modal = document.getElementById(modalId);
+        if (!backdrop || !modal) return;
+        backdrop.classList.remove('hidden');
+        modal.classList.remove('hidden');
     }
 
     function closeModal(modalId) {
-        document.getElementById(modalId).classList.add('hidden');
-        if ([...document.querySelectorAll('.modal')].every(m => m.classList.contains('hidden'))) {
-            document.querySelector('[data-modal-backdrop]').classList.add('hidden');
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.classList.add('hidden');
+        const backdrop = document.querySelector('[data-modal-backdrop]');
+        if (backdrop && [...document.querySelectorAll('.modal')].every(m => m.classList.contains('hidden'))) {
+            backdrop.classList.add('hidden');
         }
     }
 
     function showNotice(title, body, buttonText, onConfirm) {
-        document.getElementById('noticeTitle').textContent = title;
-        document.getElementById('noticeBody').textContent = body;
+        const noticeTitle = document.getElementById('noticeTitle');
+        const noticeBody = document.getElementById('noticeBody');
         const btn = document.getElementById('noticeConfirm');
+        if (!noticeTitle || !noticeBody || !btn) return;
+        noticeTitle.textContent = title;
+        noticeBody.textContent = body;
         btn.textContent = buttonText || 'OK';
         btn.onclick = function () {
             closeModal('noticeModal');
@@ -99,6 +108,10 @@
     }
 
     function updateSelection(fixId, homeTeam, awayTeam, selected, killer) {
+        const selectedTeamMsg = document.getElementById('csTeamWin');
+        const submitNowBtn = document.getElementById('submitNow');
+        const submitCancelBtn = document.getElementById('submitCancel');
+        if (!selectedTeamMsg || !submitNowBtn || !submitCancelBtn) return;
         state.selection = { fixId, selected };
         const killerTeamMsg = ' Select this team this week and if they win, you can remove a life from another player.';
         let msg = '';
@@ -112,9 +125,9 @@
             if (killer === 3) msg += killerTeamMsg;
         }
 
-        document.getElementById('csTeamWin').textContent = msg;
-        document.getElementById('submitNow').classList.remove('hidden');
-        document.getElementById('submitCancel').textContent = 'Cancel';
+        selectedTeamMsg.textContent = msg;
+        submitNowBtn.classList.remove('hidden');
+        submitCancelBtn.textContent = 'Cancel';
         showModal('selectionModal');
     }
 
@@ -122,6 +135,9 @@
         if (!selectionData || !selectionData[0]) return;
         const p = selectionData[0];
         const host = document.getElementById('alreadyPredictedDetails');
+        const messageInformSelect = document.getElementById('messageInformSelect');
+        const upComingFixtureList = document.getElementById('upComingFixtureList');
+        if (!host || !messageInformSelect || !upComingFixtureList) return;
         host.innerHTML = '';
 
         const row = document.createElement('div');
@@ -139,8 +155,8 @@
         row.appendChild(btn);
         host.appendChild(row);
 
-        document.getElementById('messageInformSelect').textContent = '';
-        document.getElementById('upComingFixtureList').innerHTML = '';
+        messageInformSelect.textContent = '';
+        upComingFixtureList.innerHTML = '';
     }
 
     function cancelPrediction(predictionId) {
@@ -191,6 +207,7 @@
 
     function updateCountdown() {
         const countdownSpan = document.getElementById('countdown_days_hours_min');
+        if (!countdownSpan) return;
         const earliestTime = findEarliestKickoff();
         if (!earliestTime) {
             countdownSpan.textContent = 'No info on next match kickoff time is available';
@@ -225,17 +242,20 @@
                 }
                 if (json.userstatus.PaymentStatus === 'Pending') {
                     showNotice('Payment Due', 'Entry fee needs to be paid before playing', 'Go to Payment', function () {
-                        location.hash = '#payment-section';
+                        location.assign('/home2/payment');
                     });
                 }
             }
 
             const fixtureHost = document.getElementById('upComingFixtureList');
+            const alreadyPredictedDetails = document.getElementById('alreadyPredictedDetails');
+            const messageInformSelect = document.getElementById('messageInformSelect');
+            if (!fixtureHost || !alreadyPredictedDetails || !messageInformSelect) return;
             fixtureHost.innerHTML = '';
-            document.getElementById('alreadyPredictedDetails').innerHTML = '';
+            alreadyPredictedDetails.innerHTML = '';
 
             if (json.fixtures) {
-                document.getElementById('messageInformSelect').innerHTML = 'Please select one match winner from the list of fixtures below';
+                messageInformSelect.innerHTML = 'Please select one match winner from the list of fixtures below';
                 const previouslySelected = json.previouslySelected || [];
                 const formGuide = json.formguide || {};
                 json.fixtures.forEach(f => fixtureHost.appendChild(renderFixtureCard(f, previouslySelected, formGuide)));
@@ -247,11 +267,12 @@
     }
 
     function displaySelectionsPostDeadline() {
+        const label = document.getElementById('publicSelectionsListLabel');
+        const host = document.getElementById('publicSelectionsList');
+        const messageInformSelect = document.getElementById('messageInformSelect');
+        if (!label || !host || !messageInformSelect) return;
         getJson('/api/selections-post-deadline').then(function (json) {
             if (!json || json.length === 0) return;
-
-            const label = document.getElementById('publicSelectionsListLabel');
-            const host = document.getElementById('publicSelectionsList');
             host.innerHTML = '';
 
             if (json[0].TIME_PUBLIC) {
@@ -260,7 +281,7 @@
             }
 
             label.textContent = "This week's predictions:";
-            document.getElementById('messageInformSelect').textContent = 'Submission deadline for the current game week has passed';
+            messageInformSelect.textContent = 'Submission deadline for the current game week has passed';
 
             json.forEach(function (value) {
                 const row = document.createElement('div');
@@ -278,8 +299,9 @@
     }
 
     function displayPlayerStandings() {
+        const host = document.getElementById('playerStandingsList');
+        if (!host) return;
         getJson('/api/user-standings').then(function (rows) {
-            const host = document.getElementById('playerStandingsList');
             host.innerHTML = '';
             rows.forEach(function (value) {
                 const livesLost = 3 - value.lives;
@@ -295,10 +317,12 @@
     }
 
     function showPlayerHist(username) {
+        const host = document.getElementById('userHistoryList');
+        const historyTitle = document.getElementById('historyTitle');
+        if (!host || !historyTitle) return;
         getJson('/api/user-prediction-history?player=' + encodeURIComponent(username)).then(function (rows) {
-            const host = document.getElementById('userHistoryList');
             host.innerHTML = '';
-            document.getElementById('historyTitle').textContent = `History for ${username}`;
+            historyTitle.textContent = `History for ${username}`;
 
             rows.forEach(function (value) {
                 const card = document.createElement('div');
@@ -316,8 +340,9 @@
     }
 
     function showDynamiteHist() {
+        const host = document.getElementById('dynamiteActionsList');
+        if (!host) return;
         getJson('/api/dynamite-history').then(function (rows) {
-            const host = document.getElementById('dynamiteActionsList');
             host.innerHTML = '';
             rows.forEach(function (value) {
                 const row = document.createElement('div');
@@ -329,8 +354,10 @@
     }
 
     function displayPlayersForDynamite() {
+        const host = document.getElementById('player-tile-targets');
+        const dynamiteAction = document.getElementById('dynamiteAction');
+        if (!host || !dynamiteAction) return;
         getJson('/api/user-standings').then(function (rows) {
-            const host = document.getElementById('player-tile-targets');
             host.innerHTML = '';
             rows.forEach(function (value) {
                 const livesLost = 3 - value.lives;
@@ -342,7 +369,7 @@
                 btn.addEventListener('click', function () {
                     state.dynamiteTargetFullName = value.FullName;
                     state.dynamiteTargetUser = value.username;
-                    document.getElementById('dynamiteAction').textContent = `Drop 🧨 on ${state.dynamiteTargetFullName}?`;
+                    dynamiteAction.textContent = `Drop 🧨 on ${state.dynamiteTargetFullName}?`;
                     showModal('dynamiteModal');
                 });
                 host.appendChild(btn);
@@ -361,9 +388,7 @@
             let btnText = 'Continue';
             let onConfirm = function () {
                 closeModal('dynamiteModal');
-                location.hash = '#standings-section';
-                displayPlayerStandings();
-                showDynamiteHist();
+                location.assign('/home2/standings');
             };
 
             if (data.reason === 'stale data') {
@@ -381,12 +406,15 @@
     }
 
     function loadDynamiteOptions() {
+        const noDynamiteMsg = document.getElementById('no-dynamite-msg');
+        const dynamiteDropOptions = document.getElementById('dynamite-drop-options');
+        if (!noDynamiteMsg || !dynamiteDropOptions) return;
         getJson('/api/dynamite-options').then(function (rows) {
             if (rows.length > 0 && rows[0].status === 1) {
                 state.userDynamiteUpdatedAt = rows[0].updated_at;
                 state.userDynamiteId = rows[0].dynamite_id;
-                document.getElementById('no-dynamite-msg').classList.add('hidden');
-                document.getElementById('dynamite-drop-options').classList.remove('hidden');
+                noDynamiteMsg.classList.add('hidden');
+                dynamiteDropOptions.classList.remove('hidden');
                 displayPlayersForDynamite();
             }
         });
@@ -394,6 +422,7 @@
 
     function setupStandingsFilter() {
         const filter = document.getElementById('standingsFilter');
+        if (!filter) return;
         filter.addEventListener('input', function () {
             const term = filter.value.toLowerCase();
             document.querySelectorAll('#playerStandingsList .clickable-row').forEach(function (row) {
@@ -403,12 +432,19 @@
     }
 
     function wireEvents() {
-        document.getElementById('submitNow').addEventListener('click', makeSubmission);
-        document.getElementById('submitCancel').addEventListener('click', function () { closeModal('selectionModal'); });
-        document.getElementById('historyClose').addEventListener('click', function () { closeModal('historyModal'); });
-        document.getElementById('submitDynamiteNow').addEventListener('click', dropDynamite);
-        document.getElementById('submitDynamiteCancel').addEventListener('click', function () { closeModal('dynamiteModal'); });
-        document.querySelector('[data-modal-backdrop]').addEventListener('click', function () {
+        const submitNow = document.getElementById('submitNow');
+        const submitCancel = document.getElementById('submitCancel');
+        const historyClose = document.getElementById('historyClose');
+        const submitDynamiteNow = document.getElementById('submitDynamiteNow');
+        const submitDynamiteCancel = document.getElementById('submitDynamiteCancel');
+        const backdrop = document.querySelector('[data-modal-backdrop]');
+
+        if (submitNow) submitNow.addEventListener('click', makeSubmission);
+        if (submitCancel) submitCancel.addEventListener('click', function () { closeModal('selectionModal'); });
+        if (historyClose) historyClose.addEventListener('click', function () { closeModal('historyModal'); });
+        if (submitDynamiteNow) submitDynamiteNow.addEventListener('click', dropDynamite);
+        if (submitDynamiteCancel) submitDynamiteCancel.addEventListener('click', function () { closeModal('dynamiteModal'); });
+        if (backdrop) backdrop.addEventListener('click', function () {
             ['selectionModal', 'noticeModal', 'historyModal', 'dynamiteModal'].forEach(closeModal);
         });
     }
