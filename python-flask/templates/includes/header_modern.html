@@ -1,20 +1,23 @@
 <header class="modern-navbar">
     <div class="modern-navbar-inner">
-        <a href="#home-section" class="brand" aria-label="Lastmanstanding home">
-            <span class="brand-text">Lastmanstanding</span>
-            <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-                <circle cx="32" cy="32" r="28" fill="#00d9f7" />
-                <path d="M16 36c6-8 12-12 16-12s10 4 16 12" fill="none" stroke="#005eb4" stroke-width="5" stroke-linecap="round"/>
-                <circle cx="24" cy="29" r="3" fill="#005eb4"/>
-                <circle cx="40" cy="29" r="3" fill="#005eb4"/>
-                <path d="M24 44h16" stroke="#005eb4" stroke-width="4" stroke-linecap="round"/>
-            </svg>
-        </a>
+        <span class="brand-text">Lastmanstanding</span>
+        <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="32" r="28" fill="#00d9f7" />
+            <path d="M16 36c6-8 12-12 16-12s10 4 16 12" fill="none" stroke="#005eb4" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="24" cy="29" r="3" fill="#005eb4"/>
+            <circle cx="40" cy="29" r="3" fill="#005eb4"/>
+            <path d="M24 44h16" stroke="#005eb4" stroke-width="4" stroke-linecap="round"/>
+        </svg>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="modern-nav-links" data-menu-toggle>
             <span class="sr-only">Toggle navigation</span>
             <span></span><span></span><span></span>
         </button>
         <nav class="modern-nav" id="modern-nav-links" data-menu>
+            <div class="mobile-menu-header">
+                <button class="mobile-menu-close" type="button" aria-label="Close navigation">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <a href="#home-section">Home</a>
             <a href="#rules-section">Rules</a>
             <a href="#standings-section">Standings</a>
