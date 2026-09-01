@@ -104,7 +104,8 @@ def create_app() -> Flask:
             error = "Invalid username or password."
         return render_template("login.html",
                                error=error,
-                               submitted_username=submitted_username)
+                               submitted_username=submitted_username,
+                               priv_level=0)
 
     @app.route("/logout")
     @login_required
@@ -152,14 +153,50 @@ def create_app() -> Flask:
     @app.route("/home")
     @login_required
     def home():
-        return render_template("home.html",
+        return render_template("home2_home.html",
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 
     @app.route("/home2")
+    @app.route("/home2/home")
     @login_required
     def home2():
-        return render_template("home2.html",
+        return render_template("home2_home.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/rules")
+    @login_required
+    def home2_rules():
+        return render_template("home2_rules.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/standings")
+    @login_required
+    def home2_standings():
+        return render_template("home2_standings.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/dynamite")
+    @login_required
+    def home2_dynamite():
+        return render_template("home2_dynamite.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/payment")
+    @login_required
+    def home2_payment():
+        return render_template("home2_payment.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
+
+    @app.route("/home2/about")
+    @login_required
+    def home2_about():
+        return render_template("home2_about.html",
                                username=current_user.username,
                                priv_level=current_user.priv_level)
 

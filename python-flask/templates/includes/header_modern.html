@@ -18,13 +18,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <a href="#home-section">Home</a>
-            <a href="#rules-section">Rules</a>
-            <a href="#standings-section">Standings</a>
-            <a href="#dynamite-section">🧨</a>
+            <a href="{{ url_for('home2') }}">Home</a>
+            <a href="{{ url_for('home2_rules') }}">Rules</a>
+            <a href="{{ url_for('home2_standings') }}">Standings</a>
+            <a href="{{ url_for('home2_dynamite') }}">🧨</a>
             {% if priv_level >= 3 %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
             <a href="{{ url_for('logout') }}">Logout</a>
-            <a href="#about-section">About</a>
+            <a href="{{ url_for('home2_about') }}">About</a>
         </nav>
     </div>
 </header>
