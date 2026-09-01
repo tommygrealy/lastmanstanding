@@ -37,6 +37,17 @@
             "envFile": "${workspaceFolder}/.env",
             "args": ["--round", "3"],
             "env": {"RUN_ENVIRON": "PROD"}
+        },
+        {
+            "name": "Python Debugger: placeDynamite.py (no args)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py/placeDynamite.py",
+            "cwd": "${workspaceFolder}/py",
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/py/venv/bin/python",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {"RUN_ENVIRON": "PROD"}
         }
 
     ]
