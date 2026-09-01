@@ -104,7 +104,8 @@ def create_app() -> Flask:
             error = "Invalid username or password."
         return render_template("login.html",
                                error=error,
-                               submitted_username=submitted_username)
+                               submitted_username=submitted_username,
+                               priv_level=0)
 
     @app.route("/logout")
     @login_required
