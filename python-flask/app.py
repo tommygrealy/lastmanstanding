@@ -8,6 +8,7 @@ can be adapted with minimal changes.
 
 import os
 import secrets
+from datetime import datetime
 
 from flask import (
     Flask,
@@ -30,6 +31,48 @@ from flask_login import (
 
 import dal
 import email_notifier
+
+
+def _format_fixture_kickoff(value) -> str:
+    if hasattr(value, "strftime"):
+        return value.strftime("%Y-%m-%d %H:%M")
+    return str(value)[:16]
+
+
+def _format_public_kickoff(value) -> str:
+    if not hasattr(value, "strftime"):
+        return str(value)
+
+    day_name = value.strftime("%A")
+    hour = value.strftime("%I").lstrip("0") or "12"
+    minute = value.strftime("%M")
+    suffix = value.strftime("%p")
+    formatted_time = f"{hour}{suffix}" if minute == "00" else f"{hour}:{minute}{suffix}"
+    return f"{day_name} at {formatted_time}"
+
+
+def _build_form_guide(history: list[dict]) -> dict[str, str]:
+    formguide: dict[str, str] = {}
+    for row in history:
+        result = row.get("Result")
+        home_team = row["HomeTeam"]
+        away_team = row["AwayTeam"]
+        if result == 1:
+            formguide[home_team] = formguide.get(home_team, "") + " 🟢"
+            formguide[away_team] = formguide.get(away_team, "") + " 🔴"
+        elif result == 2:
+            formguide[home_team] = formguide.get(home_team, "") + " 🟡"
+            formguide[away_team] = formguide.get(away_team, "") + " 🟡"
+        elif result == 3:
+            formguide[home_team] = formguide.get(home_team, "") + " 🔴"
+            formguide[away_team] = formguide.get(away_team, "") + " 🟢"
+    return formguide
+
+
+def _build_pick_button_label(team_name: str, form_guide: dict[str, str],
+                             selected: int, killer_selected: int) -> str:
+    killer_flag = "🧨 " if selected == killer_selected else ""
+    return f"{killer_flag}{team_name}{form_guide.get(team_name, '')}"
 
 
 # ---------------------------------------------------------------------------
@@ -73,6 +116,90 @@ def create_app() -> Flask:
     def load_user(user_id):
         row = dal.get_user_by_id(int(user_id))
         return User(row) if row else None
+
+    @app.context_processor
+    def inject_lms_template_context():
+        if not current_user.is_authenticated:
+            return {"lms_current_user": "", "lms_user_status": None}
+        return {
+            "lms_current_user": current_user.username,
+            "lms_user_status": {
+                "CompStatus": current_user.comp_status,
+                "PaymentStatus": current_user.payment_status,
+            },
+        }
+
+    def build_home_page_context() -> dict:
+        active_gameweek = dal.get_active_gameweek()
+        selection_deadline = active_gameweek["DateFrom"] if active_gameweek else None
+        selection_window_open = bool(selection_deadline and datetime.now() < selection_deadline)
+
+        current_selection = None
+        fixtures = []
+        public_selections = []
+        public_selections_label = ""
+        message_inform_select = ""
+
+        if selection_window_open:
+            public_selections_label = "This week's predictions will appear here after the deadline"
+            current_selection_rows = dal.get_user_selection_for_this_week(current_user.username)
+            if current_selection_rows:
+                current_selection = current_selection_rows[0]
+            else:
+                previously_selected = set(dal.get_previously_selected_teams(current_user.username))
+                form_guide = _build_form_guide(dal.get_results_history(50))
+                for fixture in dal.get_this_weeks_fixtures():
+                    killer_selected = int(fixture.get("KillerTeam") or 0)
+                    fixture["kickoff_display"] = _format_fixture_kickoff(fixture.get("KickOffTime"))
+                    fixture["killer_selected"] = killer_selected
+                    fixture["home_available"] = fixture["HomeTeam"] not in previously_selected
+                    fixture["away_available"] = fixture["AwayTeam"] not in previously_selected
+                    fixture["home_button_label"] = _build_pick_button_label(
+                        fixture["HomeTeam"], form_guide, 1, killer_selected
+                    )
+                    fixture["away_button_label"] = _build_pick_button_label(
+                        fixture["AwayTeam"], form_guide, 3, killer_selected
+                    )
+                    fixtures.append(fixture)
+
+                if fixtures:
+                    message_inform_select = "Please select one match winner from the list of fixtures below"
+        elif active_gameweek:
+            message_inform_select = "Submission deadline for the current game week has passed"
+            public_selections_label = "This week's predictions:"
+            for selection in dal.get_selections_for_gameweek(active_gameweek["GameWeek"]):
+                dynamite = ""
+                if selection.get("KillerTeam") is not None:
+                    if selection["PredictedTeam"] == selection["HomeTeam"] and selection["KillerTeam"] == 1:
+                        dynamite = " 🧨"
+                    if selection["PredictedTeam"] == selection["AwayTeam"] and selection["KillerTeam"] == 3:
+                        dynamite = " 🧨"
+                selection["kickoff_display"] = _format_public_kickoff(selection.get("KickOffTime"))
+                selection["method_text"] = "Auto-Pick*: " if selection["EntryType"] == "AUTO" else "Selected: "
+                selection["predicted_display"] = f'{selection["PredictedTeam"]}{dynamite}'
+                public_selections.append(selection)
+
+        return {
+            "current_selection": current_selection,
+            "fixtures": fixtures,
+            "message_inform_select": message_inform_select,
+            "public_selections": public_selections,
+            "public_selections_label": public_selections_label,
+            "selection_deadline_iso": (
+                selection_deadline.isoformat(timespec="seconds")
+                if hasattr(selection_deadline, "isoformat")
+                else ""
+            ),
+            "selection_window_open": selection_window_open,
+        }
+
+    def build_standings_rows() -> list[dict]:
+        standings = dal.get_current_standings(current_user.league_id)
+        for row in standings:
+            lives_lost = max(0, 3 - row["lives"])
+            row["balls"] = ("⚽ " * row["lives"]) + ("❌ " * lives_lost)
+            row["status_class"] = "active-player" if row["CompStatus"] == "Playing" else "elim-player"
+        return standings
 
     # -------------------------------------------------------------------------
     # Page routes
@@ -155,7 +282,8 @@ def create_app() -> Flask:
     def home():
         return render_template("home2_home.html",
                                username=current_user.username,
-                               priv_level=current_user.priv_level)
+                               priv_level=current_user.priv_level,
+                               **build_home_page_context())
 
     @app.route("/home2")
     @app.route("/home2/home")
@@ -163,7 +291,8 @@ def create_app() -> Flask:
     def home2():
         return render_template("home2_home.html",
                                username=current_user.username,
-                               priv_level=current_user.priv_level)
+                               priv_level=current_user.priv_level,
+                               **build_home_page_context())
 
     @app.route("/home2/rules")
     @login_required
@@ -177,7 +306,8 @@ def create_app() -> Flask:
     def home2_standings():
         return render_template("home2_standings.html",
                                username=current_user.username,
-                               priv_level=current_user.priv_level)
+                               priv_level=current_user.priv_level,
+                               standings=build_standings_rows())
 
     @app.route("/home2/dynamite")
     @login_required
@@ -297,6 +427,16 @@ def create_app() -> Flask:
 
         user_status = current_user.to_dict()
         previously_selected_teams = dal.get_previously_selected_teams(username)
+
+        active_gameweek = dal.get_active_gameweek()
+        if active_gameweek and datetime.now() >= active_gameweek["DateFrom"]:
+            return jsonify({
+                "previouslySelected": previously_selected_teams,
+                "fixtures": [],
+                "userstatus": user_status,
+                "formguide": {},
+                "selectionWindowOpen": False,
+            })
 
         fixtures = dal.get_this_weeks_fixtures()
         history = dal.get_results_history(50)

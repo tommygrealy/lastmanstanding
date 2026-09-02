@@ -1,9 +1,6 @@
 {% extends "base_modern.html" %}
 {% block title %} - Home2{% endblock %}
 {% block head_extra %}
-<script>
-window.lmsCurrentUser = {{ username|tojson }};
-</script>
 <script src="{{ url_for('static', filename='scripts/home2.js') }}?v=1" defer></script>
 {% endblock %}
 {% block body %}

@@ -16,6 +16,7 @@ Key improvements over the PHP version:
 import hashlib
 import os
 import secrets
+from datetime import datetime
 
 import pymysql
 import pymysql.cursors
@@ -38,6 +39,20 @@ def _get_db_config():
 def get_connection():
     """Return a new PyMySQL connection."""
     return pymysql.connect(**_get_db_config())
+
+
+def get_active_gameweek() -> dict | None:
+    sql = """
+        SELECT GameWeek, DateFrom, DateTo
+        FROM gameweekmap
+        WHERE DateTo > NOW()
+        ORDER BY DateTo ASC
+        LIMIT 1
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            return cur.fetchone()
 
 
 # ---------------------------------------------------------------------------
@@ -411,6 +426,10 @@ def get_teams_available_to_user(username: str) -> list[dict]:
 
 
 def get_user_selection_for_this_week(username: str) -> list[dict]:
+    active_gameweek = get_active_gameweek()
+    if not active_gameweek or datetime.now() >= active_gameweek["DateFrom"]:
+        return []
+
     sql = f"""
         SELECT {_fixture_with_club_info_cols()},
                p.PredictionID, p.UserName AS username, p.TeamName AS PredictedTeam
@@ -418,16 +437,12 @@ def get_user_selection_for_this_week(username: str) -> list[dict]:
         JOIN fixtureresults f ON f.FixtureId = p.FixtureID
         {_fixture_club_joins()}
         WHERE p.UserName = %s
-          AND p.GameWeek = (
-              SELECT gw.GameWeek FROM gameweekmap gw
-              WHERE gw.DateFrom > NOW()
-              ORDER BY gw.DateFrom ASC LIMIT 1
-          )
+          AND p.GameWeek = %s
           AND p.PredictionStatus = 'A'
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql, (username,))
+            cur.execute(sql, (username, active_gameweek["GameWeek"]))
             return cur.fetchall()
 
 def get_fixture_details(fixture_id: int) -> dict | None:
@@ -460,24 +475,18 @@ def submit_user_prediction(fixture_id: int, username: str,
     Insert a prediction row. Returns {'ok': True, 'prediction_id': int} on success
     or {'ok': False, 'error': str} on failure.
     """
-    # Derive team name and current game week
-    get_gw_sql = """
-        SELECT GameWeek FROM gameweekmap
-        WHERE DateTo > NOW()
-        ORDER BY DateTo ASC LIMIT 1
-    """
     get_team_sql = """
         SELECT HomeTeam, AwayTeam FROM fixtureresults WHERE FixtureId = %s
     """
     try:
+        active_gameweek = get_active_gameweek()
+        if not active_gameweek:
+            return {"ok": False, "error": "No active game week found"}
+        if datetime.now() >= active_gameweek["DateFrom"]:
+            return {"ok": False, "error": "deadline passed"}
+
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(get_gw_sql)
-                gw_row = cur.fetchone()
-                if not gw_row:
-                    return {"ok": False, "error": "No active game week found"}
-                game_week = gw_row["GameWeek"]
-
                 cur.execute(get_team_sql, (fixture_id,))
                 fixture = cur.fetchone()
                 if not fixture:
@@ -490,7 +499,7 @@ def submit_user_prediction(fixture_id: int, username: str,
                        (DateTimeEntered, EntryType, FixtureID, GameWeek,
                         UserName, TeamName, PredictionStatus, PredictedResult)
                        VALUES (NOW(), %s, %s, %s, %s, %s, 'A', %s)""",
-                    (entry_type, fixture_id, game_week, username, team_name, predicted_result),
+                    (entry_type, fixture_id, active_gameweek["GameWeek"], username, team_name, predicted_result),
                 )
                 pred_id = cur.lastrowid
             conn.commit()
@@ -504,18 +513,12 @@ def cancel_prediction(username: str, prediction_id: int) -> dict:
     Cancel a prediction if before the deadline, moving it to predictionstrash.
     Returns {'ROWS_AFFECTED': 1} on success or {'ROWS_AFFECTED': 0} on failure.
     """
-    check_deadline_sql = """
-        SELECT DateFrom FROM gameweekmap
-        WHERE DateFrom > NOW()
-        ORDER BY DateFrom ASC LIMIT 1
-    """
+    active_gameweek = get_active_gameweek()
+    if not active_gameweek or datetime.now() >= active_gameweek["DateFrom"]:
+        return {"ROWS_AFFECTED": 0, "reason": "too late"}
+
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(check_deadline_sql)
-            row = cur.fetchone()
-            if not row:
-                return {"ROWS_AFFECTED": 0, "reason": "too late"}
-            # If there is a future DateFrom, we are still before the deadline
             cur.execute(
                 """INSERT INTO predictionstrash
                    SELECT * FROM predictions
@@ -553,48 +556,28 @@ def get_user_prediction_history(username: str) -> list[dict]:
 
 
 def get_all_selections_for_this_week() -> list[dict]:
+    active_gameweek = get_active_gameweek()
+    if not active_gameweek:
+        return []
+
     sql = """
         SELECT f.KickOffTime, f.FixtureId, f.HomeTeam, f.AwayTeam,
                f.Result, p.PredictionID, p.DateTimeEntered,
                p.UserName AS username, p.TeamName AS PredictedTeam
         FROM predictions p
         JOIN fixtureresults f ON f.FixtureId = p.FixtureID
-        WHERE p.GameWeek = (
-            SELECT gw.GameWeek FROM gameweekmap gw
-            WHERE gw.DateFrom > NOW()
-            ORDER BY gw.DateFrom ASC LIMIT 1
-        )
+        WHERE p.GameWeek = %s
         ORDER BY p.DateTimeEntered DESC
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql)
+            cur.execute(sql, (active_gameweek["GameWeek"],))
             return cur.fetchall()
 
 
-def get_selections_post_deadline() -> list[dict]:
-    """
-    Returns selections with full detail once the deadline has passed,
-    or a single row with TIME_PUBLIC set to the deadline if still before it.
-    """
-    sql_gw = """
-        SELECT GameWeek, DateFrom FROM gameweekmap
-        WHERE DateTo > NOW()
-        ORDER BY DateTo ASC LIMIT 1
-    """
+def get_selections_for_gameweek(game_week: int) -> list[dict]:
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql_gw)
-            gw_row = cur.fetchone()
-            if not gw_row:
-                return []
-            from datetime import datetime
-            now = datetime.now()
-            deadline = gw_row["DateFrom"]
-            game_week = gw_row["GameWeek"]
-            if now < deadline:
-                return [{"TIME_PUBLIC": str(deadline)}]
-
             cur.execute(
                 """SELECT f.KickOffTime, f.FixtureId, f.HomeTeam, f.AwayTeam,
                           f.Result, f.KillerTeam,
@@ -610,6 +593,21 @@ def get_selections_post_deadline() -> list[dict]:
                 (game_week,),
             )
             return cur.fetchall()
+
+
+def get_selections_post_deadline() -> list[dict]:
+    """
+    Returns selections with full detail once the deadline has passed,
+    or a single row with TIME_PUBLIC set to the deadline if still before it.
+    """
+    active_gameweek = get_active_gameweek()
+    if not active_gameweek:
+        return []
+
+    if datetime.now() < active_gameweek["DateFrom"]:
+        return [{"TIME_PUBLIC": active_gameweek["DateFrom"]}]
+
+    return get_selections_for_gameweek(active_gameweek["GameWeek"])
 
 
 def get_prediction_details(prediction_id: int) -> dict | None:

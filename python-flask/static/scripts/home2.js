@@ -53,60 +53,6 @@
         showModal('noticeModal');
     }
 
-    function formatDateTime(dateTimeString) {
-        const date = new Date(String(dateTimeString).replace(' ', 'T'));
-        if (Number.isNaN(date.getTime())) return dateTimeString;
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayName = days[date.getDay()];
-        let hours = date.getHours();
-        const period = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const formattedTime = minutes === '00' ? `${hours}${period}` : `${hours}:${minutes}${period}`;
-        return `${dayName} at ${formattedTime}`;
-    }
-
-    function renderFixtureCard(fixture, previouslySelected, formGuide) {
-        const wrap = document.createElement('article');
-        wrap.className = 'fixture-card';
-
-        const kickoff = document.createElement('div');
-        kickoff.className = 'kickoffTime';
-        kickoff.textContent = (fixture.KickOffTime || '').slice(0, -3);
-
-        const matchup = document.createElement('div');
-        matchup.textContent = `${fixture.HomeTeam} vs ${fixture.AwayTeam}`;
-
-        const actions = document.createElement('div');
-        actions.className = 'fixture-actions';
-
-        const createPickButton = (teamName, selected, opponent, killerSelected) => {
-            const btn = document.createElement('button');
-            const available = !previouslySelected.includes(teamName);
-            btn.className = 'lms-btn';
-            if (!available) btn.classList.add('unavailable');
-            const form = (formGuide[teamName] || '')
-                .replaceAll('WIN,', ' 🟢')
-                .replaceAll('LOS,', ' 🔴')
-                .replaceAll('DRW,', ' 🟡');
-            const killerFlag = (selected === 1 && killerSelected === 1) || (selected === 3 && killerSelected === 3) ? ' 🧨' : '';
-            btn.textContent = `${killerFlag} ${teamName}${form}`;
-            btn.addEventListener('click', function () {
-                updateSelection(fixture.FixtureId, fixture.HomeTeam, fixture.AwayTeam, selected, killerSelected);
-            });
-            return btn;
-        };
-
-        const killerSelected = Number(fixture.KillerTeam || 0);
-        actions.appendChild(createPickButton(fixture.HomeTeam, 1, fixture.AwayTeam, killerSelected));
-        actions.appendChild(createPickButton(fixture.AwayTeam, 3, fixture.HomeTeam, killerSelected));
-
-        wrap.appendChild(kickoff);
-        wrap.appendChild(matchup);
-        wrap.appendChild(actions);
-        return wrap;
-    }
-
     function updateSelection(fixId, homeTeam, awayTeam, selected, killer) {
         const selectedTeamMsg = document.getElementById('csTeamWin');
         const submitNowBtn = document.getElementById('submitNow');
@@ -131,40 +77,16 @@
         showModal('selectionModal');
     }
 
-    function showAlreadyPlayed(selectionData) {
-        if (!selectionData || !selectionData[0]) return;
-        const p = selectionData[0];
-        const host = document.getElementById('alreadyPredictedDetails');
-        const messageInformSelect = document.getElementById('messageInformSelect');
-        const upComingFixtureList = document.getElementById('upComingFixtureList');
-        if (!host || !messageInformSelect || !upComingFixtureList) return;
-        host.innerHTML = '';
-
-        const row = document.createElement('div');
-        row.className = 'panel';
-        row.innerHTML = `<h3>Your prediction for this round has been submitted</h3>
-            <p>Fixture: ${p.HomeTeam} v ${p.AwayTeam}<br>You selected: ${p.PredictedTeam}</p>`;
-
-        const btn = document.createElement('button');
-        btn.className = 'lms-btn';
-        btn.textContent = 'Cancel this prediction';
-        btn.addEventListener('click', function () {
-            cancelPrediction(p.PredictionID);
-        });
-
-        row.appendChild(btn);
-        host.appendChild(row);
-
-        messageInformSelect.textContent = '';
-        upComingFixtureList.innerHTML = '';
-    }
-
     function cancelPrediction(predictionId) {
         if (!window.confirm('Are you sure you want to cancel this prediction?')) return;
         postForm('/api/cancel-prediction', { predictionId: predictionId }).then(data => {
             if (data.ROWS_AFFECTED === 1) {
-                document.getElementById('alreadyPredictedDetails').innerHTML = '';
-                loadUserOpts();
+                location.reload();
+                return;
+            }
+
+            if (data.reason === 'too late') {
+                showNotice('Prediction Locked', 'The selection window has closed for this game week.', 'OK');
             }
         });
     }
@@ -176,46 +98,35 @@
             prediction: state.selection.selected
         }).then(function (data) {
             if (data.status === 1) {
-                document.getElementById('csTeamWin').textContent = 'Your prediction for this week has been submitted. Good luck!';
-                document.getElementById('submitNow').classList.add('hidden');
-                document.getElementById('submitCancel').textContent = 'Close';
-                loadUserOpts();
-            } else {
-                let msg = 'Cannot submit this prediction.';
-                if (data.reason === 'Payment Pending') msg = 'Pay Tommy first - Revolut €10 to @tommy5kit';
-                if (data.reason === 'eliminated from comp') msg = 'You have been eliminated from the competition';
-                if (Array.isArray(data.reason) && data.reason[0] && data.reason[0].endsWith("ey 'UserTeam'")) {
-                    msg = 'You have already selected this team in a previous round of the competition';
-                }
-                if (Array.isArray(data.reason) && data.reason[0] && data.reason[0].endsWith("UserGameWeek'")) {
-                    msg = 'You have already submitted a prediction for this game week';
-                }
-                document.getElementById('csTeamWin').textContent = msg;
+                location.reload();
+                return;
             }
-        });
-    }
 
-    function findEarliestKickoff() {
-        const elements = document.querySelectorAll('#upComingFixtureList .kickoffTime');
-        let earliest = null;
-        elements.forEach(el => {
-            const d = new Date(el.textContent.trim().replace(' ', 'T'));
-            if (!Number.isNaN(d.getTime()) && (!earliest || d < earliest)) earliest = d;
+            let msg = 'Cannot submit this prediction.';
+            if (data.reason === 'Payment Pending') msg = 'Pay Tommy first - Revolut €10 to @tommy5kit';
+            if (data.reason === 'eliminated from comp') msg = 'You have been eliminated from the competition';
+            if (data.reason === 'team already selected') msg = 'You have already selected this team in a previous round of the competition';
+            if (data.reason === 'deadline passed') msg = 'The selection window has closed for this game week.';
+            if (Array.isArray(data.reason) && data.reason[0] && data.reason[0].endsWith("UserGameWeek'")) {
+                msg = 'You have already submitted a prediction for this game week';
+            }
+            document.getElementById('csTeamWin').textContent = msg;
         });
-        return earliest;
     }
 
     function updateCountdown() {
         const countdownSpan = document.getElementById('countdown_days_hours_min');
-        if (!countdownSpan) return;
-        const earliestTime = findEarliestKickoff();
-        if (!earliestTime) {
+        const deadlineText = countdownSpan ? countdownSpan.dataset.selectionDeadline : '';
+        if (!countdownSpan || !deadlineText) return;
+
+        const deadline = new Date(deadlineText);
+        if (Number.isNaN(deadline.getTime())) {
             countdownSpan.textContent = 'No info on next match kickoff time is available';
             return;
         }
 
         function tick() {
-            const diff = earliestTime - new Date();
+            const diff = deadline - new Date();
             if (diff <= 0) {
                 countdownSpan.textContent = 'Deadline passed';
                 return;
@@ -229,91 +140,6 @@
 
         tick();
         setInterval(tick, 1000);
-    }
-
-    function loadUserOpts() {
-        getJson('/api/user-selection-options').then(function (json) {
-            if (json.userstatus) {
-                state.currentUsername = json.userstatus.username || state.currentUsername;
-                if (json.userstatus.CompStatus === 'Eliminated') {
-                    showNotice('Player Eliminated', 'You have been eliminated.', 'My Predictions', function () {
-                        showPlayerHist(state.currentUsername);
-                    });
-                }
-                if (json.userstatus.PaymentStatus === 'Pending') {
-                    showNotice('Payment Due', 'Entry fee needs to be paid before playing', 'Go to Payment', function () {
-                        location.assign('/home2/payment');
-                    });
-                }
-            }
-
-            const fixtureHost = document.getElementById('upComingFixtureList');
-            const alreadyPredictedDetails = document.getElementById('alreadyPredictedDetails');
-            const messageInformSelect = document.getElementById('messageInformSelect');
-            if (!fixtureHost || !alreadyPredictedDetails || !messageInformSelect) return;
-            fixtureHost.innerHTML = '';
-            alreadyPredictedDetails.innerHTML = '';
-
-            if (json.fixtures) {
-                messageInformSelect.innerHTML = 'Please select one match winner from the list of fixtures below';
-                const previouslySelected = json.previouslySelected || [];
-                const formGuide = json.formguide || {};
-                json.fixtures.forEach(f => fixtureHost.appendChild(renderFixtureCard(f, previouslySelected, formGuide)));
-                updateCountdown();
-            } else {
-                showAlreadyPlayed(json);
-            }
-        });
-    }
-
-    function displaySelectionsPostDeadline() {
-        const label = document.getElementById('publicSelectionsListLabel');
-        const host = document.getElementById('publicSelectionsList');
-        const messageInformSelect = document.getElementById('messageInformSelect');
-        if (!label || !host || !messageInformSelect) return;
-        getJson('/api/selections-post-deadline').then(function (json) {
-            if (!json || json.length === 0) return;
-            host.innerHTML = '';
-
-            if (json[0].TIME_PUBLIC) {
-                label.textContent = "This week's predictions will appear here after the deadline";
-                return;
-            }
-
-            label.textContent = "This week's predictions:";
-            messageInformSelect.textContent = 'Submission deadline for the current game week has passed';
-
-            json.forEach(function (value) {
-                const row = document.createElement('div');
-                row.className = 'list-row';
-                const methodText = value.EntryType === 'AUTO' ? 'Auto-Pick*: ' : 'Selected: ';
-                let dynamite = '';
-                if (value.KillerTeam !== null) {
-                    if (value.PredictedTeam === value.HomeTeam && value.KillerTeam === 1) dynamite = ' 🧨';
-                    if (value.PredictedTeam === value.AwayTeam && value.KillerTeam === 3) dynamite = ' 🧨';
-                }
-                row.innerHTML = `<strong>Player:</strong> ${value.FullName}<br>${value.HomeTeam} vs ${value.AwayTeam} - ${formatDateTime(value.KickOffTime)}<br>${methodText}<strong>${value.PredictedTeam}${dynamite}</strong>`;
-                host.appendChild(row);
-            });
-        });
-    }
-
-    function displayPlayerStandings() {
-        const host = document.getElementById('playerStandingsList');
-        if (!host) return;
-        getJson('/api/user-standings').then(function (rows) {
-            host.innerHTML = '';
-            rows.forEach(function (value) {
-                const livesLost = 3 - value.lives;
-                const balls = '⚽ '.repeat(value.lives) + '❌ '.repeat(livesLost);
-                const btn = document.createElement('button');
-                btn.className = 'clickable-row';
-                const cls = value.CompStatus === 'Playing' ? 'active-player' : 'elim-player';
-                btn.innerHTML = `<span class="${cls}">${balls}${value.FullName}</span>`;
-                btn.addEventListener('click', function () { showPlayerHist(value.username); });
-                host.appendChild(btn);
-            });
-        });
     }
 
     function showPlayerHist(username) {
@@ -431,6 +257,53 @@
         });
     }
 
+    function wireHomePageActions() {
+        document.querySelectorAll('.js-pick-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                updateSelection(
+                    Number(button.dataset.fixId),
+                    button.dataset.homeTeam,
+                    button.dataset.awayTeam,
+                    Number(button.dataset.selected),
+                    Number(button.dataset.killerSelected || 0)
+                );
+            });
+        });
+
+        const cancelButton = document.getElementById('cancelPredictionButton');
+        if (cancelButton) {
+            cancelButton.addEventListener('click', function () {
+                cancelPrediction(Number(cancelButton.dataset.predictionId));
+            });
+        }
+    }
+
+    function wireHistoryButtons() {
+        document.querySelectorAll('.js-player-history-button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                showPlayerHist(button.dataset.username);
+            });
+        });
+    }
+
+    function showInitialStatusNotice() {
+        const userStatus = window.lmsUserStatus;
+        if (!userStatus) return;
+
+        if (userStatus.CompStatus === 'Eliminated') {
+            showNotice('Player Eliminated', 'You have been eliminated.', 'My Predictions', function () {
+                showPlayerHist(state.currentUsername);
+            });
+            return;
+        }
+
+        if (userStatus.PaymentStatus === 'Pending') {
+            showNotice('Payment Due', 'Entry fee needs to be paid before playing', 'Go to Payment', function () {
+                location.assign('/home2/payment');
+            });
+        }
+    }
+
     function wireEvents() {
         const submitNow = document.getElementById('submitNow');
         const submitCancel = document.getElementById('submitCancel');
@@ -451,10 +324,11 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         wireEvents();
+        wireHomePageActions();
+        wireHistoryButtons();
         setupStandingsFilter();
-        loadUserOpts();
-        displaySelectionsPostDeadline();
-        displayPlayerStandings();
+        updateCountdown();
+        showInitialStatusNotice();
         loadDynamiteOptions();
         showDynamiteHist();
     });

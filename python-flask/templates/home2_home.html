@@ -1,9 +1,6 @@
 {% extends "base_modern.html" %}
 {% block title %} - Home2{% endblock %}
 {% block head_extra %}
-<script>
-window.lmsCurrentUser = {{ username|tojson }};
-</script>
 <script src="{{ url_for('static', filename='scripts/home2.js') }}?v=1" defer></script>
 {% endblock %}
 {% block body %}
@@ -14,13 +11,58 @@ window.lmsCurrentUser = {{ username|tojson }};
         <h2>Home</h2>
         <p>You are logged in as: <strong>{{ username }}</strong>{% if priv_level >= 3 %} (admin) - Access admin functions <a href="{{ url_for('admin') }}">here</a>{% endif %}</p>
 
-        <div id="alreadyPredictedDetails"></div>
-        <p id="messageInformSelect"></p>
-        <p id="countdown_days_hours_min" class="deadline"></p>
-        <div id="upComingFixtureList" class="fixture-list"></div>
+        <div id="alreadyPredictedDetails">
+            {% if current_selection %}
+            <div class="panel">
+                <h3>Your prediction for this round has been submitted</h3>
+                <p>Fixture: {{ current_selection.HomeTeam }} v {{ current_selection.AwayTeam }}<br>You selected: {{ current_selection.PredictedTeam }}</p>
+                {% if selection_window_open %}
+                <button type="button" id="cancelPredictionButton" class="lms-btn" data-prediction-id="{{ current_selection.PredictionID }}">Cancel this prediction</button>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <p id="messageInformSelect">{{ message_inform_select }}</p>
+        <p id="countdown_days_hours_min" class="deadline"{% if selection_deadline_iso %} data-selection-deadline="{{ selection_deadline_iso }}"{% endif %}></p>
+        <div id="upComingFixtureList" class="fixture-list">
+            {% for fixture in fixtures %}
+            <article class="fixture-card">
+                <div class="kickoffTime">{{ fixture.kickoff_display }}</div>
+                <div>{{ fixture.HomeTeam }} vs {{ fixture.AwayTeam }}</div>
+                <div class="fixture-actions">
+                    <button type="button"
+                            class="lms-btn{% if not fixture.home_available %} unavailable{% endif %} js-pick-button"
+                            data-fix-id="{{ fixture.FixtureId }}"
+                            data-home-team="{{ fixture.HomeTeam }}"
+                            data-away-team="{{ fixture.AwayTeam }}"
+                            data-selected="1"
+                            data-killer-selected="{{ fixture.killer_selected }}">
+                        {{ fixture.home_button_label }}
+                    </button>
+                    <button type="button"
+                            class="lms-btn{% if not fixture.away_available %} unavailable{% endif %} js-pick-button"
+                            data-fix-id="{{ fixture.FixtureId }}"
+                            data-home-team="{{ fixture.HomeTeam }}"
+                            data-away-team="{{ fixture.AwayTeam }}"
+                            data-selected="3"
+                            data-killer-selected="{{ fixture.killer_selected }}">
+                        {{ fixture.away_button_label }}
+                    </button>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
 
-        <h3 id="publicSelectionsListLabel"></h3>
-        <div id="publicSelectionsList" class="stack-list"></div>
+        <h3 id="publicSelectionsListLabel">{{ public_selections_label }}</h3>
+        <div id="publicSelectionsList" class="stack-list">
+            {% for selection in public_selections %}
+            <div class="list-row">
+                <strong>Player:</strong> {{ selection.FullName }}<br>
+                {{ selection.HomeTeam }} vs {{ selection.AwayTeam }} - {{ selection.kickoff_display }}<br>
+                {{ selection.method_text }}<strong>{{ selection.predicted_display }}</strong>
+            </div>
+            {% endfor %}
+        </div>
     </section>
 </main>
 

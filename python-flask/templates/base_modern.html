@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Last Man Standing{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/modern.css') }}?v=1">
+    <script>
+    window.lmsCurrentUser = {{ lms_current_user|tojson }};
+    window.lmsUserStatus = {{ lms_user_status|tojson }};
+    </script>
     <script src="{{ url_for('static', filename='scripts/modern-ui.js') }}?v=1" defer></script>
     {% block head_extra %}{% endblock %}
 </head>
