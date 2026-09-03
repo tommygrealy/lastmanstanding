@@ -38,10 +38,28 @@
         }
     }
 
-    function showNotice(title, body, buttonText, onConfirm) {
+    const PAYMENT_DUE_DISMISSED_SESSION_KEY = 'paymentDueDismissedThisSession';
+
+    function getSessionStorageItem(key) {
+        try {
+            return window.sessionStorage ? window.sessionStorage.getItem(key) : null;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    function setSessionStorageItem(key, value) {
+        try {
+            if (window.sessionStorage) window.sessionStorage.setItem(key, value);
+        } catch (err) {
+        }
+    }
+
+    function showNotice(title, body, buttonText, onConfirm, secondaryAction) {
         const noticeTitle = document.getElementById('noticeTitle');
         const noticeBody = document.getElementById('noticeBody');
         const btn = document.getElementById('noticeConfirm');
+        const secondaryBtn = document.getElementById('noticeSecondary');
         if (!noticeTitle || !noticeBody || !btn) return;
         noticeTitle.textContent = title;
         noticeBody.textContent = body;
@@ -50,6 +68,20 @@
             closeModal('noticeModal');
             if (onConfirm) onConfirm();
         };
+        if (secondaryBtn) {
+            if (secondaryAction && secondaryAction.buttonText) {
+                secondaryBtn.textContent = secondaryAction.buttonText;
+                secondaryBtn.onclick = function () {
+                    closeModal('noticeModal');
+                    if (secondaryAction.onClick) secondaryAction.onClick();
+                };
+                secondaryBtn.classList.remove('hidden');
+            } else {
+                secondaryBtn.textContent = '';
+                secondaryBtn.onclick = null;
+                secondaryBtn.classList.add('hidden');
+            }
+        }
         showModal('noticeModal');
     }
 
@@ -298,8 +330,14 @@
         }
 
         if (userStatus.PaymentStatus === 'Pending' && !window.location.pathname.endsWith('/payment')) {
+            if (getSessionStorageItem(PAYMENT_DUE_DISMISSED_SESSION_KEY) === '1') return;
             showNotice('Payment Due', 'Entry fee needs to be paid before playing', 'Go to Payment', function () {
                 location.assign('/home2/payment');
+            }, {
+                buttonText: "I'll think about it",
+                onClick: function () {
+                    setSessionStorageItem(PAYMENT_DUE_DISMISSED_SESSION_KEY, '1');
+                }
             });
         }
     }
