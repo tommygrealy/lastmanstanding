@@ -51,6 +51,15 @@ def _format_public_kickoff(value) -> str:
     return f"{day_name} at {formatted_time}"
 
 
+def _parse_datetime_local(value: str) -> datetime:
+    for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    raise ValueError("Invalid datetime")
+
+
 def _build_form_guide(history: list[dict]) -> dict[str, str]:
     formguide: dict[str, str] = {}
     for row in history:
@@ -335,7 +344,9 @@ def create_app() -> Flask:
     def admin():
         if current_user.priv_level < 3:
             return redirect(url_for("home"))
-        return render_template("admin.html", username=current_user.username)
+        return render_template("admin.html",
+                               username=current_user.username,
+                               priv_level=current_user.priv_level)
 
     @app.route("/edit-account", methods=["GET", "POST"])
     @login_required
@@ -597,6 +608,30 @@ def create_app() -> Flask:
             return jsonify({"status": 0, "reason": "Insufficient privilege"}), 403
         return jsonify(dal.get_lazy_users())
 
+    @app.route("/api/admin-users")
+    @login_required
+    def api_admin_users():
+        if current_user.priv_level < 3:
+            return jsonify({"status": 0, "reason": "Insufficient privilege"}), 403
+
+        league_id_raw = request.args.get("league_id", "").strip()
+        comp_status = request.args.get("compStatus", "").strip()
+        payment_status = request.args.get("paymentStatus", "").strip()
+
+        league_id = None
+        if league_id_raw:
+            try:
+                league_id = int(league_id_raw)
+            except ValueError:
+                return jsonify({"status": 0, "reason": "Invalid league_id"}), 400
+
+        users = dal.get_admin_users(
+            league_id=league_id,
+            comp_status=comp_status or None,
+            payment_status=payment_status or None,
+        )
+        return jsonify(users)
+
     @app.route("/api/update-user", methods=["POST"])
     @login_required
     def api_update_user():
@@ -604,18 +639,73 @@ def create_app() -> Flask:
         if current_user.priv_level < 3:
             return jsonify({"status": 0, "reason": "Insufficient privilege"}), 403
 
+        user_id_raw = request.form.get("userId", "").strip()
+        if user_id_raw:
+            try:
+                user_id = int(user_id_raw)
+                priv_level = int(request.form.get("PrivLevel", "").strip())
+                league_id_raw = request.form.get("league_id", "").strip()
+                league_id = int(league_id_raw) if league_id_raw else None
+            except ValueError:
+                return jsonify({"status": 0, "reason": "Invalid user update payload"}), 400
+
+            comp_status = request.form.get("CompStatus", "").strip()
+            payment_status = request.form.get("PaymentStatus", "").strip()
+            if not comp_status or not payment_status:
+                return jsonify({"status": 0, "reason": "Missing required fields"}), 400
+
+            ok = dal.update_admin_user(user_id, priv_level, comp_status, payment_status, league_id)
+            if ok:
+                return jsonify({"status": 1, "reason": "Update successful"})
+            return jsonify({"status": 0, "reason": "User not found"}), 404
+
         user = request.form.get("userToUpdate", "")
         field = request.form.get("fieldToUpdate", "")
         new_value = request.form.get("newValue", "")
 
         if field == "PaymentStatus":
-            dal.update_payment_status(user, "Paid")
+            dal.update_payment_status(user, new_value or "Paid")
             return jsonify({"status": 1, "reason": "Update successful"})
         elif field == "CompStatus":
             dal.update_comp_status(user, new_value)
             return jsonify({"status": 1, "reason": "Update successful"})
 
         return jsonify({"status": 0, "reason": "Unknown field"})
+
+    @app.route("/api/next-gameweek")
+    @login_required
+    def api_next_gameweek():
+        if current_user.priv_level < 3:
+            return jsonify({"status": 0, "reason": "Insufficient privilege"}), 403
+
+        gameweek = dal.get_next_gameweek()
+        if not gameweek:
+            return jsonify({})
+
+        for key in ("DateFrom", "DateTo"):
+            if hasattr(gameweek.get(key), "isoformat"):
+                gameweek[key] = gameweek[key].strftime("%Y-%m-%dT%H:%M")
+        return jsonify(gameweek)
+
+    @app.route("/api/update_gameweek", methods=["POST"])
+    @login_required
+    def api_update_gameweek():
+        if current_user.priv_level < 3:
+            return jsonify({"status": 0, "reason": "Insufficient privilege"}), 403
+
+        try:
+            game_week = int(request.form.get("GameWeek", "0"))
+            date_from = _parse_datetime_local(request.form.get("DateFrom", "").strip())
+            date_to = _parse_datetime_local(request.form.get("DateTo", "").strip())
+        except ValueError:
+            return jsonify({"status": 0, "reason": "Invalid gameweek payload"}), 400
+
+        if date_to <= date_from:
+            return jsonify({"status": 0, "reason": "DateTo must be after DateFrom"}), 400
+
+        if dal.update_gameweek(game_week, date_from, date_to):
+            return jsonify({"status": 1, "reason": "Update successful"})
+        return jsonify({"status": 0, "reason": "Gameweek not found"}), 404
 
     @app.route("/api/send-mail-reminder", methods=["POST"])
     @login_required
