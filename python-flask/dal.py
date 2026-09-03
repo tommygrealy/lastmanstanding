@@ -223,6 +223,64 @@ def update_comp_status(username: str, status: str) -> bool:
         return True
 
 
+def get_admin_users(league_id: int | None = None,
+                    comp_status: str | None = None,
+                    payment_status: str | None = None) -> list[dict]:
+    sql = """
+        SELECT u.id, u.username, u.FullName, u.email, u.PrivLevel,
+               u.CompStatus, u.PaymentStatus, lm.league_id
+        FROM users u
+        LEFT JOIN (
+            SELECT user_id, MAX(league_id) AS league_id
+            FROM league_memberships
+            GROUP BY user_id
+        ) lm ON u.id = lm.user_id
+        WHERE 1 = 1
+    """
+    params: list = []
+
+    if league_id is not None:
+        sql += " AND lm.league_id = %s"
+        params.append(league_id)
+    if comp_status:
+        sql += " AND u.CompStatus = %s"
+        params.append(comp_status)
+    if payment_status:
+        sql += " AND u.PaymentStatus = %s"
+        params.append(payment_status)
+
+    sql += " ORDER BY u.FullName, u.username"
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, tuple(params))
+            return cur.fetchall()
+
+
+def update_admin_user(user_id: int, priv_level: int, comp_status: str,
+                      payment_status: str, league_id: int | None) -> bool:
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """UPDATE users
+                   SET PrivLevel = %s, CompStatus = %s, PaymentStatus = %s
+                   WHERE id = %s""",
+                (priv_level, comp_status, payment_status, user_id),
+            )
+            if cur.rowcount == 0:
+                conn.rollback()
+                return False
+
+            cur.execute("DELETE FROM league_memberships WHERE user_id = %s", (user_id,))
+            if league_id is not None:
+                cur.execute(
+                    "INSERT INTO league_memberships (user_id, league_id) VALUES (%s, %s)",
+                    (user_id, league_id),
+                )
+        conn.commit()
+        return True
+
+
 def get_current_standings(league_id: int) -> list[dict]:
     sql = """
         SELECT u.username, u.FullName, u.lives, u.CompStatus
@@ -276,6 +334,23 @@ def get_lazy_users() -> list[dict]:
         with conn.cursor() as cur:
             cur.execute(sql)
             return cur.fetchall()
+
+
+def get_next_gameweek() -> dict | None:
+    return get_active_gameweek()
+
+
+def update_gameweek(game_week: int, date_from: datetime, date_to: datetime) -> bool:
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """UPDATE gameweekmap
+                   SET DateFrom = %s, DateTo = %s
+                   WHERE GameWeek = %s""",
+                (date_from, date_to, game_week),
+            )
+        conn.commit()
+        return cur.rowcount > 0
 
 
 # ---------------------------------------------------------------------------

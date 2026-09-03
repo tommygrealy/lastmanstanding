@@ -1,61 +1,91 @@
-{% extends "base.html" %}
+{% extends "base_modern.html" %}
 {% block title %} - Admin{% endblock %}
 {% block head_extra %}
-<script src="{{ url_for('static', filename='scripts/adminFunctions.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin.js') }}?v=1" defer></script>
 {% endblock %}
 {% block body %}
-<div data-role="page" id="homescreen">
-    <div data-role="header" data-position="fixed">
-        {% include "includes/header_admin.html" %}
-    </div>
-    <div data-role="content">
-        You are logged in as: <strong>{{ username }}</strong><br><br/>
+{% include "includes/header_modern.html" %}
 
-        <span id="scoreInputNeeded"><span id="numPending"></span> fixtures require score updates. Please enter the scores below.</span>
-        <span id="noScoreInputNeeded">All match scores are up to date - no input required</span>
+<main class="modern-main">
+    <section class="panel">
+        <h2>Admin Dashboard</h2>
+        <p>You are logged in as: <strong>{{ username }}</strong></p>
+    </section>
 
-        <span id="messageInformSelect"> </span>
-        <ul id="updatePendingList" data-role="listview" data-inset="true" data-divider-theme="a"></ul>
-
-        <a href="#" id="btnExecuteAutoPic" data-role="button">Run auto-picks</a>
-    </div>
-    <div data-role="footer" data-position="fixed">
-        {% include "includes/footer.html" %}
-    </div>
-</div>
-
-<!-- payment page -->
-<div data-role="page" id="paymentPage">
-    <div data-role="header" data-position="fixed">
-        {% include "includes/header_admin.html" %}
-    </div>
-    <div data-role="content">
-        <p style="font-weight: bold;">Entry fee is €10</p>
-        Payment can be made by Revolut to Tommy Grealy.<br>
-        Revolut username: @tommy5kit
-    </div>
-    <div data-role="footer" data-position="fixed">
-        {% include "includes/footer.html" %}
-    </div>
-</div>
-
-<!-- user activity page -->
-<div data-role="page" id="userActivity">
-    <div data-role="header" data-position="fixed">
-        {% include "includes/header_admin.html" %}
-    </div>
-    <div data-role="content">
-        <div id="usersNotPaid" data-inset="true">
-            <h3>Users not Paid</h3>
+    <section class="panel">
+        <h2>Match Results &amp; Auto-Picks</h2>
+        <p id="matchResultsStatus" class="status-text"></p>
+        <div id="updatePendingList" class="stack-list"></div>
+        <div class="admin-actions">
+            <button type="button" id="btnExecuteAutoPick" class="lms-btn">Run auto-picks</button>
         </div>
-        <ul data-role="listview" id="usersNotSubmittedList" data-filter="true" data-input="#myFilter" data-inset="true">
-            <li data-role="list-divider">Users not submitted <a href="#" onclick="sendReminder()"> send reminder</a></li>
-        </ul>
-        <h3>Current Selections:</h3>
-        <ul data-role="listview" id="currentSelectionsList" data-filter="true" data-input="#myFilter" data-inset="true"></ul>
-    </div>
-    <div data-role="footer" data-position="fixed">
-        {% include "includes/footer.html" %}
-    </div>
-</div>
+    </section>
+
+    <section class="panel">
+        <h2>Section 1 - Users</h2>
+        <div class="form-grid admin-filter-grid">
+            <label class="form-field" for="leagueFilter">
+                <span>Filter by League</span>
+                <select id="leagueFilter">
+                    <option value="">All leagues</option>
+                </select>
+            </label>
+            <label class="form-field" for="compStatusFilter">
+                <span>Filter by Comp Status</span>
+                <select id="compStatusFilter">
+                    <option value="">All statuses</option>
+                    <option value="Playing">Playing</option>
+                    <option value="Eliminated">Eliminated</option>
+                </select>
+            </label>
+            <label class="form-field" for="paymentStatusFilter">
+                <span>Filter by Payment Status</span>
+                <select id="paymentStatusFilter">
+                    <option value="">All payment statuses</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                </select>
+            </label>
+        </div>
+        <div class="admin-actions">
+            <button type="button" id="resetUserFilters" class="lms-btn">Reset filters</button>
+        </div>
+        <p id="usersStatus" class="status-text"></p>
+        <div id="adminUsersList" class="card-container"></div>
+    </section>
+
+    <section class="panel">
+        <h2>Section 2 - Next Matches</h2>
+        <p id="gameweekStatus" class="status-text"></p>
+        <form id="gameweekForm" class="form-grid">
+            <input type="hidden" id="gameweekNumber" name="GameWeek">
+            <label class="form-field" for="gameweekDisplay">
+                <span>Game Week</span>
+                <input id="gameweekDisplay" type="text" disabled>
+            </label>
+            <label class="form-field" for="gameweekDateFrom">
+                <span>Selection Deadline</span>
+                <input id="gameweekDateFrom" name="DateFrom" type="datetime-local" required>
+            </label>
+            <label class="form-field" for="gameweekDateTo">
+                <span>Round End</span>
+                <input id="gameweekDateTo" name="DateTo" type="datetime-local" required>
+            </label>
+            <div class="admin-actions">
+                <button type="submit" class="lms-btn">Save next match window</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Section 3 - Users not submitted</h2>
+        <div class="admin-actions">
+            <button type="button" id="sendReminderButton" class="lms-btn">Send reminder</button>
+        </div>
+        <p id="usersNotSubmittedStatus" class="status-text"></p>
+        <div id="usersNotSubmittedList" class="stack-list"></div>
+    </section>
+</main>
+
+{% include "includes/footer_modern.html" %}
 {% endblock %}

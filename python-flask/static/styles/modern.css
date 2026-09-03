@@ -203,6 +203,86 @@ a:visited {
     background-color: var(--row-hover);
 }
 
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.6rem;
+    background-color: #1d2740;
+    color: var(--text-main);
+    padding: 0.65rem 0.75rem;
+    font: inherit;
+}
+
+label,
+input,
+select,
+textarea,
+button {
+    font: inherit;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+    opacity: 0.75;
+}
+
+.form-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.form-field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.admin-filter-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.admin-user-card {
+    background-color: var(--bg-fixture-card);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.7rem;
+    padding: 1rem;
+}
+
+.admin-user-card h3,
+.prediction-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+}
+
+.admin-meta {
+    margin: 0.25rem 0;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 0.9rem;
+}
+
+.status-text {
+    min-height: 1.25rem;
+}
+
+.status-text.success {
+    color: #87f89f;
+}
+
+.status-text.error {
+    color: #ffc4c4;
+}
+
+.status-text.warning {
+    color: #ffe38b;
+}
+
 .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -275,5 +355,8 @@ a:visited {
         padding: 0.55rem 0.75rem;
         border-bottom: 0;
         border-radius: 0.5rem;
+    }
+    .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
 }
