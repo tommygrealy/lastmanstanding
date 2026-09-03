@@ -401,7 +401,7 @@ def create_app() -> Flask:
                 else:
                     error = "Invalid or expired reset link."
         return render_template("reset_password.html",
-                               token=token, error=error, success=success)
+                               token=token, error=error, success=success, priv_level=0)
 
     @app.route("/memberlist")
     @login_required
