@@ -715,7 +715,7 @@ def create_app() -> Flask:
     @login_required
     def api_dynamite_history():
         """Replaces: restServices/getDynamiteDropHistory.php"""
-        history = dal.get_dynamite_drop_history()
+        history = dal.get_dynamite_drop_history(current_user.league_id)
         for row in history:
             if hasattr(row.get("updated_at"), "isoformat"):
                 row["updated_at"] = row["updated_at"].strftime("%Y-%m-%d %H:%M:%S")

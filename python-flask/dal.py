@@ -712,7 +712,7 @@ def drop_dynamite_on_user(dynamite_id: int, target_username: str) -> int | None:
     return lives
 
 
-def get_dynamite_drop_history() -> list[dict]:
+def get_dynamite_drop_history(league_id: int) -> list[dict]:
     sql = """
         SELECT d.updated_at,
                su.FullName AS SourceFullName,
@@ -720,11 +720,24 @@ def get_dynamite_drop_history() -> list[dict]:
         FROM dynamite d
         JOIN users su ON d.granted_to_user_fk = su.id
         JOIN users tu ON d.target_user_fk    = tu.id
+        WHERE EXISTS (
+            SELECT 1
+            FROM league_memberships lm
+            WHERE lm.user_id = d.granted_to_user_fk
+              AND lm.league_id = %s
+        )
+        AND EXISTS (
+            SELECT 1
+            FROM league_memberships lm
+            WHERE lm.user_id = d.target_user_fk
+              AND lm.league_id = %s
+        )
         ORDER BY d.updated_at DESC
     """
+
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql)
+            cur.execute(sql, (league_id, league_id))
             return cur.fetchall()
 
 

@@ -12,6 +12,11 @@
 
 * { box-sizing: border-box; }
 
+a,
+a:visited {
+    color: #c6c7ff;
+}
+
 .modern-body {
     margin: 0;
     font-family: Arial, sans-serif;
