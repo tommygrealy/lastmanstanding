@@ -275,7 +275,7 @@ def create_app() -> Flask:
                 except Exception as exc:
                     error = f"Registration failed: {exc}"
 
-        return render_template("register.html", error=error, league_id=league_id)
+        return render_template("register.html", error=error, league_id=league_id, priv_level=0)
 
     @app.route("/home")
     @login_required

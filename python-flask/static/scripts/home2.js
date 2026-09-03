@@ -297,7 +297,7 @@
             return;
         }
 
-        if (userStatus.PaymentStatus === 'Pending') {
+        if (userStatus.PaymentStatus === 'Pending' && !window.location.pathname.endsWith('/payment')) {
             showNotice('Payment Due', 'Entry fee needs to be paid before playing', 'Go to Payment', function () {
                 location.assign('/home2/payment');
             });
