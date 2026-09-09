@@ -328,13 +328,19 @@ function displaySelectionsPostDeadline() {
                 $.each(json, function (key, value) {
                     var selectionMethodText = (value["EntryType"] == "AUTO") ? "Auto-Pick*: " : "Selected: ";
                     var dynamite = "";
+                    var fixtureDetail = formatDateTime(value["KickOffTime"]);
+                    var fixtureSeparator = " - ";
+                    if (value["LiveStatusText"]) {
+                        fixtureSeparator = " — ";
+                        fixtureDetail = value["LiveStatusText"] + ' <span class="live-prediction-indicator">' + (value["LivePredictionIndicator"] || "") + '</span>';
+                    }
                     if (value["KillerTeam"] != null) {
                         if (value["PredictedTeam"] == value["HomeTeam"] && value["KillerTeam"] == 1) dynamite = " &#x1f9e8;";
                         if (value["PredictedTeam"] == value["AwayTeam"] && value["KillerTeam"] == 3) dynamite = " &#x1f9e8;";
                     }
                     $('#publicSelectionsList').append(
                         '<li data-role="list-divider">Player: ' + value["FullName"] + '</li>' +
-                        '<li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + " - " + formatDateTime(value["KickOffTime"]) + '</li>' +
+                        '<li>' + value["HomeTeam"] + ' vs ' + value["AwayTeam"] + fixtureSeparator + fixtureDetail + '</li>' +
                         '<li>' + selectionMethodText + '<strong>' + value["PredictedTeam"] + dynamite + '</strong></li>'
                     );
                 });

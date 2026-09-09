@@ -189,6 +189,16 @@ a:visited {
 .elim-player { color: #ffc4c4; text-decoration: line-through; }
 .deadline { font-weight: 700; }
 
+.live-prediction-indicator {
+    display: inline-block;
+    animation: live-prediction-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes live-prediction-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
 .lms-btn {
     background-color: #22275E;
     border: 2px solid var(--btn-border);

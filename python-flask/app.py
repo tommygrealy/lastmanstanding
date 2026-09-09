@@ -8,8 +8,10 @@ can be adapted with minimal changes.
 
 import os
 import secrets
+import time
 from datetime import datetime
 
+import requests
 from flask import (
     Flask,
     abort,
@@ -31,6 +33,9 @@ from flask_login import (
 
 import dal
 import email_notifier
+
+FOOTAPI_LIVE_MATCHES_URL = "https://footapi7.p.rapidapi.com/api/matches/live"
+FOOTAPI_HOST = "footapi7.p.rapidapi.com"
 
 
 def _format_fixture_kickoff(value) -> str:
@@ -58,6 +63,147 @@ def _parse_datetime_local(value: str) -> datetime:
         except ValueError:
             continue
     raise ValueError("Invalid datetime")
+
+
+def _safe_int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _kickoff_epoch(kickoff_value):
+    if hasattr(kickoff_value, "timestamp"):
+        return int(kickoff_value.timestamp())
+    if isinstance(kickoff_value, str):
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                return int(datetime.strptime(kickoff_value, fmt).timestamp())
+            except ValueError:
+                continue
+    return None
+
+
+def _should_fetch_live_matches(selections: list[dict], now_epoch: int) -> bool:
+    two_hours_ago = now_epoch - (2 * 60 * 60)
+    for selection in selections:
+        kickoff_epoch = _kickoff_epoch(selection.get("KickOffTime"))
+        if kickoff_epoch is None:
+            continue
+        if two_hours_ago <= kickoff_epoch <= now_epoch:
+            return True
+    return False
+
+
+def _calculate_elapsed_minutes(status_code, period_start_timestamp, now_epoch: int):
+    code = _safe_int(status_code)
+    period_start = _safe_int(period_start_timestamp)
+    if code not in (6, 7) or period_start is None:
+        return None
+
+    elapsed_seconds = now_epoch - period_start
+    if elapsed_seconds < 0:
+        elapsed_seconds = 0
+    if code == 7:
+        elapsed_seconds += 45 * 60
+    return int(elapsed_seconds // 60)
+
+
+def _prediction_currently_correct(predicted_team: str, home_team: str, away_team: str,
+                                  home_score: int, away_score: int) -> bool:
+    if home_score == away_score:
+        return False
+    if predicted_team == home_team:
+        return home_score > away_score
+    if predicted_team == away_team:
+        return away_score > home_score
+    return False
+
+
+def _fetch_inprogress_live_events_by_match_id(match_ids: set[int]) -> dict[int, dict]:
+    if not match_ids:
+        return {}
+
+    rapidapi_key = os.environ.get("LMS_RAPIDAPI_KEY") or os.environ.get("RAPIDAPI_KEY")
+    if not rapidapi_key:
+        return {}
+
+    headers = {
+        "X-RapidAPI-Key": rapidapi_key,
+        "X-RapidAPI-Host": FOOTAPI_HOST,
+    }
+
+    try:
+        response = requests.get(FOOTAPI_LIVE_MATCHES_URL, headers=headers, timeout=5)
+        response.raise_for_status()
+        payload = response.json()
+    except (requests.RequestException, ValueError):
+        return {}
+
+    events = payload.get("events")
+    if not isinstance(events, list):
+        return {}
+
+    inprogress_events: dict[int, dict] = {}
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        event_id = _safe_int(event.get("id"))
+        if event_id is None or event_id not in match_ids:
+            continue
+        status = event.get("status") or {}
+        if status.get("type") != "inprogress":
+            continue
+        inprogress_events[event_id] = event
+    return inprogress_events
+
+
+def _add_live_match_status_to_selections(selections: list[dict]) -> None:
+    if not selections:
+        return
+
+    now_epoch = int(time.time())
+    if not _should_fetch_live_matches(selections, now_epoch):
+        return
+
+    match_ids = {
+        _safe_int(row.get("FootApiMatchId"))
+        for row in selections
+        if _safe_int(row.get("FootApiMatchId")) is not None
+    }
+    live_events = _fetch_inprogress_live_events_by_match_id(match_ids)
+    if not live_events:
+        return
+
+    for row in selections:
+        match_id = _safe_int(row.get("FootApiMatchId"))
+        if match_id is None:
+            continue
+        event = live_events.get(match_id)
+        if not event:
+            continue
+
+        home_score = _safe_int((event.get("homeScore") or {}).get("current"))
+        away_score = _safe_int((event.get("awayScore") or {}).get("current"))
+        elapsed_minutes = _calculate_elapsed_minutes(
+            (event.get("status") or {}).get("code"),
+            (event.get("time") or {}).get("currentPeriodStartTimestamp"),
+            now_epoch,
+        )
+        if home_score is None or away_score is None or elapsed_minutes is None:
+            continue
+
+        is_correct = _prediction_currently_correct(
+            row.get("PredictedTeam"),
+            row.get("HomeTeam"),
+            row.get("AwayTeam"),
+            home_score,
+            away_score,
+        )
+
+        row["LiveStatusText"] = f"In Progress ({elapsed_minutes} mins): {home_score} - {away_score}"
+        row["LivePredictionCorrect"] = is_correct
+        row["LivePredictionIndicator"] = "🟢" if is_correct else "🔴"
 
 
 def _build_form_guide(history: list[dict]) -> dict[str, str]:
@@ -176,7 +322,9 @@ def create_app() -> Flask:
         elif active_gameweek:
             message_inform_select = "Submission deadline for the current game week has passed"
             public_selections_label = "This week's predictions:"
-            for selection in dal.get_selections_for_gameweek(active_gameweek["GameWeek"]):
+            week_selections = dal.get_selections_for_gameweek(active_gameweek["GameWeek"])
+            _add_live_match_status_to_selections(week_selections)
+            for selection in week_selections:
                 dynamite = ""
                 if selection.get("KillerTeam") is not None:
                     if selection["PredictedTeam"] == selection["HomeTeam"] and selection["KillerTeam"] == 1:
@@ -184,6 +332,9 @@ def create_app() -> Flask:
                     if selection["PredictedTeam"] == selection["AwayTeam"] and selection["KillerTeam"] == 3:
                         dynamite = " 🧨"
                 selection["kickoff_display"] = _format_public_kickoff(selection.get("KickOffTime"))
+                selection["fixture_status_display"] = selection.get("LiveStatusText") or selection["kickoff_display"]
+                selection["is_live_inprogress"] = bool(selection.get("LiveStatusText"))
+                selection["live_prediction_indicator"] = selection.get("LivePredictionIndicator", "")
                 selection["method_text"] = "Auto-Pick*: " if selection["EntryType"] == "AUTO" else "Selected: "
                 selection["predicted_display"] = f'{selection["PredictedTeam"]}{dynamite}'
                 public_selections.append(selection)
@@ -559,6 +710,8 @@ def create_app() -> Flask:
     def api_selections_post_deadline():
         """Replaces: restServices/getSelectionsPostDeadline.php"""
         selections = dal.get_selections_post_deadline()
+        if selections and "TIME_PUBLIC" not in selections[0]:
+            _add_live_match_status_to_selections(selections)
         for row in selections:
             for key in ("KickOffTime", "DateTimeEntered", "TIME_PUBLIC"):
                 if key in row and hasattr(row[key], "isoformat"):
