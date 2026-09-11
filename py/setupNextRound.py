@@ -77,6 +77,7 @@ gameweek_full_time = gameweek_end_dt + timedelta(hours=2, minutes=15)
 for match_data in response_json['events']:
     existing_details_correct = True
     kick_off_time = datetime.fromtimestamp(match_data['startTimestamp'])
+    foot_api_match_id = match_data['id']
     home_team = match_data['homeTeam']['shortName']
     away_team = match_data['awayTeam']['shortName']
     db_home_team = team_names_map[home_team]
@@ -97,8 +98,8 @@ for match_data in response_json['events']:
     else:
         # insert new fixture into DB
         conn.exe_sql(f"""
-            insert into fixtureresults (KickOffTime, HomeTeam, AwayTeam) values
-            ('{kick_off_time}', '{db_home_team}', '{db_away_team}')
+            insert into fixtureresults (KickOffTime, HomeTeam, AwayTeam, FootApiMatchId) values
+            ('{kick_off_time}', '{db_home_team}', '{db_away_team}', '{foot_api_match_id}')
             """)
         print(f"Fixture {home_team} vs {away_team} has been inserted")
     
