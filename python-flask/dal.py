@@ -25,11 +25,16 @@ from werkzeug.security import generate_password_hash as wz_generate
 
 
 def _get_db_config():
+    if os.environ.get("RUN_ENVIRON") == 'PROD':
+        db_name = "lastmanstanding"
+    elif os.environ.get("RUN_ENVIRON") == "DEV":
+        db_name = "lastmanstanding-dev"
+
     return {
         "host": os.environ.get("LMS_DB_HOST", "localhost"),
         "user": os.environ.get("LMS_DB_USER", "lms"),
         "password": os.environ.get("LMS_DB_PASSWORD", ""),
-        "database": os.environ.get("LMS_DB_NAME", "lastmanstanding"),
+        "database": os.environ.get("LMS_DB_NAME", db_name),
         "cursorclass": pymysql.cursors.DictCursor,
         "charset": "utf8mb4",
         "autocommit": False,
@@ -655,7 +660,7 @@ def get_selections_for_gameweek(game_week: int) -> list[dict]:
         with conn.cursor() as cur:
             cur.execute(
                 """SELECT f.KickOffTime, f.FixtureId, f.HomeTeam, f.AwayTeam,
-                          f.Result, f.KillerTeam,
+                          f.Result, f.KillerTeam, f.FootApiMatchId,
                           p.PredictionID, p.UserName AS username,
                           p.TeamName AS PredictedTeam, p.EntryType,
                           u.FullName

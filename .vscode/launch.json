@@ -13,6 +13,7 @@
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/python-flask/.venv/bin/python",
             "envFile": "${workspaceFolder}/.env",
+            "env": {"RUN_ENVIRON": "DEV"}
         },
         {
             "name": "Python Debugger: setupNextRound",
@@ -24,7 +25,7 @@
             "python": "${workspaceFolder}/py/venv/bin/python",
             "envFile": "${workspaceFolder}/.env",
             "env": {"RUN_ENVIRON": "PROD"},
-            "args": ["--round", "3"]
+            "args": ["--round", "5"]
         },
         {
             "name": "Python Debugger: runPostRoundResultCheck (with args)",
@@ -35,7 +36,7 @@
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/py/venv/bin/python",
             "envFile": "${workspaceFolder}/.env",
-            "args": ["--round", "3"],
+            "args": ["--round", "4"],
             "env": {"RUN_ENVIRON": "PROD"}
         },
         {
