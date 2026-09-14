@@ -660,6 +660,7 @@ def get_selections_for_gameweek(game_week: int) -> list[dict]:
         with conn.cursor() as cur:
             cur.execute(
                 """SELECT f.KickOffTime, f.FixtureId, f.HomeTeam, f.AwayTeam,
+                          f.HomeTeamScore, f.AwayTeamScore,
                           f.Result, f.KillerTeam, f.FootApiMatchId,
                           p.PredictionID, p.UserName AS username,
                           p.TeamName AS PredictedTeam, p.EntryType,
