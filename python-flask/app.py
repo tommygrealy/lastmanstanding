@@ -331,12 +331,21 @@ def create_app() -> Flask:
                         dynamite = " 🧨"
                     if selection["PredictedTeam"] == selection["AwayTeam"] and selection["KillerTeam"] == 3:
                         dynamite = " 🧨"
+                if selection.get("Result") is not None:
+                    if selection["Result"] == 1 and selection["PredictedTeam"] == selection["HomeTeam"]:
+                        selection["predicted_result_display"] = "✅"
+                    elif selection["Result"] == 3 and selection["PredictedTeam"] == selection["AwayTeam"]:
+                        selection["predicted_result_display"] = "✅"
+                    else:
+                        selection["predicted_result_display"] = "❌"
+                else:
+                    selection["predicted_result_display"] = ""
                 selection["kickoff_display"] = _format_public_kickoff(selection.get("KickOffTime"))
                 selection["fixture_status_display"] = selection.get("LiveStatusText") or selection["kickoff_display"]
                 selection["is_live_inprogress"] = bool(selection.get("LiveStatusText"))
                 selection["live_prediction_indicator"] = selection.get("LivePredictionIndicator", "")
                 selection["method_text"] = "Auto-Pick*: " if selection["EntryType"] == "AUTO" else "Selected: "
-                selection["predicted_display"] = f'{selection["PredictedTeam"]}{dynamite}'
+                selection["predicted_display"] = f'{selection["PredictedTeam"]}{dynamite} {selection["predicted_result_display"]}'
                 public_selections.append(selection)
 
         return {

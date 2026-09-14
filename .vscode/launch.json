@@ -13,7 +13,7 @@
             "console": "integratedTerminal",
             "python": "${workspaceFolder}/python-flask/.venv/bin/python",
             "envFile": "${workspaceFolder}/.env",
-            "env": {"RUN_ENVIRON": "DEV"}
+            "env": {"RUN_ENVIRON": "PROD"}
         },
         {
             "name": "Python Debugger: setupNextRound",
