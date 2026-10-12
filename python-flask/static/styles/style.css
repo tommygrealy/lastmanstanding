@@ -178,4 +178,14 @@ td.availableHomeTeam{
 .prediction-body {
     font-size: 14px;
 }
+
+.live-prediction-indicator {
+    display: inline-block;
+    animation: live-prediction-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes live-prediction-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
     

@@ -1,6 +1,8 @@
 #!/bin/bash
 now=$(date +"%Y-%m-%d %H:%M:%S")
-export LMS_PASS=$(pass lms)
+set -a
+source ./.env
+set +a
 export RUN_ENVIRON=PROD
 export logfile=/home/tgrealy/postround_cronjob.txt
 echo "${now} post round checks triggered by cron" > $logfile

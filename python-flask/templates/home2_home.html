@@ -58,7 +58,7 @@
             {% for selection in public_selections %}
             <div class="list-row">
                 <strong>Player:</strong> {{ selection.FullName }}<br>
-                {{ selection.HomeTeam }} vs {{ selection.AwayTeam }} - {{ selection.kickoff_display }}<br>
+                {{ selection.HomeTeam }} vs {{ selection.AwayTeam }}{% if selection.is_live_inprogress %} — {{ selection.fixture_status_display }} <span class="live-prediction-indicator">{{ selection.live_prediction_indicator }}</span>{% else %} - {{ selection.fixture_status_display }}{% endif %}<br>
                 {{ selection.method_text }}<strong>{{ selection.predicted_display }}</strong>
             </div>
             {% endfor %}

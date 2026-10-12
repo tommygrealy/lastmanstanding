@@ -1,6 +1,8 @@
 #!/bin/bash
 now=$(date +"%Y-%m-%d %H:%M:%S")
-export LMS_PASS=$(pass lms)
+set -a
+source ./.env
+set +a
 export RUN_ENVIRON=PROD
 export logfile=/home/tgrealy/next_round_cronjob.txt
 echo "${now} next round setup triggered by cron" > $logfile
