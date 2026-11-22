@@ -316,8 +316,13 @@ def get_playing_users_not_paid() -> list[dict]:
             return cur.fetchall()
 
 
-def get_lazy_users() -> list[dict]:
+def get_lazy_users(gameweek: int | None = None) -> list[dict]:
     """Users who have not yet submitted a prediction for the current game week."""
+    if gameweek is None:
+        active_gameweek = get_active_gameweek()
+        if not active_gameweek:
+            return []
+        gameweek = active_gameweek["GameWeek"]
     sql = """
         SELECT u.email AS Email, u.FullName, u.username
         FROM users u
@@ -326,18 +331,13 @@ def get_lazy_users() -> list[dict]:
           AND u.username NOT IN (
               SELECT p.UserName
               FROM predictions p
-              WHERE p.GameWeek = (
-                  SELECT gw.GameWeek FROM gameweekmap gw
-                  WHERE gw.DateTo > NOW()
-                  ORDER BY gw.DateTo ASC
-                  LIMIT 1
-              )
+              WHERE p.GameWeek = %s
               AND p.PredictionStatus = 'A'
           )
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql)
+            cur.execute(sql, (gameweek,))
             return cur.fetchall()
 
 
@@ -550,19 +550,22 @@ def get_previously_selected_teams(username: str) -> list[str]:
 
 
 def submit_user_prediction(fixture_id: int, username: str,
-                           predicted_result: int, entry_type: str) -> dict:
+                           predicted_result: int, entry_type: str, *,
+                           active_gameweek: dict | None = None,
+                           allow_after_deadline: bool = False) -> dict:
     """
     Insert a prediction row. Returns {'ok': True, 'prediction_id': int} on success
     or {'ok': False, 'error': str} on failure.
     """
     get_team_sql = """
-        SELECT HomeTeam, AwayTeam FROM fixtureresults WHERE FixtureId = %s
+        SELECT HomeTeam, AwayTeam, KickOffTime FROM fixtureresults WHERE FixtureId = %s
     """
     try:
-        active_gameweek = get_active_gameweek()
+        if active_gameweek is None:
+            active_gameweek = get_active_gameweek()
         if not active_gameweek:
             return {"ok": False, "error": "No active game week found"}
-        if datetime.now() >= active_gameweek["DateFrom"]:
+        if not allow_after_deadline and datetime.now() >= active_gameweek["DateFrom"]:
             return {"ok": False, "error": "deadline passed"}
 
         with get_connection() as conn:
@@ -571,6 +574,10 @@ def submit_user_prediction(fixture_id: int, username: str,
                 fixture = cur.fetchone()
                 if not fixture:
                     return {"ok": False, "error": "Fixture not found"}
+                if entry_type == "AUTO" and not (
+                    active_gameweek["DateFrom"] <= fixture["KickOffTime"] < active_gameweek["DateTo"]
+                ):
+                    return {"ok": False, "error": "Fixture is not in the active game week"}
 
                 team_name = fixture["HomeTeam"] if predicted_result == 1 else fixture["AwayTeam"]
 
@@ -714,14 +721,16 @@ def get_prediction_details(prediction_id: int) -> dict | None:
 # Random team / auto-picks
 # ---------------------------------------------------------------------------
 
-def select_random_team_for_user(username: str) -> dict | None:
+def select_random_fixture_for_user(username: str, active_gameweek: dict) -> dict | None:
     """
-    Select a random club that the user has not yet used, using ClubId
-    matching for robustness (same improvement as get_teams_available_to_user).
+    Select a random unused club with a fixture in the active game week.
     """
     sql = """
-        SELECT c.ClubId, c.LongName, c.MedName, c.ShortName
+        SELECT c.LongName, f.FixtureId, f.HomeTeam, f.AwayTeam
         FROM clubs c
+        JOIN fixtureresults f
+          ON LOWER(TRIM(f.HomeTeam)) = LOWER(TRIM(c.LongName))
+          OR LOWER(TRIM(f.AwayTeam)) = LOWER(TRIM(c.LongName))
         WHERE c.ClubId NOT IN (
             SELECT DISTINCT c2.ClubId
             FROM predictions p
@@ -730,12 +739,13 @@ def select_random_team_for_user(username: str) -> dict | None:
               OR LOWER(TRIM(p.TeamName)) = LOWER(TRIM(c2.MedName))
             WHERE p.UserName = %s
         )
+          AND f.KickOffTime >= %s AND f.KickOffTime < %s
         ORDER BY RAND()
         LIMIT 1
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql, (username,))
+            cur.execute(sql, (username, active_gameweek["DateFrom"], active_gameweek["DateTo"]))
             return cur.fetchone()
 
 

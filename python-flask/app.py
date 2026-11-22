@@ -893,22 +893,26 @@ def create_app() -> Flask:
         if current_user.priv_level < 3:
             return jsonify({"status": 0, "reason": "Admin access only"}), 403
 
-        lazy_users = dal.get_lazy_users()
+        active_gameweek = dal.get_active_gameweek()
+        if not active_gameweek:
+            return jsonify({"status": 0, "reason": "No active game week found"})
+
+        lazy_users = dal.get_lazy_users(active_gameweek["GameWeek"])
         completed = []
+        failures = []
         for user in lazy_users:
             username = user["username"]
-            team = dal.select_random_team_for_user(username)
-            if not team:
-                continue
-            fixture = dal.get_next_fixture_for_team(team["LongName"])
+            fixture = dal.select_random_fixture_for_user(username, active_gameweek)
             if not fixture:
+                failures.append(f"{username}: no available team with a fixture in the active game week")
                 continue
             predicted_result = (
-                1 if fixture["HomeTeam"].strip().lower() == team["LongName"].strip().lower()
+                1 if fixture["HomeTeam"].strip().lower() == fixture["LongName"].strip().lower()
                 else 3
             )
             result = dal.submit_user_prediction(
-                fixture["FixtureId"], username, predicted_result, "AUTO"
+                fixture["FixtureId"], username, predicted_result, "AUTO",
+                active_gameweek=active_gameweek, allow_after_deadline=True,
             )
             if result["ok"]:
                 completed.append({
@@ -917,10 +921,16 @@ def create_app() -> Flask:
                     "PredictedResult": predicted_result,
                     "EntryType": "AUTO",
                 })
+            else:
+                failures.append(f"{username}: {result['error']}")
 
-        if completed:
-            return jsonify({"status": 1, "reason": completed})
-        return jsonify({"status": 0, "reason": "No auto predictions were made"})
+        if failures:
+            reason = f"{len(completed)} auto-picks made. Failed: " + "; ".join(failures)
+            return jsonify({"status": 0, "reason": reason, "completed": completed})
+        if not completed:
+            return jsonify({"status": 0, "reason": "No eligible users need an auto-pick"})
+        return jsonify({"status": 1, "reason": f"{len(completed)} auto-picks made",
+                        "completed": completed})
 
     @app.route("/api/dynamite-options")
     @login_required
