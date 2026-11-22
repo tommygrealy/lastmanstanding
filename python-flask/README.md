@@ -146,3 +146,8 @@ Uses `flask-login` for clean, secure session handling instead of raw PHP
 | `restServices/getDynamiteDropHistory.php` | `GET /api/dynamite-history` |
 | `restServices/requestPasswordReset.php` | `POST /api/request-password-reset` |
 | `restServices/doPasswordReset.php` | `POST /api/do-password-reset` |
+
+Admins can run auto-picks from the dashboard at any time, including after the
+selection deadline. Picks are limited to unused teams with fixtures in the
+active game week (the first game week whose end has not passed); ordinary
+manual selections remain subject to the deadline.
